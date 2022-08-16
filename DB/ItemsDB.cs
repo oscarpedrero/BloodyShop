@@ -93,7 +93,7 @@ namespace BloodyShop.DB
                     itemShopModel.amount = actualStock - amount;
                     if (itemShopModel.amount == 0)
                     {
-                        ProductList.RemoveAt(index - 1);
+                        RemoveItem(index);
                     }
                     else
                     {
@@ -108,6 +108,20 @@ namespace BloodyShop.DB
             }
             
 
+        }
+
+        public static bool RemoveItem(int index)
+        {
+            try
+            {
+                ProductList.RemoveAt(index - 1);
+                return true;
+            } catch (Exception error)
+            {
+                Plugin.Logger.LogError($"Error: {error.Message}");
+                return false;
+            }
+            
         }
     }
 }

@@ -43,7 +43,7 @@ namespace BloodyShop.Server.Commands
                             Output.SendSystemMessage(ctx, FontColorChat.Yellow($"Added item {FontColorChat.White($"{itemModel?.Name.ToString()} ({args[2]})")} to the store with a price of {FontColorChat.White($"{args[1]} {coin?.Name.ToString()}")}"));
                             if (ConfigDB.getShopEnabled())
                             {
-                                ServerChatUtils.SendSystemMessageToAllClients(ctx.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{args[2]}x {itemModel?.Name.ToString()}")}have been added to the Store for {FontColorChat.White($"{args[1]} {coin?.Name.ToString()}")}"));
+                                ServerChatUtils.SendSystemMessageToAllClients(ctx.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{args[2]}x {itemModel?.Name.ToString()}")} have been added to the Store for {FontColorChat.White($"{args[1]} {coin?.Name.ToString()}")}"));
                             }
                             return;
                         } else

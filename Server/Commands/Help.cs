@@ -57,7 +57,7 @@ namespace BloodyShop.Server.Commands
 
                     string s = "";
                     bool send = false;
-                    if(aliases.First() == "add" && ctx.Event.User.IsAdmin)
+                    if((aliases.First() == "open" || aliases.First() == "close" || aliases.First() == "add" || aliases.First() == "remove") && ctx.Event.User.IsAdmin)
                     {
                         s = $"{FontColorChat.Red("[ADMIN]")} {FontColorChat.Green(ctx.Prefix + " " + string.Join(", ", aliases))} - {FontColorChat.White(description)}";
                         send = true;
