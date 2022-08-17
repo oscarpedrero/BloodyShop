@@ -1,4 +1,4 @@
-﻿using GT.VRising.GameData.Models;
+﻿using VRising.GameData.Models;
 using BloodyShop.DB.Models;
 using BloodyShop.Utils;
 using System;

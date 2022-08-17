@@ -2,17 +2,18 @@
 using BepInEx.Configuration;
 using BepInEx.IL2CPP;
 using BepInEx.Logging;
-using GT.VRising.GameData;
+using VRising.GameData;
 using HarmonyLib;
 using BloodyShop.Server.Network;
 using Unity.Entities;
 using UnityEngine;
 using Wetstone.API;
+using System.Linq;
+using BloodyShop.Client.UI.Panels;
 
 namespace BloodyShop
 {
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
-    [BepInDependency("GT.VRising.GameData")]
     [BepInDependency("xyz.molenzwiebel.wetstone")]
     public class Plugin : BasePlugin, IRunOnInitialized
     {
@@ -117,7 +118,14 @@ namespace BloodyShop
         private static void GameDataOnInitialize(World world)
         {
             Logger.LogWarning("GameData Init");
-            NetworkMessages.RegisterMessage();
+            if (VWorld.IsServer)
+            {
+                BloodyShop.onServerGameDataOnInitialize();
+            }
+            else
+            {
+                BloodyShop.onClientGameDataOnInitialize();
+            }
         }
 
         private void InitConfigServer()

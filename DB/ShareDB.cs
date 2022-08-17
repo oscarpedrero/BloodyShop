@@ -1,5 +1,5 @@
-﻿using GT.VRising.GameData;
-using GT.VRising.GameData.Models;
+﻿using VRising.GameData;
+using VRising.GameData.Models;
 using ProjectM;
 
 namespace BloodyShop.DB

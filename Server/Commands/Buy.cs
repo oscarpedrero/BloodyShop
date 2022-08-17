@@ -4,12 +4,12 @@ using BloodyShop.Server.Utils;
 using Unity.Entities;
 using Unity.Collections;
 using ProjectM;
-using GT.VRising.GameData;
-using GT.VRising.GameData.Methods;
+using VRising.GameData;
+using VRising.GameData.Methods;
 using BloodyShop.DB;
 using BloodyShop.DB.Models;
 using BloodyShop.Utils;
-using GT.VRising.GameData.Models;
+using VRising.GameData.Models;
 using BloodyShop.Server.DB;
 
 namespace BloodyShop.Server.Commands
@@ -28,6 +28,13 @@ namespace BloodyShop.Server.Commands
         public static void Initialize(Context ctx)
         {
 
+
+            BuyItem(ctx);
+
+        }
+
+        public static void BuyItem(Context ctx)
+        {
             if (ConfigDB.getShopEnabled())
             {
                 PlayerCharacter = ctx.Event.SenderCharacterEntity;
@@ -100,8 +107,6 @@ namespace BloodyShop.Server.Commands
             {
                 Output.CustomErrorMessage(ctx, FontColorChat.Yellow($"{FontColorChat.White($"{ConfigDB.getStoreName()}")} is closed"));
             }
-            
-
         }
 
         private static bool verifyHaveSuficientCoins(Context ctx, int coins)

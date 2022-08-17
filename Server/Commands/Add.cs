@@ -1,4 +1,4 @@
-﻿using GT.VRising.GameData;
+﻿using VRising.GameData;
 using ProjectM;
 using BloodyShop.Server.DB;
 using BloodyShop.DB;
@@ -6,7 +6,7 @@ using BloodyShop.Server.Systems;
 using BloodyShop.Server.Utils;
 using BloodyShop.Utils;
 using System;
-using GT.VRising.GameData.Models;
+using VRising.GameData.Models;
 
 namespace BloodyShop.Server.Commands
 {
@@ -16,6 +16,11 @@ namespace BloodyShop.Server.Commands
         public static object ItemsData { get; private set; }
 
         public static void Initialize(Context ctx)
+        {
+            addItem(ctx);
+        }
+
+        public static void addItem(Context ctx)
         {
             if (ctx.Event.User.IsAdmin)
             {
@@ -32,7 +37,7 @@ namespace BloodyShop.Server.Commands
                     var prefabGUID = new PrefabGUID(Int32.Parse(args[0]));
                     var itemModel = GameData.Items.GetPrefabById(prefabGUID);
 
-                    if(itemModel != null)
+                    if (itemModel != null)
                     {
                         if (ShareDB.getCoin(out ItemModel coin))
                         {
@@ -46,18 +51,21 @@ namespace BloodyShop.Server.Commands
                                 ServerChatUtils.SendSystemMessageToAllClients(ctx.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{args[2]}x {itemModel?.Name.ToString()}")} have been added to the Store for {FontColorChat.White($"{args[1]} {coin?.Name.ToString()}")}"));
                             }
                             return;
-                        } else
+                        }
+                        else
                         {
                             Output.CustomErrorMessage(ctx, "Error loading currency type");
                         }
 
-                    } else
+                    }
+                    else
                     {
                         Output.CustomErrorMessage(ctx, "Invalid item type");
                     }
 
-                    
-                } catch (Exception error)
+
+                }
+                catch (Exception error)
                 {
                     Plugin.Logger.LogError(error.Message);
                     Output.CustomErrorMessage(ctx, "Error saving the item in the store ");

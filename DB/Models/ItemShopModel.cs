@@ -1,4 +1,4 @@
-﻿using GT.VRising.GameData;
+﻿using VRising.GameData;
 using ProjectM;
 using System;
 using System.Collections.Generic;

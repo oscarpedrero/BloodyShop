@@ -15,6 +15,11 @@ namespace BloodyShop.Server.Commands
     {
         public static void Initialize(Context ctx)
         {
+            removeItemFromShop(ctx);
+        }
+
+        public static void removeItemFromShop(Context ctx)
+        {
             if (ctx.Event.User.IsAdmin)
             {
                 var args = ctx.Args;
@@ -25,7 +30,7 @@ namespace BloodyShop.Server.Commands
                     return;
                 }
 
-                
+
                 try
                 {
                     var index = Int32.Parse(args[0]);
@@ -43,7 +48,7 @@ namespace BloodyShop.Server.Commands
                         }
                     }
                 }
-                catch(Exception error)
+                catch (Exception error)
                 {
                     Plugin.Logger.LogInfo($"Error: {error.Message}");
                     Output.SendSystemMessage(ctx, FontColorChat.Yellow($"Item removed error."));

@@ -3,9 +3,6 @@ using BloodyShop.Server.DB;
 using BloodyShop.Server.Systems;
 using BloodyShop.Server.Utils;
 using BloodyShop.Utils;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BloodyShop.Server.Commands
 {
@@ -13,6 +10,13 @@ namespace BloodyShop.Server.Commands
     public static class Open
     {
         public static void Initialize(Context ctx)
+        {
+
+            OpenShop(ctx);
+
+        }
+
+        public static void OpenShop(Context ctx)
         {
             if (ctx.Event.User.IsAdmin)
             {
@@ -26,11 +30,11 @@ namespace BloodyShop.Server.Commands
 
                 ConfigDB.setShopEnabled(true);
                 ServerChatUtils.SendSystemMessageToAllClients(ctx.EntityManager, FontColorChat.Yellow($" {FontColorChat.White($" {ConfigDB.getStoreName()} ")} just opened"));
-            } else
+            }
+            else
             {
                 Output.InvalidCommand(ctx.Event);
             }
-
         }
     }
 }

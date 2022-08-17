@@ -3,6 +3,7 @@ using BloodyShop.DB;
 using BloodyShop.Network.Messages;
 using System.Text.Json;
 using Wetstone.API;
+using BloodyShop.Server.DB;
 
 namespace BloodyShop.Server.Network
 {
@@ -17,6 +18,8 @@ namespace BloodyShop.Server.Network
 
             msg.ItemsJson = jsonOutPut;
             msg.CoinGUID = ShareDB.getCoinGUID().ToString();
+            msg.ShopName = ConfigDB.getStoreName();
+            msg.CharacterName = fromCharacter.CharacterName.ToString();
 
             Send(fromCharacter,msg);
 

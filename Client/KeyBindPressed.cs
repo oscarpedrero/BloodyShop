@@ -15,6 +15,7 @@ namespace BloodyShop.Client
                     if (ClientMod.UIInit)
                     {
                         UIManager.MainPanel?.Toggle();
+                        UIManager.AdminPanel?.Toggle();
                     } else
                     {
                         ClientListMessageAction.Send();

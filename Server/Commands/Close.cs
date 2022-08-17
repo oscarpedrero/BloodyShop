@@ -14,6 +14,13 @@ namespace BloodyShop.Server.Commands
     {
         public static void Initialize(Context ctx)
         {
+            
+            CloseShop(ctx);
+
+        }
+
+        public static void CloseShop(Context ctx)
+        {
             if (ctx.Event.User.IsAdmin)
             {
                 var args = ctx.Args;
@@ -31,7 +38,7 @@ namespace BloodyShop.Server.Commands
             {
                 Output.InvalidCommand(ctx.Event);
             }
-
         }
+
     }
 }

@@ -3,7 +3,7 @@ using BloodyShop.Server.Utils;
 using BloodyShop.Server.DB;
 using BloodyShop.DB;
 using BloodyShop.Utils;
-using GT.VRising.GameData.Models;
+using VRising.GameData.Models;
 
 namespace BloodyShop.Server.Commands
 {

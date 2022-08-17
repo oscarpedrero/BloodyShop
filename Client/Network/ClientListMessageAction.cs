@@ -1,10 +1,12 @@
-﻿using BloodyShop.Client.UI;
+﻿using BloodyShop.Client.DB;
+using BloodyShop.Client.UI;
 using BloodyShop.DB;
 using BloodyShop.DB.Models;
 using BloodyShop.Network.Messages;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using VRising.GameData;
 using Wetstone.API;
 
 namespace BloodyShop.Client.Network
@@ -17,12 +19,14 @@ namespace BloodyShop.Client.Network
             var productList = JsonSerializer.Deserialize<List<ItemShopModel>>(msg.ItemsJson);
             ItemsDB.setProductList(productList);
             ShareDB.setCoinGUID(Int32.Parse(msg.CoinGUID));
+            ClientDB.shopName = msg.ShopName;
+            ClientDB.prefix = "!" + ClientDB.shopName.ToLower().Replace(" ", "");
+            ClientDB.userModel = GameData.Users.GetUserByCharacterName(msg.CharacterName);
+
             if (!ClientMod.UIInit)
             {
-                Plugin.Logger.LogInfo(msg.ItemsJson);
-                Plugin.Logger.LogInfo("El id 0 " + ItemsDB.GetProductList()[0].id);
                 ClientMod.UIInit = true;
-                UIManager.Initialize();
+                UIManager.createPanel();
             }
             Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] ListSerializedMessage {msg.ItemsJson} - {msg.CoinGUID}");
         }

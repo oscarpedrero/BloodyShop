@@ -48,7 +48,12 @@ namespace BloodyShop.Server.Systems
             Prefix = "!" + StoreName.ToLower().Replace(" ", "");
         }
 
-        private static bool NameExists(Type type, string command, out string primary)
+        public static string GetPrefix()
+        {
+            return Prefix;
+        }
+
+        public static bool NameExists(Type type, string command, out string primary)
         {
             primary = "invalid";
             List<string> aliases = type.GetAttributeValue((CommandAttribute cmd) => cmd.Aliases);
