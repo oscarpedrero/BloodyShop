@@ -20,6 +20,7 @@ namespace BloodyShop
         public static void clientInitMod(Harmony _harmony)
         {
             KeyBinds.Initialize();
+            ClientEvents.OnGameDataInitialized += ClientMod.ClientEvents_OnGameDataInitialized;
             KeyBinds.OnKeyPressed += KeyBindPressed.OnKeyPressedOpenPanel;
         }
 

@@ -1,5 +1,6 @@
 ﻿using BloodyShop.Client.Network;
 using BloodyShop.Client.Patch;
+using BloodyShop.Client.UI;
 using System;
 
 namespace BloodyShop.Client
@@ -11,8 +12,13 @@ namespace BloodyShop.Client
             switch (keybindFunction)
             {
                 case KeyBindFunction.ToggleUI:
-                    //UIManager.MainPanel?.Toggle();
-                    ClientListMessageAction.Send();
+                    if (ClientMod.UIInit)
+                    {
+                        UIManager.MainPanel?.Toggle();
+                    } else
+                    {
+                        ClientListMessageAction.Send();
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(keybindFunction), keybindFunction, null);

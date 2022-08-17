@@ -22,6 +22,12 @@
 	<PackageReference Include="VRising.Unhollowed.Client" Version="0.5.*" />
     <PackageReference Include="Wetstone" Version="1.1.0" />
   </ItemGroup>
+	<ItemGroup>
+		<Reference Include="UniverseLib.IL2CPP.Unhlolloer">
+			<HintPath>packages\UniverseLib.IL2CPP.Unhollower.1.5.1\lib\netstandard2.1\UniverseLib.IL2CPP.Unhollower.dll</HintPath>
+			<Private>True</Private>
+		</Reference>
+	</ItemGroup>
 	<Target Name="CopyDLLsClient" AfterTargets="Build">
 		<Message Text="DLL to V Rising Client" Importance="High" />
 		<Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="C:\Program Files (x86)\Steam\steamapps\common\VRising\BepInEx\plugins\" />
