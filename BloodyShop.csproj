@@ -25,6 +25,10 @@
 	<PackageReference Include="VRising.Unhollowed.Client" Version="0.5.*" />
     <PackageReference Include="Wetstone" Version="1.1.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Images\" />
+  </ItemGroup>
 	<Target Name="CopyDLLsClient" AfterTargets="Build">
 		<Message Text="DLL to V Rising Client" Importance="High" />
 		<Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="C:\Program Files (x86)\Steam\steamapps\common\VRising\BepInEx\plugins\" />
