@@ -3,6 +3,9 @@ using BloodyShop.Server.DB;
 using BloodyShop.Server.Systems;
 using BloodyShop.Server.Utils;
 using BloodyShop.Utils;
+using BloodyShop.Server.Network;
+using VRising.GameData;
+using BloodyShop.Network.Messages;
 
 namespace BloodyShop.Server.Commands
 {
@@ -30,6 +33,12 @@ namespace BloodyShop.Server.Commands
 
                 ConfigDB.setShopEnabled(true);
                 ServerChatUtils.SendSystemMessageToAllClients(ctx.EntityManager, FontColorChat.Yellow($" {FontColorChat.White($" {ConfigDB.getStoreName()} ")} just opened"));
+                var usersOnline = GameData.Users.Online;
+                var msg = new OpenSerializedMessage();
+                foreach (var user in usersOnline)
+                {
+                    ServerOpenMessageAction.Send(user.Internals.User, msg);
+                }
             }
             else
             {

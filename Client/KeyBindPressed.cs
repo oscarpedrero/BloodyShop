@@ -2,6 +2,7 @@
 using BloodyShop.Client.Patch;
 using BloodyShop.Client.UI;
 using System;
+using UnityEngine;
 
 namespace BloodyShop.Client
 {
@@ -11,10 +12,11 @@ namespace BloodyShop.Client
         {
             switch (keybindFunction)
             {
-                case KeyBindFunction.ToggleUI:
+                case KeyBindFunction.ToggleShopUI:
                     if (ClientMod.UIInit)
                     {
-                        UIManager.MainPanel?.Toggle();
+                        UIManager.MenuPanel?.Toggle();
+                        UIManager.ShopPanel?.Toggle();
                         UIManager.AdminPanel?.Toggle();
                     } else
                     {

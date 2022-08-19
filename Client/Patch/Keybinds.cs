@@ -11,7 +11,7 @@ namespace BloodyShop.Client.Patch
 
     internal enum KeyBindFunction
     {
-        ToggleUI
+        ToggleShopUI
     }
 
     internal static class KeyBinds
@@ -30,8 +30,8 @@ namespace BloodyShop.Client.Patch
                 {
                     Id = Plugin.Guid + "ToggleUI",
                     Category = Plugin.Name,
-                    Name = "Toggle Builder UI",
-                    DefaultKeybinding = KeyCode.B,
+                    Name = "Toggle Shop UI",
+                    DefaultKeybinding = KeyCode.F11,
                 });
                 _keybindBehavior = Plugin.Instance.AddComponent<KeyBindBehaviour>();
             }
@@ -51,7 +51,7 @@ namespace BloodyShop.Client.Patch
             {
                 if (_toggleUiKeyBind.IsPressed)
                 {
-                    OnKeyPressed?.Invoke(KeyBindFunction.ToggleUI);
+                    OnKeyPressed?.Invoke(KeyBindFunction.ToggleShopUI);
                 }
             }
         }

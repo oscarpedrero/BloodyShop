@@ -11,6 +11,7 @@ using BloodyShop.DB.Models;
 using BloodyShop.Utils;
 using VRising.GameData.Models;
 using BloodyShop.Server.DB;
+using BloodyShop.Server.Network;
 
 namespace BloodyShop.Server.Commands
 {
@@ -56,6 +57,12 @@ namespace BloodyShop.Server.Commands
                     var indexPosition = Int32.Parse(args[0]);
                     var quantity = Int32.Parse(args[1]);
 
+                    if(quantity <= 0)
+                    {
+                        Output.CustomErrorMessage(ctx, $"The minimum purchase quantity of a product is 1");
+                        return;
+                    }
+
                     if (ItemsDB.SearchItem(indexPosition, out ItemShopModel itemShopModel))
                     {
                         if (itemShopModel.CheckAmountAvailability(quantity))
@@ -73,6 +80,12 @@ namespace BloodyShop.Server.Commands
                                             LoadDataFromFiles.loadProductList();
                                             Output.SendSystemMessage(ctx, FontColorChat.Yellow($"Transaction successful. You have purchased {FontColorChat.White($"{quantity}x {itemShopModel.getItemName()}")} for a total of  {FontColorChat.White($"{finalPrice} {prefabCoinItemName}")}"));
                                             ServerChatUtils.SendSystemMessageToAllClients(ctx.EntityManager, FontColorChat.Yellow($"{ctx.Event.User.CharacterName} has purchased {FontColorChat.White($"{quantity}x {itemShopModel.getItemName()}")} for a total of  {FontColorChat.White($"{finalPrice} {prefabCoinItemName}")}"));
+                                            var usersOnline = GameData.Users.Online;
+                                            foreach (var user in usersOnline)
+                                            {
+                                                var msg = ServerListMessageAction.createMsg(user.Internals.User);
+                                                ServerListMessageAction.Send(user.Internals.User, msg);
+                                            }
                                         }
                                     }
                                     else

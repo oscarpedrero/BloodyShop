@@ -23,18 +23,47 @@ namespace BloodyShop.Client.Network
             ClientDB.prefix = "!" + ClientDB.shopName.ToLower().Replace(" ", "");
             ClientDB.userModel = GameData.Users.GetUserByCharacterName(msg.CharacterName);
 
+            if(msg.ShopOpen == "1")
+            {
+                ClientDB.shopOpen = true;
+
+            } else
+            {
+                ClientDB.shopOpen = false;
+            }
+
             if (!ClientMod.UIInit)
             {
                 ClientMod.UIInit = true;
-                UIManager.createPanel();
+                UIManager.CreateMenuPanel();
+            } else
+            {
+                if (ClientDB.shopOpen)
+                {
+                    UIManager.MenuPanel.openShop();
+                } else
+                {
+                    UIManager.MenuPanel.closeShop();
+                }
+                if (UIManager.ShopPanel?.productsListLayers.Count > 0)
+                {
+                    UIManager.ShopPanel?.RefreshData();
+                }
+
+                if (UIManager.AdminPanel?.productsListLayers.Count > 0)
+                {
+                    UIManager.AdminPanel?.RefreshData();
+                }
+                UIManager.ShopPanel?.CreateListProductsLayou();
+                UIManager.AdminPanel?.CreateListProductsLayou();
             }
-            Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] ListSerializedMessage {msg.ItemsJson} - {msg.CoinGUID}");
+            Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] ListSerializedMessage {msg.ItemsJson} - {msg.CoinGUID} - {msg.ShopName} - {msg.ShopOpen} - {msg.ShopOpen}");
         }
 
         public static void Send(ListSerializedMessage msg = null)
         {
 
-            if(msg == null)
+            if (msg == null)
             {
                 msg = new ListSerializedMessage();
                 msg.ItemsJson = "list";

@@ -1,12 +1,14 @@
 ﻿using BloodyShop.DB;
 using BloodyShop.DB.Models;
 using BloodyShop.Server.DB;
+using BloodyShop.Server.Network;
 using BloodyShop.Server.Systems;
 using BloodyShop.Server.Utils;
 using BloodyShop.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VRising.GameData;
 
 namespace BloodyShop.Server.Commands
 {
@@ -41,6 +43,14 @@ namespace BloodyShop.Server.Commands
                             SaveDataToFiles.saveProductList();
                             LoadDataFromFiles.loadProductList();
                             Output.SendSystemMessage(ctx, FontColorChat.Yellow($"Item {FontColorChat.White($"{itemShopModel.getItemName()}")} removed successful."));
+
+                            var usersOnline = GameData.Users.Online;
+                            foreach (var user in usersOnline)
+                            {
+                                var msg = ServerListMessageAction.createMsg(user.Internals.User);
+                                ServerListMessageAction.Send(user.Internals.User, msg);
+                            }
+
                         }
                         else
                         {

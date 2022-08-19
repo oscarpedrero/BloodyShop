@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BloodyShop.Client.UI;
+using HarmonyLib;
 using ProjectM;
 using System;
 using Unity.Entities;
@@ -30,5 +31,16 @@ public static class ClientEvents
         {
             Plugin.Logger.LogError(e);
         }
+    }
+
+    [HarmonyPatch(typeof(ClientBootstrapSystem), nameof(ClientBootstrapSystem.OnClientDisconnected))]
+    [HarmonyPostfix]
+    private static void ClientBootstrapSystemDisconnectPostfix(ClientBootstrapSystem __instance)
+    {
+        Plugin.Logger.LogInfo("Disconnected");
+        ClientMod.UIInit = false;
+        UIManager.AdminPanel?.Destroy();
+        UIManager.MenuPanel?.Destroy();
+        UIManager.ShopPanel?.Destroy();
     }
 }

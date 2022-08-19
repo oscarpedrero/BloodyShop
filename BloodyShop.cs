@@ -11,6 +11,7 @@ using System.Linq;
 using BloodyShop.Client.UI.Panels;
 using BloodyShop.Client.DB;
 using System.Collections.Generic;
+using VRising.GameData.Models;
 
 namespace BloodyShop
 {
@@ -27,6 +28,7 @@ namespace BloodyShop
         {
             UIManager.Initialize();
             KeyBinds.Initialize();
+            
             ClientEvents.OnGameDataInitialized += ClientMod.ClientEvents_OnGameDataInitialized;
             KeyBinds.OnKeyPressed += KeyBindPressed.OnKeyPressedOpenPanel;
         }
@@ -59,8 +61,7 @@ namespace BloodyShop
         public static void onClientGameDataOnInitialize()
         {
             NetworkMessages.RegisterMessage();
-            var allItemsGame = GameData.Items.Prefabs.Select(w => w.Name + " | " + w.Internals.PrefabGUID?.GuidHash).Where(w => !string.IsNullOrEmpty(w)).OrderBy(w => w).ToArray();
-            ClientDB.allItemsGame = allItemsGame;
+            ClientDB.allItemsGame = GameData.Items.Prefabs;
         }
 
     }

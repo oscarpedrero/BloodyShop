@@ -1,4 +1,6 @@
-﻿using BloodyShop.Network.Messages;
+﻿using BloodyShop.Client.DB;
+using BloodyShop.Client.UI;
+using BloodyShop.Network.Messages;
 using Wetstone.API;
 
 namespace BloodyShop.Client.Network
@@ -8,6 +10,9 @@ namespace BloodyShop.Client.Network
 
         public static void Received(OpenSerializedMessage msg)
         {
+
+            UIManager.RefreshDataPanel();
+
             Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] OpenSerializedMessage");
         }
 

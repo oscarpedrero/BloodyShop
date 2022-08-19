@@ -7,6 +7,7 @@ using BloodyShop.Server.Utils;
 using BloodyShop.Utils;
 using System;
 using VRising.GameData.Models;
+using BloodyShop.Server.Network;
 
 namespace BloodyShop.Server.Commands
 {
@@ -49,6 +50,12 @@ namespace BloodyShop.Server.Commands
                             if (ConfigDB.getShopEnabled())
                             {
                                 ServerChatUtils.SendSystemMessageToAllClients(ctx.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{args[2]}x {itemModel?.Name.ToString()}")} have been added to the Store for {FontColorChat.White($"{args[1]} {coin?.Name.ToString()}")}"));
+                                var usersOnline = GameData.Users.Online;
+                                foreach (var user in usersOnline)
+                                {
+                                    var msg = ServerListMessageAction.createMsg(user.Internals.User);
+                                    ServerListMessageAction.Send(user.Internals.User, msg);
+                                }
                             }
                             return;
                         }

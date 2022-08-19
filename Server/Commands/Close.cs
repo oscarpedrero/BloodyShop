@@ -6,6 +6,9 @@ using BloodyShop.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VRising.GameData;
+using BloodyShop.Server.Network;
+using BloodyShop.Network.Messages;
 
 namespace BloodyShop.Server.Commands
 {
@@ -33,6 +36,12 @@ namespace BloodyShop.Server.Commands
 
                 ConfigDB.setShopEnabled(false);
                 ServerChatUtils.SendSystemMessageToAllClients(ctx.EntityManager, FontColorChat.Yellow($" {FontColorChat.White($" {ConfigDB.getStoreName()} ")} just closed"));
+                var usersOnline = GameData.Users.Online;
+                var msg = new CloseSerializedMessage();
+                foreach(var user in usersOnline)
+                {
+                    ServerCloseMessageAction.Send(user.Internals.User, msg);
+                }
             }
             else
             {

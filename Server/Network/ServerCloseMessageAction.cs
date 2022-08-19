@@ -32,7 +32,10 @@ namespace BloodyShop.Server.Network
 
         public static void Send(User fromCharacter, CloseSerializedMessage msg)
         {
-           return;
+
+            VNetwork.SendToClient(fromCharacter, msg);
+            Plugin.Logger.LogInfo($"[SERVER] [SEND] CloseSerializedMessage {fromCharacter.CharacterName}");
+
         }
 
     }

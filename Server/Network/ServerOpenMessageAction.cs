@@ -26,15 +26,15 @@ namespace BloodyShop.Server.Network
 
             var ctx = new Context(prefix, vchatEvent, args);
 
-            Remove.removeItemFromShop(ctx);
+            Open.OpenShop(ctx);
 
-            
 
         }
 
-        public static void Send(User fromCharacter, DeleteSerializedMessage msg)
+        public static void Send(User fromCharacter, OpenSerializedMessage msg)
         {
-           return;
+            VNetwork.SendToClient(fromCharacter, msg);
+            Plugin.Logger.LogInfo($"[SERVER] [SEND] CloseSerializedMessage {fromCharacter.CharacterName}");
         }
 
     }

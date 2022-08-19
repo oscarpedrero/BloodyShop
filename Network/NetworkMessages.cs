@@ -59,7 +59,7 @@ namespace BloodyShop.Server.Network
                 // invoked when the server sends a message to the client
                 msg =>
                 {
-                    
+                    ClientOpenMessageAction.Received(msg);
                 },
 
                 // invoked when a client sends a message to the server
@@ -73,7 +73,7 @@ namespace BloodyShop.Server.Network
                 // invoked when the server sends a message to the client
                 msg =>
                 {
-                    
+                    ClientCloseMessageAction.Received(msg);
                 },
 
                 // invoked when a client sends a message to the server

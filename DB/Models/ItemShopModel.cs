@@ -3,6 +3,8 @@ using ProjectM;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
+using VRising.GameData.Models;
 
 namespace BloodyShop.DB.Models
 {
@@ -25,6 +27,42 @@ namespace BloodyShop.DB.Models
             var item = GameData.Items.GetPrefabById(new PrefabGUID(id));
 
             return item?.Name.ToString();
+        }
+
+        public ItemModel getItem()
+        {
+            var item = GameData.Items.GetPrefabById(new PrefabGUID(id));
+
+            return item;
+        }
+
+        public Sprite getIcon()
+        {
+            var item = GameData.Items.GetPrefabById(new PrefabGUID(id));
+            return item?.ManagedGameData.ManagedItemData?.Icon;
+        }
+
+        public string getItemType()
+        {
+            var item = GameData.Items.GetPrefabById(new PrefabGUID(id));
+            var intemTypeReturn = "";
+            switch (item?.ItemType.ToString())
+            {
+                case "Stackable":
+                    intemTypeReturn = "Ingredient";
+                    break;
+                case "ItemBuilding":
+                    intemTypeReturn = "Other";
+                    break;
+                default:
+                    intemTypeReturn = item?.ItemType.ToString();
+                    break;
+            }
+
+            return intemTypeReturn;
+
+
+
         }
 
         public string getPrefabName()
