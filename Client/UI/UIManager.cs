@@ -55,14 +55,19 @@ internal class UIManager
 
     public static void OpenShopPanel()
     {
-        if (ActiveShopPanel)
+        if (ClientDB.shopOpen)
         {
-            ShopPanel?.Toggle();
-        } else
-        {
-            ActiveShopPanel = true;
-            ShopPanel = new ShopPanel(UiBase);
+            if (ActiveShopPanel)
+            {
+                ShopPanel?.Toggle();
+            }
+            else
+            {
+                ActiveShopPanel = true;
+                ShopPanel = new ShopPanel(UiBase);
+            }
         }
+        
     }
 
     public static void OpenAdminPanel()

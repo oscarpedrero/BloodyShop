@@ -10,8 +10,11 @@ namespace BloodyShop.Client.Network
 
         public static void Received(CloseSerializedMessage msg)
         {
-
-            UIManager.ShopPanel?.Destroy();
+            try
+            {
+                UIManager.ShopPanel?.Destroy();
+            } catch { }
+            
             UIManager.ActiveShopPanel = false;
             ClientDB.shopOpen = false;
             UIManager.MenuPanel?.closeShop();

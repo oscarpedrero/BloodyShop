@@ -39,6 +39,7 @@ namespace BloodyShop.Client.UI.Panels
         public GameObject contentScroll;
         public Dropdown dropdowntype;
         public Dropdown dropdownitem;
+        public ButtonRef OpenCloseStoreBtn;
         public List<GameObject> productsListLayers = new List<GameObject>();
 
         public static float CurrentPanelWidth => Instance.Rect.rect.width;
@@ -91,25 +92,29 @@ namespace BloodyShop.Client.UI.Panels
                         new Color(36 / 255f, 113 / 255f, 163 / 255f),
                         new Color(41 / 255f, 128 / 255f, 185 / 255f));
 
-            // CLOSE BTN
-            ButtonRef closeStoreBtn = UIFactory.CreateButton(closeHolder.gameObject, "CloseStoreBtn", "Close Store", new Color(0.3f, 0.2f, 0.2f));
-            UIFactory.SetLayoutElement(closeStoreBtn.Component.gameObject, minHeight: 25, minWidth: 180);
-            closeStoreBtn.Component.transform.SetSiblingIndex(closeStoreBtn.Component.transform.GetSiblingIndex() - 2);
-            RuntimeHelper.SetColorBlock(closeStoreBtn.Component,
+            var textBTNOpenClose = "Open Store";
+
+            // OPEN / CLOSE BTN
+            OpenCloseStoreBtn = UIFactory.CreateButton(closeHolder.gameObject, "CloseStoreBtn", textBTNOpenClose, new Color(0.3f, 0.2f, 0.2f));
+            UIFactory.SetLayoutElement(OpenCloseStoreBtn.Component.gameObject, minHeight: 25, minWidth: 180);
+            OpenCloseStoreBtn.Component.transform.SetSiblingIndex(OpenCloseStoreBtn.Component.transform.GetSiblingIndex() - 2);
+            if (ClientDB.shopOpen)
+            {
+                OpenCloseStoreBtn.Component.GetComponentInChildren<Text>().text = "Close Store";
+                RuntimeHelper.SetColorBlock(OpenCloseStoreBtn.Component,
                        new Color(33 / 255f, 47 / 255f, 60 / 255f),
                         new Color(40 / 255f, 55 / 255f, 71 / 255f),
                         new Color(93 / 255f, 109 / 255f, 126 / 255f));
-            closeStoreBtn.OnClick += CloseAction;
-
-            // OPEN BTN
-            ButtonRef openStoreBtn = UIFactory.CreateButton(closeHolder.gameObject, "OpenStoreBtn", "Open Store", new Color(0.3f, 0.2f, 0.2f));
-            UIFactory.SetLayoutElement(openStoreBtn.Component.gameObject, minHeight: 25, minWidth: 180);
-            openStoreBtn.Component.transform.SetSiblingIndex(openStoreBtn.Component.transform.GetSiblingIndex() - 3);
-            RuntimeHelper.SetColorBlock(openStoreBtn.Component,
-                       new Color(17 / 255f, 122 / 255f, 101 / 255f),
-                        new Color(19 / 255f, 141 / 255f, 117 / 255f),
-                        new Color(22 / 255f, 160 / 255f, 133 / 255f));
-            openStoreBtn.OnClick += OpenAction;
+            }
+            else
+            {
+                OpenCloseStoreBtn.Component.GetComponentInChildren<Text>().text = "Open Store";
+                RuntimeHelper.SetColorBlock(OpenCloseStoreBtn.Component,
+                      new Color(17 / 255f, 122 / 255f, 101 / 255f),
+                       new Color(19 / 255f, 141 / 255f, 117 / 255f),
+                       new Color(22 / 255f, 160 / 255f, 133 / 255f));
+            }
+            OpenCloseStoreBtn.OnClick += OpenCloseAction;
 
 
 
@@ -157,6 +162,28 @@ namespace BloodyShop.Client.UI.Panels
             var headLabel = UIFactory.CreateLabel(NavbarHolder, "resultTXT", $"Add Item to Store", TextAnchor.MiddleLeft);
             UIFactory.SetLayoutElement(headLabel.gameObject, minWidth: MinWidth, minHeight: 50);
 
+            var _contentHeaderFormNewProduct = UIFactory.CreateHorizontalGroup(this.ContentRoot, "ContentAdd", true, true, true, true, 0, default, new Color(0.1f, 0.1f, 0.1f));
+
+            // TYPE DROPDOWN LABEL
+            Text headerTypeLabel = UIFactory.CreateLabel(_contentHeaderFormNewProduct, "headerTypeDropDownLabel", $"Item Type");
+            UIFactory.SetLayoutElement(headerTypeLabel.gameObject, minWidth: 150, minHeight: 25, preferredWidth: 150, preferredHeight: 25, flexibleHeight: 0, flexibleWidth: 0);
+
+            // ITEM DROPDOWN LABEL
+            Text headerItenLabel = UIFactory.CreateLabel(_contentHeaderFormNewProduct, "headerItemDropDownLabel", $"Item");
+            UIFactory.SetLayoutElement(headerItenLabel.gameObject, minWidth: 260, minHeight: 25, preferredWidth: 280, preferredHeight: 25, flexibleHeight: 0, flexibleWidth: 0);
+
+            // PRICE INPUT LABEL
+            Text headerPriceLabel = UIFactory.CreateLabel(_contentHeaderFormNewProduct, "headerPriceInputLabel", $"Price");
+            UIFactory.SetLayoutElement(headerPriceLabel.gameObject, minWidth: 40, minHeight: 25, preferredWidth: 40, preferredHeight: 25, flexibleHeight: 0, flexibleWidth: 0);
+
+            // STOCK INPUT LABEL
+            Text headerStockLabel = UIFactory.CreateLabel(_contentHeaderFormNewProduct, "headerPriceInputLabel", $"Price");
+            UIFactory.SetLayoutElement(headerStockLabel.gameObject, minWidth: 40, minHeight: 25, preferredWidth: 40, preferredHeight: 25, flexibleHeight: 0, flexibleWidth: 0);
+
+            // BUTTON LABEL
+            Text headerButtonLabel = UIFactory.CreateLabel(_contentHeaderFormNewProduct, "headerButtontLabel", $"");
+            UIFactory.SetLayoutElement(headerButtonLabel.gameObject, minWidth: 80, minHeight: 25, preferredWidth: 80, preferredHeight: 25, flexibleHeight: 0, flexibleWidth: 0);
+
             var _contentNewProduct = UIFactory.CreateHorizontalGroup(this.ContentRoot, "ContentAdd", true, true, true, true, 0, default, new Color(0.1f, 0.1f, 0.1f));
 
             itemsType = ClientDB.getAllTypes();
@@ -201,8 +228,6 @@ namespace BloodyShop.Client.UI.Panels
 
             this.SetActive(true);
 
-
-
         }
 
         public void CreateListProductsLayou()
@@ -211,7 +236,7 @@ namespace BloodyShop.Client.UI.Panels
             UnityEngine.Object.Destroy(alertTXT, 0.2f);
             var items = ItemsDB.GetProductList();
 
-            var index = 1;
+            var index = items.Count;
             productsListLayers = new List<GameObject>();
             foreach (var item in items)
             {
@@ -239,7 +264,7 @@ namespace BloodyShop.Client.UI.Panels
                     UIFactory.SetLayoutElement(itemPrice.gameObject, minWidth: 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 100);
 
                     // DELETE BTN
-                    ButtonRef deleteBtn = UIFactory.CreateButton(_contentProduct, "deleteItemBtn-" + index, "Detele", new Color(0.3f, 0.2f, 0.2f));
+                    ButtonRef deleteBtn = UIFactory.CreateButton(_contentProduct, "deleteItemBtn-" + index, "Delete", new Color(0.3f, 0.2f, 0.2f));
                     UIFactory.SetLayoutElement(deleteBtn.Component.gameObject, minWidth: 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 100);
                     deleteBtn.ButtonText.color = new Color(44 / 255f, 62 / 255f, 80 / 255f);
                     RuntimeHelper.SetColorBlock(deleteBtn.Component,
@@ -249,7 +274,7 @@ namespace BloodyShop.Client.UI.Panels
                     deleteBtn.OnClick += DeleteAction;
 
                     UIFactory.SetLayoutElement(_contentProduct, flexibleHeight: 0, minHeight: 60, preferredHeight: 60, flexibleWidth: 0);
-                    index++;
+                    index--;
                     productsListLayers.Add(_contentProduct);
 
                     // FAKE LINE
@@ -263,24 +288,29 @@ namespace BloodyShop.Client.UI.Panels
 
         private void TypeDropdownValueChanged(int value)
         {
-            var nameType = itemsType[value];
-            itemsGame = ClientDB.getAllItemsByType(nameType);
-            dropdownitem.ClearOptions();
-            dropdownitem.options.Clear();
-            dropdownitem.Hide();
-            foreach (var item in itemsGame)
+            if(value != 0)
             {
-                dropdownitem.options.Add(new Dropdown.OptionData(item));
-            }
-            dropdownitem.Show();
-
-
+                var nameType = itemsType[value];
+                itemsGame = ClientDB.getAllItemsByType(nameType);
+                dropdownitem.Hide();
+                dropdownitem.ClearOptions();
+                dropdownitem.options.Clear();
+                foreach (var item in itemsGame)
+                {
+                    dropdownitem.options.Add(new Dropdown.OptionData(item));
+                }
+                dropdownitem.value = 0;
+            } 
         }
 
         private void ItemDropdownValueChanged(int value)
         {
-            var nameArray = itemsGame[value].Split("| ");
-            itemNewAdd = Int32.Parse(nameArray[1]);
+            dropdowntype.Hide();
+            if (value != 0)
+            {
+                var nameArray = itemsGame[value].Split("| ");
+                itemNewAdd = Int32.Parse(nameArray[1]);
+            }
         }
 
         private void SaveAction()
@@ -337,17 +367,31 @@ namespace BloodyShop.Client.UI.Panels
         }
 
 
-        private void OpenAction()
+        private void OpenCloseAction()
         {
-            ClientOpenMessageAction.Send();
+            if (ClientDB.shopOpen)
+            {
+                ClientDB.shopOpen = false;
+                OpenCloseStoreBtn.Component.GetComponentInChildren<Text>().text = "Open Store";
+                RuntimeHelper.SetColorBlock(OpenCloseStoreBtn.Component,
+                      new Color(17 / 255f, 122 / 255f, 101 / 255f),
+                       new Color(19 / 255f, 141 / 255f, 117 / 255f),
+                       new Color(22 / 255f, 160 / 255f, 133 / 255f));
+
+                ClientCloseMessageAction.Send();
+            } else
+            {
+                ClientDB.shopOpen = true;
+                OpenCloseStoreBtn.Component.GetComponentInChildren<Text>().text = "Close Store";
+                RuntimeHelper.SetColorBlock(OpenCloseStoreBtn.Component,
+                       new Color(33 / 255f, 47 / 255f, 60 / 255f),
+                        new Color(40 / 255f, 55 / 255f, 71 / 255f),
+                        new Color(93 / 255f, 109 / 255f, 126 / 255f));
+                
+                ClientOpenMessageAction.Send();
+            }
+            
         }
 
-
-        private void CloseAction()
-        {
-            ClientCloseMessageAction.Send();
-        }
-
-        // override other methods as desired
     }
 }

@@ -139,7 +139,7 @@ namespace BloodyShop.Client.UI.Panels
         {
             var items = ItemsDB.GetProductList();
 
-            var index = 1;
+            var index = items.Count;
 
             Object.Destroy(alertTXT, 0.2f);
 
@@ -182,7 +182,7 @@ namespace BloodyShop.Client.UI.Panels
                     UIFactory.SetLayoutElement(_contentProduct, flexibleHeight: 0, minHeight: 60, preferredHeight: 60, flexibleWidth: 0);
                     productsListLayers.Add(_contentProduct);
 
-                    index++;
+                    index--;
 
                     // FAKE LINE
                     var _separator = UIFactory.CreateHorizontalGroup(contentScroll, "Separator-" + index, true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));

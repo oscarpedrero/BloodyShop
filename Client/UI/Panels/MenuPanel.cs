@@ -1,7 +1,5 @@
 ﻿using BloodyShop.Client.DB;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using BloodyShop.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 using UniverseLib;
@@ -21,6 +19,7 @@ namespace BloodyShop.Client.UI.Panels
             Bottom
         }
 
+
         public static VerticalAnchor NavbarAnchor = VerticalAnchor.Top;
 
         private static readonly Vector2 NAVBAR_DIMENSIONS = new(1020f, 35f);
@@ -32,9 +31,9 @@ namespace BloodyShop.Client.UI.Panels
 
         public override string Name => "BloodyShopMenu";
 
-        public override int MinWidth => 350;
+        public override int MinWidth => 560;
 
-        public override int MinHeight => 35;
+        public override int MinHeight => 40;
 
         public override Vector2 DefaultAnchorMin => new Vector2(0.5f, 1f);
 
@@ -51,6 +50,7 @@ namespace BloodyShop.Client.UI.Panels
         public ButtonRef closeBtn { get; private set; }
         public ButtonRef shopBtn { get; private set; }
         public ButtonRef adminBtn { get; private set; }
+        public Text stateTXT { get; private set; }
         public bool active { get; private set; }
 
         protected override void ConstructPanelContent()
@@ -65,10 +65,10 @@ namespace BloodyShop.Client.UI.Panels
 
             SetNavBarAnchor();
 
-            // Title TXT
-            string titleTxt = $"<i><color=white>{ClientDB.shopName}</color></i>";
-            Text title = UIFactory.CreateLabel(navbarPanel, "Title", titleTxt, TextAnchor.MiddleLeft, default, true, 14);
-            UIFactory.SetLayoutElement(title.gameObject, minWidth: 80, flexibleWidth: 0);
+            // SHOP NAME TXT
+            var shopNameTXT = UIFactory.CreateLabel(navbarPanel, "Title", $"<i>{FontColorChat.White(ClientDB.shopName)}</i>", TextAnchor.MiddleLeft, default, true, 14);
+            UIFactory.SetLayoutElement(shopNameTXT.gameObject, minWidth: 160, minHeight: 40, preferredWidth: 160, preferredHeight: 50, flexibleWidth: 0, flexibleHeight: 0);
+
 
             //spacer
             GameObject spacerOne = UIFactory.CreateUIObject("Spacer", navbarPanel);
@@ -76,45 +76,29 @@ namespace BloodyShop.Client.UI.Panels
 
             // Shop BTN
             shopBtn = UIFactory.CreateButton(navbarPanel, "ShopButton", "Shop");
-            UIFactory.SetLayoutElement(shopBtn.Component.gameObject, minHeight: 25, minWidth: 60, flexibleWidth: 0);
-            RuntimeHelper.SetColorBlock(shopBtn.Component, new Color(0 / 255f, 153 / 255f, 255 / 255f),
-                new Color(0 / 255f, 138 / 255f, 230 / 255f), new Color(51 / 255f, 173 / 255f, 255 / 255f));
-            shopBtn.OnClick += OpenShopPanel;
+            UIFactory.SetLayoutElement(shopBtn.Component.gameObject, minWidth: 160, minHeight: 40, preferredWidth: 160, preferredHeight: 40, flexibleWidth: 0, flexibleHeight: 0);
 
-            if (!ClientDB.shopOpen)
-            {
-                shopBtn.Enabled = false;
-                shopBtn.OnClick -= OpenShopPanel;
-            }
+            configShopButtonPanel();
 
             if (ClientDB.userModel.IsAdmin)
             {
                 // Admin BTN
-                adminBtn = UIFactory.CreateButton(navbarPanel, "AdminButton", "Admin");
-                UIFactory.SetLayoutElement(adminBtn.Component.gameObject, minHeight: 25, minWidth: 60, flexibleWidth: 0);
+                adminBtn = UIFactory.CreateButton(navbarPanel, "AdminButton", "Admin Tool");
+                UIFactory.SetLayoutElement(adminBtn.Component.gameObject, minWidth: 160, minHeight: 40, preferredWidth: 160, preferredHeight: 40, flexibleWidth: 0, flexibleHeight: 0);
                 RuntimeHelper.SetColorBlock(adminBtn.Component, new Color(51 / 255f, 153 / 255f, 51 / 255f),
                    new Color(45 / 255f, 134 / 255f, 45 / 255f), new Color(64 / 255f, 191 / 255f, 64 / 255f));
                 adminBtn.OnClick += OpenAdminPanel;
 
-                //spacer
-                GameObject spacerTwo = UIFactory.CreateUIObject("Spacer", navbarPanel);
-                UIFactory.SetLayoutElement(spacerTwo, minWidth: 30);
-
-            } else
-            {
-                //spacer
-                GameObject spacerTwo = UIFactory.CreateUIObject("Spacer", navbarPanel);
-                UIFactory.SetLayoutElement(spacerTwo, minWidth: 90);
             }
 
             
 
             // close BTNH
-            closeBtn = UIFactory.CreateButton(navbarPanel, "CloseButton", "Close");
+            /*closeBtn = UIFactory.CreateButton(navbarPanel, "CloseButton", "Close");
             UIFactory.SetLayoutElement(closeBtn.Component.gameObject, minHeight: 25, minWidth: 60, flexibleWidth: 0);
             RuntimeHelper.SetColorBlock(closeBtn.Component, new Color(0.63f, 0.32f, 0.31f),
                 new Color(0.81f, 0.25f, 0.2f), new Color(0.6f, 0.18f, 0.16f));
-            closeBtn.OnClick += CloseMenuPanel;
+            closeBtn.OnClick += CloseMenuPanel;*/
 
         }
 
@@ -140,14 +124,13 @@ namespace BloodyShop.Client.UI.Panels
 
         public void closeShop()
         {
-            shopBtn.Enabled = false;
-            shopBtn.OnClick -= OpenShopPanel;
+            configShopButtonPanel();
         }
 
         public void openShop()
         {
-            shopBtn.Enabled = true;
-            shopBtn.OnClick += OpenShopPanel;
+
+            configShopButtonPanel();
         }
 
         private static void OpenShopPanel()
@@ -163,6 +146,28 @@ namespace BloodyShop.Client.UI.Panels
         private static void CloseMenuPanel()
         {
             UIManager.CloseMenuPanel();
+        }
+
+        private void configShopButtonPanel()
+        {
+           
+
+            if (!ClientDB.shopOpen)
+            {
+                shopBtn.Component.GetComponentInChildren<Text>().text = "Shop Closed";
+                RuntimeHelper.SetColorBlockAuto(shopBtn.Component,
+                  new Color(84 / 255f, 153 / 255f, 199 / 255f)
+                  );
+                shopBtn.OnClick -= OpenShopPanel;
+            } else
+            {
+                shopBtn.Component.GetComponentInChildren<Text>().text = "Shop Opened";
+                RuntimeHelper.SetColorBlockAuto(shopBtn.Component,
+                   new Color(36 / 255f, 113 / 255f, 163 / 255f)
+                   );
+                shopBtn.OnClick += OpenShopPanel;
+            }
+           
         }
 
     }

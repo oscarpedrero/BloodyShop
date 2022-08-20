@@ -62,6 +62,7 @@ namespace BloodyShop
         {
             NetworkMessages.RegisterMessage();
             ClientDB.allItemsGame = GameData.Items.Prefabs;
+            ClientDB.generateTypesOfItems();
         }
 
     }

@@ -10,42 +10,49 @@ namespace BloodyShop.Client.DB
     {
         public static bool serverHaveMod { get; set; } = false;
         public static List<ItemModel> allItemsGame { get; set; }
+        public static string[] allItemsTypeGame { get; set; }
         public static string shopName { get; set; }
         public static bool shopOpen { get; set; } = true;
         public static string prefix { get; set; }
         public static UserModel userModel { get; set; }
 
-        public static string[] getAllTypes()
+        public static void generateTypesOfItems()
         {
-            var allTypesItems = from item in allItemsGame
-                                group item by item.ItemType into itemGroup
-                                orderby itemGroup.ToString() ascending
-                                select itemGroup;
-
-            string[] allTypesItemsArray = new string[allTypesItems.Count()-2];
-            var index = 0;
-            foreach (var itemGroup in allTypesItems)
+            
+            var allTypesItems =allItemsGame.GroupBy(i => i.ItemType)
+                .Select(grp => grp.FirstOrDefault())    
+                .OrderBy(i => i.ItemType).ToArray();
+            
+            allItemsTypeGame = new string[allTypesItems.Count() - 1];
+            allItemsTypeGame[0] = "Select Type";
+            var index = 1;
+            foreach (var item in allTypesItems)
             {
-                if(itemGroup.Key.ToString() == "VBloodEssence" || itemGroup.Key.ToString() == "Memory" )
+                if (item.ItemType.ToString() == "VBloodEssence" || item.ItemType.ToString() == "Memory")
                 {
                     continue;
                 }
-                allTypesItemsArray[index] = itemGroup.Key.ToString();
+                allItemsTypeGame[index] = item.ItemType.ToString();
                 index++;
             }
+            
 
-            return allTypesItemsArray;
+        }
+        public static string[] getAllTypes()
+        {
+            return allItemsTypeGame;
         }
 
         public static string[] getAllItemsByType(string type)
         {
             var allItemsByType = from item in allItemsGame
                                 where item.ItemType.ToString() == type
-                                orderby item.ItemType.ToString() ascending
+                                orderby item.Name.ToString() ascending
                                 select item;
 
-            string[] allItemsByTypeArray = new string[allItemsByType.Count()];
-            var index = 0;
+            string[] allItemsByTypeArray = new string[allItemsByType.Count()+1];
+            allItemsByTypeArray[0] = "Select Itemm";
+            var index = 1;
             foreach (var item in allItemsByType)
             {
                 allItemsByTypeArray[index] = item.Name + " | " + item.Internals.PrefabGUID?.GuidHash;

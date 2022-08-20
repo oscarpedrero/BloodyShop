@@ -14,6 +14,7 @@ namespace BloodyShop.DB
         public static bool setProductList(List<ItemShopModel> list)
         {
             ProductList = list;
+            ProductList.Reverse();
             return true;
         }
 

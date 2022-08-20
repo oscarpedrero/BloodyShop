@@ -1,9 +1,4 @@
-﻿using BloodyShop.Client.Network;
-using BloodyShop.Client.UI;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Unity.Entities;
+﻿using Unity.Entities;
 
 namespace BloodyShop.Client
 {
@@ -15,7 +10,6 @@ namespace BloodyShop.Client
         public static void ClientEvents_OnGameDataInitialized(World world)
         {
             UIInit = false;
-            Plugin.Logger.LogInfo("Init send message to server");
             
         }
     }
