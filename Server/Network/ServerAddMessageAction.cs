@@ -23,13 +23,13 @@ namespace BloodyShop.Server.Network
 
             var prefabGUID = msg.PrefabGUID;
             var price = msg.Price;
-            var quantity = msg.Quantity;
+            var stock = msg.Stock;
 
-            Plugin.Logger.LogInfo($"{prefix} add {prefabGUID} {price} {quantity}");
+            Plugin.Logger.LogInfo($"{prefix} add {prefabGUID} {price} {stock}");
 
-            var vchatEvent = new VChatEvent(fromCharacter.User, fromCharacter.Character,$"{prefix} add {prefabGUID} {price} {quantity}", new ChatMessageType(), user);
+            var vchatEvent = new VChatEvent(fromCharacter.User, fromCharacter.Character,$"{prefix} add {prefabGUID} {price} {stock}", new ChatMessageType(), user);
 
-            string[] args = new string[] { prefabGUID, price, quantity };
+            string[] args = new string[] { prefabGUID, price, stock };
 
             var ctx = new Context(prefix, vchatEvent, args);
 

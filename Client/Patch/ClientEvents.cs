@@ -8,39 +8,18 @@ using Unity.Entities;
 
 namespace BloodyShop.Client.Patch;
 
-public delegate void OnClientGameDataInitializedEventHandler(World world);
 public delegate void OnClientConnectedEventHandler();
 public delegate void OnClientDisconectedEventHandler();
 
 
 public static class ClientEvents
 {
-    public static event OnClientGameDataInitializedEventHandler OnGameDataInitialized;
     public static event OnClientConnectedEventHandler OnClientConnected;
     public static event OnClientDisconectedEventHandler OnClientDisconected;
 
-    private static bool _onGameDataInitializedTriggered;
     private static bool _onUserDisconectTriggered;
     private static bool _onUserConnectedtTriggered;
-    [HarmonyPatch(typeof(GameDataManager), "OnUpdate")]
-    [HarmonyPostfix]
-    private static void GameDataManagerOnUpdatePostfix(GameDataManager __instance)
-    {
-        if (_onGameDataInitializedTriggered)
-        {
-            return;
-        }
-        try
-        {
-            if (!__instance.GameDataInitialized) return;
-            _onGameDataInitializedTriggered= true;
-            OnGameDataInitialized?.Invoke(__instance.World);
-        }
-        catch (Exception e)
-        {
-            Plugin.Logger.LogError(e);
-        }
-    }
+
 
     [HarmonyPatch(typeof(ClientBootstrapSystem), nameof(ClientBootstrapSystem.OnUpdate))]
     [HarmonyPrefix]
@@ -78,7 +57,6 @@ public static class ClientEvents
             if (__instance.ConnectionStatus.ToString() != "Connected") return;
             _onUserDisconectTriggered = true;
             _onUserConnectedtTriggered = false;
-            _onGameDataInitializedTriggered = false;
             OnClientDisconected?.Invoke();
         }
         catch (Exception e)

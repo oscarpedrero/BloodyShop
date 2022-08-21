@@ -18,6 +18,7 @@ namespace BloodyShop.Client.Network
             UIManager.ActiveShopPanel = false;
             ClientDB.shopOpen = false;
             UIManager.MenuPanel?.closeShop();
+            UIManager.AdminMenuPanel?.closeShop();
 
             Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] CloseSerializedMessage");
         }

@@ -11,7 +11,7 @@ namespace BloodyShop.Network.Messages
 
         public string Price;
 
-        public string Quantity;
+        public string Stock;
 
         // You need to implement an empty constructor for when your message is
         // received but not yet serialized.
@@ -22,7 +22,7 @@ namespace BloodyShop.Network.Messages
         {
             PrefabGUID = reader.ReadString(Allocator.Temp);
             Price = reader.ReadString(Allocator.Temp);
-            Quantity = reader.ReadString(Allocator.Temp);
+            Stock = reader.ReadString(Allocator.Temp);
         }
 
         // Write your contents to the writer.
@@ -30,7 +30,7 @@ namespace BloodyShop.Network.Messages
         {
             writer.Write(PrefabGUID);
             writer.Write(Price);
-            writer.Write(Quantity);
+            writer.Write(Stock);
         }
     }
 }

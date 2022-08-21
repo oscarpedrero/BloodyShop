@@ -98,5 +98,15 @@ namespace BloodyShop.Server.Network
             );
         }
 
+        public static void UnregisterMessages()
+        {
+            VNetworkRegistry.Unregister<ListSerializedMessage>();
+            VNetworkRegistry.Unregister<BuySerializedMessage>();
+            VNetworkRegistry.Unregister<DeleteSerializedMessage>();
+            VNetworkRegistry.Unregister<OpenSerializedMessage>();
+            VNetworkRegistry.Unregister<CloseSerializedMessage>();
+            VNetworkRegistry.Unregister<AddSerializedMessage>();
+        }
+
     }
 }

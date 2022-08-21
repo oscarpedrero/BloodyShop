@@ -6,7 +6,7 @@ using UniverseLib;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 
-namespace BloodyShop.Client.UI.Panels
+namespace BloodyShop.Client.UI.Panels.User
 {
 
     public class MenuPanel : UniverseLib.UI.Panels.PanelBase
@@ -31,7 +31,7 @@ namespace BloodyShop.Client.UI.Panels
 
         public override string Name => "BloodyShopMenu";
 
-        public override int MinWidth => 680;
+        public override int MinWidth => 360;
 
         public override int MinHeight => 40;
 
@@ -39,7 +39,7 @@ namespace BloodyShop.Client.UI.Panels
 
         public override Vector2 DefaultAnchorMax => new Vector2(0.5f, 1f);
 
-        public override Vector2 DefaultPosition => new Vector2(0 - (MinWidth/2), Screen.height);
+        public override Vector2 DefaultPosition => new Vector2(0 - MinWidth / 2, Screen.height);
 
         public override bool CanDragAndResize => false;
 
@@ -80,56 +80,12 @@ namespace BloodyShop.Client.UI.Panels
 
             configShopButtonPanel();
 
-            if (ClientDB.userModel.IsAdmin)
-            {
-                // Admin BTN
-                adminBtn = UIFactory.CreateButton(navbarPanel, "AdminButton", "Admin Tool");
-                UIFactory.SetLayoutElement(adminBtn.Component.gameObject, minWidth: 160, minHeight: 40, preferredWidth: 160, preferredHeight: 40, flexibleWidth: 0, flexibleHeight: 0);
-                RuntimeHelper.SetColorBlock(adminBtn.Component, new Color(51 / 255f, 153 / 255f, 51 / 255f),
-                   new Color(45 / 255f, 134 / 255f, 45 / 255f), new Color(64 / 255f, 191 / 255f, 64 / 255f));
-                adminBtn.OnClick += OpenAdminPanel;
-
-                // Admin BTN
-                adminBtn = UIFactory.CreateButton(navbarPanel, "AdminButton", "Open Shop");
-                UIFactory.SetLayoutElement(adminBtn.Component.gameObject, minWidth: 160, minHeight: 40, preferredWidth: 160, preferredHeight: 40, flexibleWidth: 0, flexibleHeight: 0);
-                RuntimeHelper.SetColorBlock(adminBtn.Component, new Color(51 / 255f, 153 / 255f, 51 / 255f),
-                   new Color(45 / 255f, 134 / 255f, 45 / 255f), new Color(64 / 255f, 191 / 255f, 64 / 255f));
-                adminBtn.OnClick += OpenAdminPanel;
-
-                // Admin BTN
-                adminBtn = UIFactory.CreateButton(navbarPanel, "AdminButton", "Add Item");
-                UIFactory.SetLayoutElement(adminBtn.Component.gameObject, minWidth: 160, minHeight: 40, preferredWidth: 160, preferredHeight: 40, flexibleWidth: 0, flexibleHeight: 0);
-                RuntimeHelper.SetColorBlock(adminBtn.Component, new Color(51 / 255f, 153 / 255f, 51 / 255f),
-                   new Color(45 / 255f, 134 / 255f, 45 / 255f), new Color(64 / 255f, 191 / 255f, 64 / 255f));
-                adminBtn.OnClick += OpenAdminPanel;
-
-                // Admin BTN
-                adminBtn = UIFactory.CreateButton(navbarPanel, "AdminButton", "Delete Item");
-                UIFactory.SetLayoutElement(adminBtn.Component.gameObject, minWidth: 160, minHeight: 40, preferredWidth: 160, preferredHeight: 40, flexibleWidth: 0, flexibleHeight: 0);
-                RuntimeHelper.SetColorBlock(adminBtn.Component, new Color(51 / 255f, 153 / 255f, 51 / 255f),
-                   new Color(45 / 255f, 134 / 255f, 45 / 255f), new Color(64 / 255f, 191 / 255f, 64 / 255f));
-                adminBtn.OnClick += OpenAdminPanel;
-
-            }
-
-            
-
             // close BTNH
             /*closeBtn = UIFactory.CreateButton(navbarPanel, "CloseButton", "Close");
             UIFactory.SetLayoutElement(closeBtn.Component.gameObject, minHeight: 25, minWidth: 60, flexibleWidth: 0);
             RuntimeHelper.SetColorBlock(closeBtn.Component, new Color(0.63f, 0.32f, 0.31f),
                 new Color(0.81f, 0.25f, 0.2f), new Color(0.6f, 0.18f, 0.16f));
             closeBtn.OnClick += CloseMenuPanel;*/
-
-        }
-
-        private static void ConstructUserContent()
-        {
-
-        }
-
-        private static void ConstructAdminContent()
-        {
 
         }
 
@@ -169,9 +125,9 @@ namespace BloodyShop.Client.UI.Panels
             UIManager.OpenShopPanel();
         }
 
-        private static void OpenAdminPanel()
+        private static void OpenMenuAdminPanel()
         {
-            UIManager.OpenAdminPanel();
+            UIManager.OpenAdminMenuPanel();
         }
 
         private static void CloseMenuPanel()
@@ -181,7 +137,7 @@ namespace BloodyShop.Client.UI.Panels
 
         private void configShopButtonPanel()
         {
-           
+
 
             if (!ClientDB.shopOpen)
             {
@@ -190,7 +146,8 @@ namespace BloodyShop.Client.UI.Panels
                   new Color(84 / 255f, 153 / 255f, 199 / 255f)
                   );
                 shopBtn.OnClick -= OpenShopPanel;
-            } else
+            }
+            else
             {
                 shopBtn.Component.GetComponentInChildren<Text>().text = "Shop Opened";
                 RuntimeHelper.SetColorBlockAuto(shopBtn.Component,
@@ -198,7 +155,7 @@ namespace BloodyShop.Client.UI.Panels
                    );
                 shopBtn.OnClick += OpenShopPanel;
             }
-           
+
         }
 
     }

@@ -5,6 +5,8 @@ using BloodyShop.Server;
 using BloodyShop.Server.Hooks;
 using BloodyShop.Server.Network;
 using BloodyShop.Client.UI;
+using BloodyShop.Client.DB;
+using VRising.GameData;
 
 namespace BloodyShop
 {
@@ -24,7 +26,6 @@ namespace BloodyShop
             UIManager.Initialize();
             KeyBinds.Initialize();
             
-            ClientEvents.OnGameDataInitialized += ClientMod.ClientEvents_OnGameDataInitialized;
             ClientEvents.OnClientConnected += ClientMod.ClientEvents_OnClientUserConnected;
             ClientEvents.OnClientDisconected += ClientMod.ClientEvents_OnClientUserDisconnected;
             KeyBinds.OnKeyPressed += KeyBindPressed.OnKeyPressedOpenPanel;
@@ -38,7 +39,7 @@ namespace BloodyShop
 
         public static void onClientGameInitialized()
         {
-            
+            NetworkMessages.RegisterMessage();
         }
 
         public static void serverUnloadMod()
@@ -48,7 +49,6 @@ namespace BloodyShop
 
         public static void clientUnloadMod()
         {
-            ClientEvents.OnGameDataInitialized -= ClientMod.ClientEvents_OnGameDataInitialized;
             ClientEvents.OnClientConnected -= ClientMod.ClientEvents_OnClientUserConnected;
             ClientEvents.OnClientDisconected -= ClientMod.ClientEvents_OnClientUserDisconnected;
             KeyBinds.OnKeyPressed -= KeyBindPressed.OnKeyPressedOpenPanel;
@@ -61,7 +61,7 @@ namespace BloodyShop
 
         public static void onClientGameDataOnInitialize()
         {
-            NetworkMessages.RegisterMessage();
+            ClientMod.ClientEvents_OnGameDataInitialized();
         }
 
     }

@@ -19,7 +19,7 @@ namespace BloodyShop.Client.Network
                 msg = new AddSerializedMessage();
                 msg.PrefabGUID = "0";
                 msg.Price = "0";
-                msg.Quantity = "0";
+                msg.Stock = "0";
             }
 
             VNetwork.SendToServer(msg);

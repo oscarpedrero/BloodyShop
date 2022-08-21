@@ -16,13 +16,21 @@ namespace BloodyShop.Client.Network
 
         public static void Received(ListSerializedMessage msg)
         {
+            Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] ListSerializedMessage {msg.ItemsJson} - {msg.CoinGUID} - {msg.ShopName} - {msg.ShopOpen} - {msg.ShopOpen}");
+
             var productList = JsonSerializer.Deserialize<List<ItemShopModel>>(msg.ItemsJson);
             ItemsDB.setProductList(productList);
             ShareDB.setCoinGUID(Int32.Parse(msg.CoinGUID));
             ClientDB.shopName = msg.ShopName;
             ClientDB.prefix = "!" + ClientDB.shopName.ToLower().Replace(" ", "");
+            ClientDB.userModel = GameData.Users.GetCurrentUser();
+            if(ClientDB.itemModels.Count == 0)
+            {
+                ClientDB.itemModels = GameData.Items.Prefabs;
+            }
+            
 
-            if(msg.ShopOpen == "1")
+            if (msg.ShopOpen == "1")
             {
                 ClientDB.shopOpen = true;
 
@@ -39,29 +47,31 @@ namespace BloodyShop.Client.Network
             {
                 if (ClientDB.shopOpen)
                 {
-                    UIManager.MenuPanel.openShop();
+                    UIManager.MenuPanel?.openShop();
+                    UIManager.AdminMenuPanel?.openShop();
                 } else
                 {
-                    UIManager.MenuPanel.closeShop();
+                    UIManager.MenuPanel?.closeShop();
+                    UIManager.AdminMenuPanel?.closeShop();
                 }
                 if (UIManager.ShopPanel?.productsListLayers.Count > 0)
                 {
                     UIManager.ShopPanel?.RefreshData();
                 }
 
-                if (UIManager.AdminPanel?.productsListLayers.Count > 0)
+                if (UIManager.DeleteItemPanel?.productsListLayers.Count > 0)
                 {
-                    UIManager.AdminPanel?.RefreshData();
+                    UIManager.DeleteItemPanel?.RefreshData();
                 }
                 UIManager.ShopPanel?.CreateListProductsLayou();
-                UIManager.AdminPanel?.CreateListProductsLayou();
+                UIManager.DeleteItemPanel?.CreateListProductsLayou();
             }
-            Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] ListSerializedMessage {msg.ItemsJson} - {msg.CoinGUID} - {msg.ShopName} - {msg.ShopOpen} - {msg.ShopOpen}");
+            
         }
 
         public static void Send(ListSerializedMessage msg = null)
         {
-
+            Plugin.Logger.LogInfo($"[CLIENT] [SEND] ListSerializedMessage");
             if (msg == null)
             {
                 msg = new ListSerializedMessage();
@@ -69,7 +79,7 @@ namespace BloodyShop.Client.Network
             }
 
             VNetwork.SendToServer(msg);
-            Plugin.Logger.LogInfo($"[CLIENT] [SEND] ListSerializedMessage  - {msg.ItemsJson}");
+            
         }
 
     }

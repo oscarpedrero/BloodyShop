@@ -10,6 +10,7 @@ using UnityEngine;
 using Wetstone.API;
 using System.Linq;
 using BloodyShop.Client.UI.Panels;
+using System;
 
 namespace BloodyShop
 {
@@ -94,8 +95,7 @@ namespace BloodyShop
             Log.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
 
             GameData.OnInitialize += GameDataOnInitialize;
-
-            
+            GameData.OnDestroy += GameDataOnDestroy;
 
         }
 
@@ -113,32 +113,35 @@ namespace BloodyShop
             }
             
             _harmony.UnpatchSelf();
+            GameData.OnDestroy -= GameDataOnDestroy;
             GameData.OnInitialize -= GameDataOnInitialize;
             return true;
         }
 
-        public void LoadGameData()
-        {
-            GameData.OnInitialize += GameDataOnInitialize;
-        }
-
-        public void unloadGameData()
-        {
-            GameData.OnInitialize -= GameDataOnInitialize;
-        }
-
         private static void GameDataOnInitialize(World world)
         {
-            Logger.LogWarning("GameData Init");
             if (VWorld.IsServer)
             {
                 BloodyShop.onServerGameDataOnInitialize();
             }
             else
             {
-                BloodyShop.onClientGameDataOnInitialize();
+                try
+                {
+                    BloodyShop.onClientGameDataOnInitialize();
+                } catch ( Exception error)
+                {
+                    Logger.LogInfo($"Error GameDataOnInitialize {error.Message}");
+                }
+                
             }
         }
+
+        private static void GameDataOnDestroy()
+        {
+            Logger.LogInfo("GameDataOnDestroy");
+        }
+
 
         private void InitConfigServer()
         {

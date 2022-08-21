@@ -4,10 +4,9 @@ using UniverseLib;
 using UnityEngine;
 using System;
 using BloodyShop.Client.Network;
-using BloodyShop.Client.UI.Panels;
 using BloodyShop.Client.DB;
-using BloodyShop.DB;
-using VRising.GameData;
+using BloodyShop.Client.UI.Panels.Admin;
+using BloodyShop.Client.UI.Panels.User;
 
 namespace BloodyShop.Client.UI;
 
@@ -33,11 +32,15 @@ internal class UIManager
 
     public static UIBase UiBase { get; private set; }
     public static ShopPanel ShopPanel { get; private set; }
-    public static AdminPanel AdminPanel { get; private set; }
+    public static AddItemPanel AddItemPanel { get; private set; }
+    public static DeleteItemPanel DeleteItemPanel { get; private set; }
     public static MenuPanel MenuPanel { get; private set; }
+    public static AdminMenuPanel AdminMenuPanel { get; private set; }
 
     public static bool ActiveShopPanel { get;  set; }
-    public static bool ActiveAdminPanel { get;  set; }
+    public static bool ActiveAddItemPanel { get;  set; }
+    public static bool ActiveDeleteItemPanel { get;  set; }
+    public static bool ActiveAdminMenuPanel { get;  set; }
     public static int SizeOfProdutcs { get;  set; }
 
     static void OnInitialized()
@@ -45,12 +48,19 @@ internal class UIManager
         Int32 unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
         UiBase = UniversalUI.RegisterUI(unixTimestamp.ToString(), UiUpdate);
         ActiveShopPanel = false;
-        ActiveAdminPanel = false;
+        ActiveDeleteItemPanel = false;
+        ActiveAdminMenuPanel = false;
     }
 
     public static void CreateMenuPanel()
     {
-        MenuPanel = new MenuPanel(UiBase);
+        if (ClientDB.userModel.IsAdmin)
+        {
+            AdminMenuPanel = new AdminMenuPanel(UiBase);
+        } else
+        {
+            MenuPanel = new MenuPanel(UiBase);
+        }
     }
 
     public static void OpenShopPanel()
@@ -70,18 +80,52 @@ internal class UIManager
         
     }
 
-    public static void OpenAdminPanel()
+    public static void OpenAddItemPanel()
     {
         if (ClientDB.userModel.IsAdmin)
         {
-            if (ActiveAdminPanel)
+            if (ActiveAddItemPanel)
             {
-                AdminPanel?.Toggle();
+                AddItemPanel?.Toggle();
             }
             else
             {
-                ActiveAdminPanel = true;
-                AdminPanel = new AdminPanel(UiBase);
+                ActiveAddItemPanel = true;
+                AddItemPanel = new AddItemPanel(UiBase);
+            }
+        }
+
+    }
+
+    public static void OpenDeletePanel()
+    {
+        if (ClientDB.userModel.IsAdmin)
+        {
+            if (ActiveDeleteItemPanel)
+            {
+                DeleteItemPanel?.Toggle();
+            }
+            else
+            {
+                ActiveDeleteItemPanel = true;
+                DeleteItemPanel = new DeleteItemPanel(UiBase);
+            }
+        }
+
+    }
+
+    public static void OpenAdminMenuPanel()
+    {
+        if (ClientDB.userModel.IsAdmin)
+        {
+            if (ActiveAdminMenuPanel)
+            {
+                AdminMenuPanel?.Toggle();
+            }
+            else
+            {
+                ActiveAdminMenuPanel = true;
+                AdminMenuPanel = new AdminMenuPanel(UiBase);
             }
         }
 
@@ -89,7 +133,7 @@ internal class UIManager
     public static void RefreshDataPanel()
     {
         ShopPanel?.RefreshData();
-        AdminPanel?.RefreshData();
+        DeleteItemPanel?.RefreshData();
         ClientListMessageAction.Send();
     }
 
@@ -97,7 +141,7 @@ internal class UIManager
     {
         MenuPanel?.Toggle();
         ShopPanel?.Toggle();
-        AdminPanel?.Toggle();
+        DeleteItemPanel?.Toggle();
     }
 
     static void UiUpdate()

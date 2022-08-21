@@ -2,8 +2,6 @@
 using BloodyShop.Client.Network;
 using BloodyShop.Client.UI;
 using System;
-using Unity.Entities;
-using VRising.GameData;
 
 namespace BloodyShop.Client
 {
@@ -12,33 +10,52 @@ namespace BloodyShop.Client
 
         public static bool UIInit { get; set; }
 
-        public static void ClientEvents_OnGameDataInitialized(World world)
+        public static void ClientEvents_OnGameDataInitialized()
         {
-
+            Plugin.Logger.LogInfo("ClientEvents_OnGameDataInitialized");
             UIInit = false;
-            
+
         }
 
         public static void ClientEvents_OnClientUserConnected()
         {
-            Plugin.Logger.LogInfo("OnClientUserConnected");
-            ClientDB.userModel = GameData.Users.GetCurrentUser();
-            ClientDB.allItemsGame = GameData.Items.Prefabs;
-            ClientDB.generateTypesOfItems();
+            Plugin.Logger.LogInfo("ClientEvents_OnClientUserConnected");
             ClientListMessageAction.Send();
         }
 
         public static void ClientEvents_OnClientUserDisconnected()
         {
-            Plugin.Logger.LogInfo("OnClientUserDisconnected");
+            Plugin.Logger.LogInfo("ClientEvents_OnClientUserDisconnected");
             UIInit = false;
-            Plugin.Instance.unloadGameData();
-            Plugin.Instance.LoadGameData();
             try
             {
-                UIManager.MenuPanel?.Destroy();
-                UIManager.ShopPanel?.Destroy();
-                UIManager.AdminPanel?.Destroy();
+                if (ClientDB.userModel.IsAdmin)
+                {
+                    UIManager.AdminMenuPanel?.Destroy();
+                } else
+                {
+                    UIManager.MenuPanel?.Destroy();
+                }
+                if (UIManager.ActiveShopPanel || UIManager.ActiveDeleteItemPanel || UIManager.ActiveAddItemPanel)
+                {
+                    UIManager.ActiveShopPanel = false;
+                    try
+                    {
+                        UIManager.ShopPanel?.Destroy();
+                    }
+                    catch { }
+
+                    if (ClientDB.userModel.IsAdmin)
+                    {
+                        UIManager.ActiveDeleteItemPanel = false;
+                        UIManager.DeleteItemPanel?.Destroy();
+                    }
+                    if (ClientDB.userModel.IsAdmin)
+                    {
+                        UIManager.ActiveAddItemPanel = false;
+                        UIManager.AddItemPanel?.Destroy();
+                    }
+                }
             } catch (Exception e)
             {
                 Plugin.Logger.LogError(e);

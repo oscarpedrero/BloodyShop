@@ -11,7 +11,7 @@ using BloodyShop.Server.Network;
 
 namespace BloodyShop.Server.Commands
 {
-    [Command("add", Usage = "add <PrefabGuid> <Price> <Amount>", Description = "Add a product to the store. To know the PrefabGuid of an item you must look for the item in the following URL <#4acc45><u>https://gaming.tools/v-rising/items</u></color>")]
+    [Command("add", Usage = "add <PrefabGuid> <Price> <Stock>", Description = "Add a product to the store. To know the PrefabGuid of an item you must look for the item in the following URL <#4acc45><u>https://gaming.tools/v-rising/items</u></color>")]
     public static class Add
     {
         public static object ItemsData { get; private set; }
