@@ -177,7 +177,7 @@ namespace BloodyShop.Client.UI.Panels
             UIFactory.SetLayoutElement(headerPriceLabel.gameObject, minWidth: 40, minHeight: 25, preferredWidth: 40, preferredHeight: 25, flexibleHeight: 0, flexibleWidth: 0);
 
             // STOCK INPUT LABEL
-            Text headerStockLabel = UIFactory.CreateLabel(_contentHeaderFormNewProduct, "headerPriceInputLabel", $"Price");
+            Text headerStockLabel = UIFactory.CreateLabel(_contentHeaderFormNewProduct, "headerPriceInputLabel", $"Stock");
             UIFactory.SetLayoutElement(headerStockLabel.gameObject, minWidth: 40, minHeight: 25, preferredWidth: 40, preferredHeight: 25, flexibleHeight: 0, flexibleWidth: 0);
 
             // BUTTON LABEL
