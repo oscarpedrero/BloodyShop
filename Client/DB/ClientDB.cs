@@ -9,6 +9,7 @@ namespace BloodyShop.Client.DB
     public class ClientDB
     {
         public static bool serverHaveMod { get; set; } = false;
+        public static bool gameDataInit { get; set; } = false;
         public static List<ItemModel> allItemsGame { get; set; }
         public static string[] allItemsTypeGame { get; set; }
         public static string shopName { get; set; }

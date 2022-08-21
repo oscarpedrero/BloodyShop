@@ -4,14 +4,7 @@ using BloodyShop.Client.Patch;
 using BloodyShop.Server;
 using BloodyShop.Server.Hooks;
 using BloodyShop.Server.Network;
-using System;
 using BloodyShop.Client.UI;
-using VRising.GameData;
-using System.Linq;
-using BloodyShop.Client.UI.Panels;
-using BloodyShop.Client.DB;
-using System.Collections.Generic;
-using VRising.GameData.Models;
 
 namespace BloodyShop
 {
@@ -26,11 +19,16 @@ namespace BloodyShop
 
         public static void clientInitMod(Harmony _harmony)
         {
+
+            _harmony.PatchAll(typeof(ClientEvents));
             UIManager.Initialize();
             KeyBinds.Initialize();
             
             ClientEvents.OnGameDataInitialized += ClientMod.ClientEvents_OnGameDataInitialized;
+            ClientEvents.OnClientConnected += ClientMod.ClientEvents_OnClientUserConnected;
+            ClientEvents.OnClientDisconected += ClientMod.ClientEvents_OnClientUserDisconnected;
             KeyBinds.OnKeyPressed += KeyBindPressed.OnKeyPressedOpenPanel;
+
         }
 
         public static void onServerGameInitialized(bool ShopEnabled, int CoinGUID, string StoreName)
@@ -50,6 +48,9 @@ namespace BloodyShop
 
         public static void clientUnloadMod()
         {
+            ClientEvents.OnGameDataInitialized -= ClientMod.ClientEvents_OnGameDataInitialized;
+            ClientEvents.OnClientConnected -= ClientMod.ClientEvents_OnClientUserConnected;
+            ClientEvents.OnClientDisconected -= ClientMod.ClientEvents_OnClientUserDisconnected;
             KeyBinds.OnKeyPressed -= KeyBindPressed.OnKeyPressedOpenPanel;
         }
 
@@ -61,8 +62,6 @@ namespace BloodyShop
         public static void onClientGameDataOnInitialize()
         {
             NetworkMessages.RegisterMessage();
-            ClientDB.allItemsGame = GameData.Items.Prefabs;
-            ClientDB.generateTypesOfItems();
         }
 
     }

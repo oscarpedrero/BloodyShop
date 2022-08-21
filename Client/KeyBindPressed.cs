@@ -18,9 +18,6 @@ namespace BloodyShop.Client
                         UIManager.MenuPanel?.Toggle();
                         UIManager.ShopPanel?.Toggle();
                         UIManager.AdminPanel?.Toggle();
-                    } else
-                    {
-                        ClientListMessageAction.Send();
                     }
                     break;
                 default:

@@ -95,6 +95,8 @@ namespace BloodyShop
 
             GameData.OnInitialize += GameDataOnInitialize;
 
+            
+
         }
 
         public override bool Unload()
@@ -113,6 +115,16 @@ namespace BloodyShop
             _harmony.UnpatchSelf();
             GameData.OnInitialize -= GameDataOnInitialize;
             return true;
+        }
+
+        public void LoadGameData()
+        {
+            GameData.OnInitialize += GameDataOnInitialize;
+        }
+
+        public void unloadGameData()
+        {
+            GameData.OnInitialize -= GameDataOnInitialize;
         }
 
         private static void GameDataOnInitialize(World world)
