@@ -24,10 +24,14 @@ namespace BloodyShop.Client.Network
             ClientDB.shopName = msg.ShopName;
             ClientDB.prefix = "!" + ClientDB.shopName.ToLower().Replace(" ", "");
             ClientDB.userModel = GameData.Users.GetCurrentUser();
-            if(ClientDB.itemModels.Count == 0)
+            if (ClientDB.userModel.IsAdmin)
             {
-                ClientDB.itemModels = GameData.Items.Prefabs;
+                if (ClientDB.itemModels.Count == 0)
+                {
+                    ClientDB.itemModels = GameData.Items.Prefabs;
+                }
             }
+            
             
 
             if (msg.ShopOpen == "1")
