@@ -32,7 +32,7 @@ namespace BloodyShop.Server.Network
             msg.ItemsJson = jsonOutPut;
             msg.CoinGUID = ShareDB.getCoinGUID().ToString();
             msg.ShopName = ConfigDB.getStoreName();
-            msg.CharacterName = fromCharacter.CharacterName.ToString();
+
             if (ConfigDB.getShopEnabled())
             {
                 msg.ShopOpen = "1";

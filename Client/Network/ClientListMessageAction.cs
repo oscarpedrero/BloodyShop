@@ -21,7 +21,6 @@ namespace BloodyShop.Client.Network
             ShareDB.setCoinGUID(Int32.Parse(msg.CoinGUID));
             ClientDB.shopName = msg.ShopName;
             ClientDB.prefix = "!" + ClientDB.shopName.ToLower().Replace(" ", "");
-            ClientDB.userModel = GameData.Users.GetUserByCharacterName(msg.CharacterName);
 
             if(msg.ShopOpen == "1")
             {

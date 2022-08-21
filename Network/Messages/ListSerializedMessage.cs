@@ -12,7 +12,6 @@ namespace BloodyShop.Network.Messages
         public string ItemsJson;
         public string CoinGUID;
         public string ShopName;
-        public string CharacterName;
         public string ShopOpen;
 
         // You need to implement an empty constructor for when your message is
@@ -25,7 +24,6 @@ namespace BloodyShop.Network.Messages
             ItemsJson = reader.ReadString(Allocator.Temp);
             CoinGUID = reader.ReadString(Allocator.Temp);
             ShopName = reader.ReadString(Allocator.Temp);
-            CharacterName = reader.ReadString(Allocator.Temp);
             ShopOpen = reader.ReadString(Allocator.Temp);
         }
 
@@ -35,7 +33,6 @@ namespace BloodyShop.Network.Messages
             writer.Write(ItemsJson);
             writer.Write(CoinGUID);
             writer.Write(ShopName);
-            writer.Write(CharacterName);
             writer.Write(ShopOpen);
         }
     }

@@ -22,6 +22,7 @@ namespace BloodyShop.Client
         public static void ClientEvents_OnClientUserConnected()
         {
             Plugin.Logger.LogInfo("OnClientUserConnected");
+            ClientDB.userModel = GameData.Users.GetCurrentUser();
             ClientDB.allItemsGame = GameData.Items.Prefabs;
             ClientDB.generateTypesOfItems();
             ClientListMessageAction.Send();
