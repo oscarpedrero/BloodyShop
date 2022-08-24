@@ -4,46 +4,237 @@ using BloodyShop.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Wetstone.API;
+using ProjectM;
+using VRising.GameData;
 
 namespace BloodyShop.DB
 {
     public class ItemsDB
     {
-        private static List<ItemShopModel> ProductList { get; set; } = new List<ItemShopModel>();
+        public static List<PrefabModel> ProductList { get; set; } = new List<PrefabModel>();
+
+        public static List<(string name, string type, PrefabModel model)> _normalizedItemNameCache = new();
+
+        public static List<(string name, int GUID, string type, PrefabModel model)> _normalizedItemShopNameCache = new();
+
+        static string _lastQueryAdd;
+
+        public static void generateCacheItems()
+        {
+
+            var allPrefabs = VWorld.Client.GetExistingSystem<PrefabCollectionSystem>().PrefabLookupMap;
+            foreach (var prefabEntity in allPrefabs)
+            {
+                var itemModel = GameData.Items.FromEntity(prefabEntity.Value);
+                if (itemModel != null && itemModel?.Name != null && itemModel?.Name != "" && itemModel?.ItemType != null && itemModel?.ItemType.ToString() != "")
+                {
+                    var prefabModel = new PrefabModel();
+                    prefabModel.PrefabName = itemModel?.Name;
+                    prefabModel.PrefabType = itemModel?.ItemType.ToString();
+                    prefabModel.PrefabGUID = itemModel?.Internals.PrefabGUID?.GuidHash ?? 0;
+                    prefabModel.PrefabIcon = itemModel?.ManagedGameData.ManagedItemData?.Icon;
+
+                    _normalizedItemNameCache.Add((prefabModel.PrefabName.ToString().ToLower(), prefabModel.PrefabType.ToString().ToLower(), prefabModel));
+                }
+            }
+
+            Plugin.Logger.LogInfo($"Total Prefabs = {_normalizedItemNameCache.Count}");
+        }
+
+        public static List<PrefabModel> searchItemByNameForAdd(string text)
+        {
+
+            if (text == "")
+            {
+                return new List<PrefabModel>();
+            }
+
+            if (string.Equals(text, _lastQueryAdd)) return new List<PrefabModel>(); // avoid duplicate work, idk what calls this
+            _lastQueryAdd = text;
+
+            var result = new List<PrefabModel>();
+            foreach (var (name, type, model) in _normalizedItemNameCache)
+            {
+                if (name.Contains(text))
+                {
+                    result.Add(model);
+                }
+            }
+
+            return result.OrderBy(x => x.PrefabType).ThenBy(x => x.PrefabName).ToList();
+        }
+
+        public static List<PrefabModel> searchItemByNameForShop(string text)
+        {
+
+            /*if (text != "" && string.Equals(text, _lastQueryShop)) return null; // avoid duplicate work, idk what calls this
+            _lastQueryShop = text;*/
+            var result = new List<PrefabModel>();
+            foreach (var item in _normalizedItemShopNameCache)
+            {
+                if (item.name.Contains(text))
+                {
+                    result.Add(item.model);
+                }
+            }
+
+            return result;
+        }
+
+        public static int searchIndexForProduct(int GUID)
+        {
+            var index = 1;
+            foreach (var item in ProductList)
+            {
+                if (item.PrefabGUID == GUID)
+                {
+                    return index;
+                }
+                index++;
+            }
+
+            return -1;
+        }
+
+        /*public static List<PrefabModel> searchItemByType(string text)
+        {
+            if (text == "")
+            {
+                return null;
+            }
+
+            if (string.Equals(text, _lastQueryByName)) return null; // avoid duplicate work, idk what calls this
+            _lastQueryByName = text;
+            //var sw = new Stopwatch();
+            var result = new List<PrefabModel>();
+            foreach (var item in _normalizedItemNameCache)
+            {
+                if (item.type == text)
+                {
+                    result.Add(item.model);
+                }
+            }
+
+            return result;
+        }*/
+
+        /*public static int searchIndexByGUID(int prefabGUID)
+        {
+
+            var result = new List<PrefabModel>();
+            var index = 0;
+            foreach (var item in _normalizedItemShopNameCache)
+            {
+                if (item.GUID == prefabGUID)
+                {
+                    return index;
+                }
+                index++;
+            }
+
+            return -1;
+        }*/
 
         public static bool setProductList(List<ItemShopModel> list)
         {
-            ProductList = list;
-            ProductList.Reverse();
+
+            ProductList = new();
+            _normalizedItemShopNameCache = new();
+            foreach (var itemShopModel in list)
+            {
+                var itemModel = GameData.Items.GetPrefabById(new PrefabGUID(itemShopModel.id));
+                var prefabModel = new PrefabModel();
+                prefabModel.PrefabName = itemModel?.Name;
+                prefabModel.PrefabType = itemModel?.ItemType.ToString();
+                prefabModel.PrefabGUID = itemModel?.Internals.PrefabGUID?.GuidHash ?? 0;
+                prefabModel.PrefabIcon = itemModel?.ManagedGameData.ManagedItemData?.Icon;
+                prefabModel.PrefabPrice = itemShopModel.price;
+                prefabModel.PrefabStock = itemShopModel.stock;
+                ProductList.Add(prefabModel);
+                _normalizedItemShopNameCache.Add((prefabModel.PrefabName.ToString().ToLower(), prefabModel.PrefabGUID, prefabModel.PrefabType.ToString().ToLower(), prefabModel));
+            }
+
+            if(ProductList.Count > 0)
+            {
+                ProductList = ProductList.OrderBy(x => x.PrefabType).ToList();
+                _normalizedItemShopNameCache = _normalizedItemShopNameCache.OrderBy(x => x.type).ToList();
+            }
+
+            Plugin.Logger.LogInfo($"Total product List Converted {ProductList.Count}");
+
             return true;
         }
 
-        public static void addProductList(int item, int price, int amount)
+        public static List<ItemShopModel> getProductListForSaveJSON()
         {
-            ItemShopModel itemNew = new ItemShopModel()
+
+            var productListReturn = new List<ItemShopModel>();
+            foreach (var prefabModel in ProductList)
             {
-                id = item,
-                price = price,
-                amount = amount
-            };
-            ProductList.Add(itemNew);
+                var itemShopModel = new ItemShopModel();
+                itemShopModel.id = prefabModel.PrefabGUID;
+                itemShopModel.stock = prefabModel.PrefabStock;
+                itemShopModel.price = prefabModel.PrefabPrice;
+                productListReturn.Add(itemShopModel);
+            }
+
+            return productListReturn;
         }
 
-        public static bool SearchItem(int item, out ItemShopModel itemShopModel)
+        public static bool addProductList(int item, int price, int stock)
+        {
+
+            var itemModel = GameData.Items.GetPrefabById(new PrefabGUID(item));
+            if (itemModel == null) return false;
+
+            PrefabModel prefabModel = new PrefabModel();
+            prefabModel.PrefabName = itemModel?.Name;
+            prefabModel.PrefabType = itemModel?.ItemType.ToString();
+            prefabModel.PrefabGUID = itemModel?.Internals.PrefabGUID?.GuidHash ?? 0;
+            prefabModel.PrefabIcon = itemModel?.ManagedGameData.ManagedItemData?.Icon;
+            prefabModel.PrefabPrice = price;
+            prefabModel.PrefabStock = stock;
+            
+            ProductList.Add(prefabModel);
+            _normalizedItemShopNameCache.Add((prefabModel.PrefabName.ToString().ToLower(), prefabModel.PrefabGUID, prefabModel.PrefabType.ToString().ToLower(), prefabModel));
+            return true;
+
+        }
+
+        public static bool RemoveItemByCommand(int index)
         {
             try
             {
-                if (ProductList.Count >= item)
+                ProductList.RemoveAt(index - 1);
+                _normalizedItemShopNameCache.RemoveAt(index - 1);
+                return true;
+            }
+            catch (Exception error)
+            {
+                Plugin.Logger.LogError($"Error: {error.Message}");
+                return false;
+            }
+
+        }
+
+        public static bool SearchItemByCommand(int index, out PrefabModel itemShopModel)
+        {
+
+            try
+            {
+                if (ProductList.Count >= index)
                 {
-                    itemShopModel = ProductList[item - 1];
+                    itemShopModel = ProductList[index - 1];
                     return true;
-                } else
+                }
+                else
                 {
                     itemShopModel = null;
                     return false;
                 }
-               
-            } catch (Exception error)
+            }
+            catch (Exception error)
             {
                 Plugin.Logger.LogError($"Error: {error.Message}");
                 itemShopModel = null;
@@ -51,34 +242,40 @@ namespace BloodyShop.DB
             }
         }
 
-        public static List<ItemShopModel> GetProductList()
+        public static bool SearchProductListAndRemoveItemByCommmand(int index, out PrefabModel itemShopModel)
         {
-            return ProductList;
-        }
 
-        public static List<string> GetProductListMessage()
-        {
-            var listItems = new List<string>();
-
-            int index = 1;
-
-            if(ShareDB.getCoin(out ItemModel coin))
+            try
             {
-                foreach (ItemShopModel item in ProductList)
+                if (ProductList.Count >= index)
                 {
-                    listItems.Add($"{FontColorChat.White("[")}{FontColorChat.Yellow(index.ToString())}{FontColorChat.White("]")} " +
-                        $"{FontColorChat.Yellow(item.getItemName())} " +
-                        $"{FontColorChat.Red("Price:")} {FontColorChat.Yellow(item.price.ToString())} {FontColorChat.White($"{coin?.Name.ToString()}")} " +
-                        $"{FontColorChat.Red("Available:")} {FontColorChat.Yellow(item.amount.ToString())} units");
-                    index++;
+                    itemShopModel = ProductList[index - 1];
+                    if (RemoveItemByCommand(index))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        itemShopModel = null;
+                        return false;
+                    }
+                }
+                else
+                {
+                    itemShopModel = null;
+                    return false;
                 }
             }
-
-            return listItems;
+            catch (Exception error)
+            {
+                Plugin.Logger.LogError($"Error: {error.Message}");
+                itemShopModel = null;
+                return false;
+            }
 
         }
 
-        public static bool ModifyStock(int index, int amount)
+        public static bool ModifyStockByCommand(int index, int amount)
         {
 
             try
@@ -90,39 +287,98 @@ namespace BloodyShop.DB
                 else
                 {
                     var itemShopModel = ProductList[index - 1];
-                    var actualStock = itemShopModel.amount;
-                    itemShopModel.amount = actualStock - amount;
-                    if (itemShopModel.amount == 0)
+                    var actualStock = itemShopModel.PrefabStock;
+                    itemShopModel.PrefabStock = actualStock - amount;
+                    if (itemShopModel.PrefabStock == 0)
                     {
-                        RemoveItem(index);
+                        RemoveItemByCommand(index);
                     }
                     else
                     {
-                        ProductList[index - 1]= itemShopModel;
+                        ProductList[index - 1] = itemShopModel;
+                        _normalizedItemShopNameCache[index - 1] = (itemShopModel.PrefabName.ToString().ToLower(), itemShopModel.PrefabGUID, itemShopModel.PrefabType.ToString().ToLower(), itemShopModel);
                     }
                     return true;
                 }
-            } catch (Exception error)
+            }
+            catch (Exception error)
             {
                 Plugin.Logger.LogError($"Error: {error.Message}");
                 return false;
             }
-            
+
 
         }
 
-        public static bool RemoveItem(int index)
+        public static bool SearchProductListAndRemoveItem(int itemGUID, out PrefabModel itemShopModel)
         {
-            try
+
+            itemShopModel = null;
+
+            int index = 0;
+            foreach (var item in _normalizedItemShopNameCache)
             {
-                ProductList.RemoveAt(index - 1);
-                return true;
-            } catch (Exception error)
-            {
-                Plugin.Logger.LogError($"Error: {error.Message}");
-                return false;
+                if (item.GUID == itemGUID)
+                {
+                    _normalizedItemShopNameCache.Remove(item);
+                    ProductList.Remove(item.model);
+                    itemShopModel = item.model;
+                    break;
+                }
+                index++;
             }
-            
+
+            if (itemShopModel == null) return false;
+
+            return true;
+           
         }
+
+        public static bool SearchProductList(int itemGUID, out PrefabModel itemShopModel)
+        {
+
+            itemShopModel = null;
+
+            int index = 0;
+            foreach (var item in _normalizedItemShopNameCache)
+            {
+                if (item.GUID == itemGUID)
+                {
+                    _normalizedItemShopNameCache.Remove(item);
+                    ProductList.Remove(item.model);
+                    itemShopModel = item.model;
+                    break;
+                }
+                index++;
+            }
+
+            if (itemShopModel == null) return false;
+
+            return true;
+           
+        }
+
+        public static List<string> GetProductListMessage()
+        {
+            var listItems = new List<string>();
+
+            int index = 1;
+
+            if (ShareDB.getCoin(out ItemModel coin))
+            {
+                foreach (PrefabModel item in ProductList)
+                {
+                    listItems.Add($"{FontColorChat.White("[")}{FontColorChat.Yellow(index.ToString())}{FontColorChat.White("]")} " +
+                        $"{FontColorChat.Yellow(item.PrefabName)} " +
+                        $"{FontColorChat.Red("Price:")} {FontColorChat.Yellow(item.PrefabPrice.ToString())} {FontColorChat.White($"{coin?.Name.ToString()}")} " +
+                        $"{FontColorChat.Red("Stock:")} {FontColorChat.Yellow(item.PrefabStock.ToString())} units");
+                    index++;
+                }
+            }
+
+            return listItems;
+
+        }
+
     }
 }

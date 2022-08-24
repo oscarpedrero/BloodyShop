@@ -1,5 +1,4 @@
 ﻿using BloodyShop.Client.DB;
-using BloodyShop.Client.DB.Models;
 using BloodyShop.Client.Network;
 using BloodyShop.Client.UI;
 using ProjectM;

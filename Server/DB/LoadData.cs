@@ -17,8 +17,8 @@ namespace BloodyShop.Server.DB
             {
                 string json = File.ReadAllText(ServerMod.ProductListFile);
                 var productList = JsonSerializer.Deserialize<List<ItemShopModel>>(json);
-                ItemsDB.setProductList(productList);
-                return false;
+                Plugin.Logger.LogInfo($"Total product List FROM JSON {productList.Count}");
+                return ItemsDB.setProductList(productList);
             }
             catch (Exception error)
             {

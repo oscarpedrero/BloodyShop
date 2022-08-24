@@ -41,6 +41,7 @@ internal class UIManager
     public static bool ActiveAddItemPanel { get;  set; }
     public static bool ActiveDeleteItemPanel { get;  set; }
     public static bool ActiveAdminMenuPanel { get;  set; }
+    public static bool ActiveMenuPanel { get;  set; }
     public static int SizeOfProdutcs { get;  set; }
 
     static void OnInitialized()
@@ -50,15 +51,18 @@ internal class UIManager
         ActiveShopPanel = false;
         ActiveDeleteItemPanel = false;
         ActiveAdminMenuPanel = false;
+        ActiveMenuPanel = false;
     }
 
     public static void CreateMenuPanel()
     {
         if (ClientDB.userModel.IsAdmin)
         {
+            ActiveAdminMenuPanel = true;
             AdminMenuPanel = new AdminMenuPanel(UiBase);
         } else
         {
+            ActiveMenuPanel = true;
             MenuPanel = new MenuPanel(UiBase);
         }
     }

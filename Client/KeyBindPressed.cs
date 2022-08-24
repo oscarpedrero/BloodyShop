@@ -16,6 +16,7 @@ namespace BloodyShop.Client
                 case KeyBindFunction.ToggleShopUI:
                     if (ClientMod.UIInit)
                     {
+
                         if (UIManager.ActiveShopPanel || UIManager.ActiveDeleteItemPanel || UIManager.ActiveAddItemPanel)
                         {
                             UIManager.ActiveShopPanel = false;
@@ -33,6 +34,26 @@ namespace BloodyShop.Client
                             {
                                 UIManager.ActiveAddItemPanel = false;
                                 UIManager.AddItemPanel?.Destroy();
+                            }
+
+                            if (UIManager.ActiveMenuPanel == true && !ClientDB.userModel.IsAdmin)
+                            {
+                                try
+                                {
+                                    UIManager.MenuPanel?.Toggle();
+                                    UIManager.ActiveMenuPanel = false;
+                                }
+                                catch { }
+                            }
+
+                            if (UIManager.ActiveAdminMenuPanel == true && ClientDB.userModel.IsAdmin)
+                            {
+                                try
+                                {
+                                    UIManager.AdminMenuPanel?.Toggle();
+                                    UIManager.ActiveAdminMenuPanel = false;
+                                }
+                                catch { }
                             }
                         }
                         else
@@ -55,6 +76,28 @@ namespace BloodyShop.Client
                                     UIManager.OpenAddItemPanel();
                                 }
                             }
+                            if (UIManager.ActiveMenuPanel == false && !ClientDB.userModel.IsAdmin)
+                            {
+                                try
+                                {
+                                    UIManager.MenuPanel?.Toggle();
+                                    UIManager.ActiveMenuPanel = true;
+                                }
+                                catch { }
+                            }
+
+                            if (UIManager.ActiveAdminMenuPanel == false && ClientDB.userModel.IsAdmin)
+                            {
+                                try
+                                {
+                                    UIManager.AdminMenuPanel?.Toggle();
+                                    UIManager.ActiveAdminMenuPanel = true;
+                                }
+                                catch { }
+                            }
+
+                            
+                            
                         }
                         
                        

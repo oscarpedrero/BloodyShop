@@ -14,7 +14,7 @@ namespace BloodyShop.Server.DB
         {
             try
             {
-                var productList = ItemsDB.GetProductList();
+                var productList = ItemsDB.getProductListForSaveJSON();
                 var jsonOutPut = JsonSerializer.Serialize(productList);
                 File.WriteAllText(ServerMod.ProductListFile, jsonOutPut);
                 

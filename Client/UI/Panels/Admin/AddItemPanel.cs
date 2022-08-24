@@ -11,8 +11,8 @@ using BloodyShop.Network.Messages;
 using BloodyShop.Client.Network;
 using UniverseLib.UI.Widgets;
 using System.Collections.Generic;
-using BloodyShop.Client.DB.Models;
 using System.Linq;
+using BloodyShop.DB.Models;
 
 namespace BloodyShop.Client.UI.Panels.Admin
 {
@@ -143,13 +143,11 @@ namespace BloodyShop.Client.UI.Panels.Admin
         public void CreateListProductsLayout()
         {
 
-            UnityEngine.Object.Destroy(alertTXT, 0.2f);
-
             var index = 0;
             productsListLayers = new List<GameObject>();
             stockArray = new();
             priceArray = new();
-            foreach (var item in itemsModel.OrderBy(x=> x.PrefabType).ThenBy(x => x.PrefabName).Take(limit))
+            foreach (var item in itemsModel.Take(limit))
             {
                 if (ShareDB.getCoin(out ItemModel coin))
                 {
@@ -188,7 +186,6 @@ namespace BloodyShop.Client.UI.Panels.Admin
                     saveBtn.OnClick += SaveAction;
 
                     UIFactory.SetLayoutElement(_contentProduct, flexibleHeight: 0, minHeight: 60, preferredHeight: 60, flexibleWidth: 0);
-                    index++;
                     productsListLayers.Add(_contentProduct);
 
                     // FAKE LINE
@@ -196,21 +193,24 @@ namespace BloodyShop.Client.UI.Panels.Admin
                     var fakeTXT = UIFactory.CreateLabel(_separator, "FakeTextt-" + index, "", TextAnchor.MiddleCenter);
                     UIFactory.SetLayoutElement(fakeTXT.gameObject, minWidth: MinWidth, minHeight: 2, flexibleHeight: 0, preferredHeight: 2, flexibleWidth: 9999, preferredWidth: MinWidth);
                     productsListLayers.Add(_separator);
+
+                    index++;
                 }
             }
         }
 
         private void SearchActionText(string str)
         {
-
-            itemsModel = ClientDB.searchItemByName(str.ToLower());
+            Plugin.Logger.LogInfo("SearchActionText " + str.ToLower());
+            itemsModel = ItemsDB.searchItemByNameForAdd(str.ToLower());
             RefreshData();
 
         }
 
         private void SearchAction()
         {
-            itemsModel = ClientDB.searchItemByName(searchInputTXT.Text.ToLower());
+            Plugin.Logger.LogInfo("SearchAction " + searchInputTXT.Text.ToLower());
+            itemsModel = ItemsDB.searchItemByNameForAdd(searchInputTXT.Text.ToLower());
             RefreshData();
         }
 

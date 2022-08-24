@@ -26,9 +26,9 @@ namespace BloodyShop.Client.Network
             ClientDB.userModel = GameData.Users.GetCurrentUser();
             if (ClientDB.userModel.IsAdmin)
             {
-                if (ClientDB._normalizedItemNameCache.Count == 0)
+                if (ItemsDB._normalizedItemNameCache.Count == 0)
                 {
-                    ClientDB.generateCacheItems();
+                    ItemsDB.generateCacheItems();
                 }
             }
             
@@ -67,8 +67,8 @@ namespace BloodyShop.Client.Network
                 {
                     UIManager.DeleteItemPanel?.RefreshData();
                 }
-                UIManager.ShopPanel?.CreateListProductsLayou();
-                UIManager.DeleteItemPanel?.CreateListProductsLayou();
+                UIManager.ShopPanel?.CreateListProductsLayout();
+                UIManager.DeleteItemPanel?.CreateListProductsLayout();
             }
             
         }

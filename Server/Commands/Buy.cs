@@ -63,34 +63,34 @@ namespace BloodyShop.Server.Commands
                         return;
                     }
 
-                    if (ItemsDB.SearchItem(indexPosition, out ItemShopModel itemShopModel))
+                    if (ItemsDB.SearchItemByCommand(indexPosition, out PrefabModel itemShopModel))
                     {
-                        if (itemShopModel.CheckAmountAvailability(quantity))
+                        if (itemShopModel.CheckStockAvailability(quantity))
                         {
-                            var finalPrice = itemShopModel.price * quantity;
+                            var finalPrice = itemShopModel.PrefabPrice * quantity;
                             if (verifyHaveSuficientCoins(ctx, finalPrice))
                             {
                                 if (getCoinsFromInventory(ctx, finalPrice))
                                 {
-                                    if (AdditemToIneventory(ctx, itemShopModel.getPrefabGUID(), quantity))
+                                    if (AdditemToIneventory(ctx, new PrefabGUID(itemShopModel.PrefabGUID), quantity))
                                     {
-                                        if (ItemsDB.ModifyStock(indexPosition, quantity))
+                                        if (ItemsDB.ModifyStockByCommand(indexPosition, quantity))
                                         {
                                             SaveDataToFiles.saveProductList();
                                             LoadDataFromFiles.loadProductList();
-                                            Output.SendSystemMessage(ctx, FontColorChat.Yellow($"Transaction successful. You have purchased {FontColorChat.White($"{quantity}x {itemShopModel.getItemName()}")} for a total of  {FontColorChat.White($"{finalPrice} {prefabCoinItemName}")}"));
-                                            ServerChatUtils.SendSystemMessageToAllClients(ctx.EntityManager, FontColorChat.Yellow($"{ctx.Event.User.CharacterName} has purchased {FontColorChat.White($"{quantity}x {itemShopModel.getItemName()}")} for a total of  {FontColorChat.White($"{finalPrice} {prefabCoinItemName}")}"));
+                                            Output.SendSystemMessage(ctx, FontColorChat.Yellow($"Transaction successful. You have purchased {FontColorChat.White($"{quantity}x {itemShopModel.PrefabName}")} for a total of  {FontColorChat.White($"{finalPrice} {prefabCoinItemName}")}"));
+                                            ServerChatUtils.SendSystemMessageToAllClients(ctx.EntityManager, FontColorChat.Yellow($"{ctx.Event.User.CharacterName} has purchased {FontColorChat.White($"{quantity}x {itemShopModel.PrefabName}")} for a total of  {FontColorChat.White($"{finalPrice} {prefabCoinItemName}")}"));
                                             var usersOnline = GameData.Users.Online;
                                             foreach (var user in usersOnline)
                                             {
-                                                var msg = ServerListMessageAction.createMsg(user.Internals.User);
+                                                var msg = ServerListMessageAction.createMsg();
                                                 ServerListMessageAction.Send(user.Internals.User, msg);
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        Plugin.Logger.LogInfo($"Error buying an item User: {ctx.Event.User.CharacterName.ToString()} Item: {itemShopModel.getItemName()} Quantity: {quantity} TotalPrice: {finalPrice}");
+                                        Plugin.Logger.LogInfo($"Error buying an item User: {ctx.Event.User.CharacterName.ToString()} Item: {itemShopModel.PrefabName} Quantity: {quantity} TotalPrice: {finalPrice}");
                                         Output.CustomErrorMessage(ctx, $"An error has occurred when delivering the items, please contact an administrator");
                                     }
                                 }

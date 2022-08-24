@@ -14,7 +14,7 @@ namespace BloodyShop.Server.Network
         public static void Received(User fromCharacter, ListSerializedMessage msg)
         {
 
-            msg = createMsg(fromCharacter);
+            msg = createMsg();
 
             Send(fromCharacter,msg);
 
@@ -22,11 +22,11 @@ namespace BloodyShop.Server.Network
 
         }
 
-        public static ListSerializedMessage createMsg(User fromCharacter)
+        public static ListSerializedMessage createMsg()
         {
 
             var msg = new ListSerializedMessage();
-            var productList = ItemsDB.GetProductList();
+            var productList = ItemsDB.getProductListForSaveJSON();
             var jsonOutPut = JsonSerializer.Serialize(productList);
 
             msg.ItemsJson = jsonOutPut;

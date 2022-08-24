@@ -16,7 +16,6 @@ namespace BloodyShop
         {
             _harmony.PatchAll(typeof(ChatMessageSystem_Patch));
             ServerMod.CreateFilesConfig();
-            ServerMod.LoadConfigToDB();
         }
 
         public static void clientInitMod(Harmony _harmony)
@@ -57,6 +56,7 @@ namespace BloodyShop
         public static void onServerGameDataOnInitialize()
         {
             NetworkMessages.RegisterMessage();
+            ServerMod.LoadConfigToDB();
         }
 
         public static void onClientGameDataOnInitialize()

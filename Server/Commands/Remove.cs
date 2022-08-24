@@ -36,25 +36,25 @@ namespace BloodyShop.Server.Commands
                 try
                 {
                     var index = Int32.Parse(args[0]);
-                    if (ItemsDB.SearchItem(index, out ItemShopModel itemShopModel))
+                    if (ItemsDB.SearchItemByCommand(index, out PrefabModel itemShopModel))
                     {
-                        if (ItemsDB.RemoveItem(index))
+                        if (ItemsDB.RemoveItemByCommand(index))
                         {
                             SaveDataToFiles.saveProductList();
                             LoadDataFromFiles.loadProductList();
-                            Output.SendSystemMessage(ctx, FontColorChat.Yellow($"Item {FontColorChat.White($"{itemShopModel.getItemName()}")} removed successful."));
+                            Output.SendSystemMessage(ctx, FontColorChat.Yellow($"Item {FontColorChat.White($"{itemShopModel.PrefabName}")} removed successful."));
 
                             var usersOnline = GameData.Users.Online;
                             foreach (var user in usersOnline)
                             {
-                                var msg = ServerListMessageAction.createMsg(user.Internals.User);
+                                var msg = ServerListMessageAction.createMsg();
                                 ServerListMessageAction.Send(user.Internals.User, msg);
                             }
 
                         }
                         else
                         {
-                            Output.SendSystemMessage(ctx, FontColorChat.Yellow($"Item {FontColorChat.White($"{itemShopModel.getItemName()}")} removed error."));
+                            Output.SendSystemMessage(ctx, FontColorChat.Yellow($"Item {FontColorChat.White($"{itemShopModel.PrefabName}")} removed error."));
                         }
                     }
                 }

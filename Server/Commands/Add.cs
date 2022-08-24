@@ -42,21 +42,27 @@ namespace BloodyShop.Server.Commands
                     {
                         if (ShareDB.getCoin(out ItemModel coin))
                         {
-                            ItemsDB.addProductList(Int32.Parse(args[0]), Int32.Parse(args[1]), Int32.Parse(args[2]));
-                            SaveDataToFiles.saveProductList();
-
-                            Output.SendSystemMessage(ctx, FontColorChat.Yellow($"Added item {FontColorChat.White($"{itemModel?.Name.ToString()} ({args[2]})")} to the store with a price of {FontColorChat.White($"{args[1]} {coin?.Name.ToString()}")}"));
-                            if (ConfigDB.getShopEnabled())
+                            if(ItemsDB.addProductList(Int32.Parse(args[0]), Int32.Parse(args[1]), Int32.Parse(args[2])))
                             {
-                                ServerChatUtils.SendSystemMessageToAllClients(ctx.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{itemModel?.Name.ToString()} ({args[2]})")} have been added to the Store for {FontColorChat.White($"{args[1]} {coin?.Name.ToString()}")}"));
-                                var usersOnline = GameData.Users.Online;
-                                foreach (var user in usersOnline)
+                                SaveDataToFiles.saveProductList();
+
+                                Output.SendSystemMessage(ctx, FontColorChat.Yellow($"Added item {FontColorChat.White($"{itemModel?.Name.ToString()} ({args[2]})")} to the store with a price of {FontColorChat.White($"{args[1]} {coin?.Name.ToString()}")}"));
+                                if (ConfigDB.getShopEnabled())
                                 {
-                                    var msg = ServerListMessageAction.createMsg(user.Internals.User);
-                                    ServerListMessageAction.Send(user.Internals.User, msg);
+                                    ServerChatUtils.SendSystemMessageToAllClients(ctx.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{itemModel?.Name.ToString()} ({args[2]})")} have been added to the Store for {FontColorChat.White($"{args[1]} {coin?.Name.ToString()}")}"));
+                                    var usersOnline = GameData.Users.Online;
+                                    foreach (var user in usersOnline)
+                                    {
+                                        var msg = ServerListMessageAction.createMsg();
+                                        ServerListMessageAction.Send(user.Internals.User, msg);
+                                    }
                                 }
+                                return;
+                            } else
+                            {
+                                Output.CustomErrorMessage(ctx, "Invalid item type");
                             }
-                            return;
+                            
                         }
                         else
                         {
