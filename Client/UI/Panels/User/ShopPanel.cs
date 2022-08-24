@@ -12,6 +12,9 @@ using UniverseLib;
 using UniverseLib.UI.Widgets;
 using BloodyShop.Utils;
 using System.Collections.Generic;
+using System;
+using BloodyShop.DB.Models;
+using System.Linq;
 
 namespace BloodyShop.Client.UI.Panels.User
 {
@@ -44,6 +47,7 @@ namespace BloodyShop.Client.UI.Panels.User
         public Dropdown MouseInspectDropdown;
         public GameObject ContentHolder;
         public GameObject ContentProduct;
+        public GameObject ContentPagination;
         public RectTransform ContentRect;
         public Text alertTXT;
         public GameObject contentScroll;
@@ -55,6 +59,13 @@ namespace BloodyShop.Client.UI.Panels.User
         public static RectTransform ImageIconRect { get; private set; }
 
         public int CurrentDisplayedIndex;
+
+        public List<ItemShopModel> items;
+
+        private static int limit = 10;
+        private static int page = 0;
+        private static int total = 0;
+        private static int skip = 0;
 
         public ShopPanel(UIBase owner) : base(owner)
         {
@@ -137,21 +148,34 @@ namespace BloodyShop.Client.UI.Panels.User
 
         public void CreateListProductsLayou()
         {
-            var items = ItemsDB.GetProductList();
+            items = ItemsDB.GetProductList();
+
+            total = items.Count;
 
             var index = items.Count;
 
-            Object.Destroy(alertTXT, 0.2f);
+            UnityEngine.Object.Destroy(alertTXT, 0.2f);
 
             productsListLayers = new List<GameObject>();
-            foreach (var item in items)
+
+            decimal totalPages = total / limit;
+            var last = Math.Ceiling(totalPages);
+
+            skip = page * limit;
+
+            if(last < page)
+            {
+                page = (int)last;
+            }
+
+            foreach (var item in items.OrderBy(x=> x.getItemName()).Skip(skip).Take(limit))
             {
                 if (ShareDB.getCoin(out ItemModel coin))
                 {
                     // CONTAINER FOR PRODUCTS
                     var _contentProduct = UIFactory.CreateHorizontalGroup(contentScroll, "ContentItem-" + index, true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
 
-                    // Aval ITEM
+                    // STOCK ITEM
                     Text itemAval = UIFactory.CreateLabel(_contentProduct, "itemAvalTxt-" + index, $"{item.amount}", TextAnchor.MiddleCenter);
                     UIFactory.SetLayoutElement(itemAval.gameObject, minWidth: 50, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 50);
 
@@ -191,6 +215,8 @@ namespace BloodyShop.Client.UI.Panels.User
                     productsListLayers.Add(_separator);
                 }
             }
+
+            createPagination();
         }
 
         private void RefreshAction()
@@ -203,7 +229,7 @@ namespace BloodyShop.Client.UI.Panels.User
             //UIManager.RefreshDataPanel();
             foreach (var product in productsListLayers)
             {
-                Object.Destroy(product, 0.2f);
+                UnityEngine.Object.Destroy(product, 0.2f);
             }
 
             productsListLayers = new List<GameObject>();
@@ -214,6 +240,9 @@ namespace BloodyShop.Client.UI.Panels.User
             alertTXT = new Text();
             alertTXT = UIFactory.CreateLabel(_contentProduct, "AlertTxt", $"Refreshing...", TextAnchor.MiddleCenter);
             UIFactory.SetLayoutElement(alertTXT.gameObject, flexibleHeight: 9999, flexibleWidth: 0);
+
+            UnityEngine.Object.Destroy(ContentPagination, 0.2f);
+
 
         }
 
@@ -233,6 +262,72 @@ namespace BloodyShop.Client.UI.Panels.User
 
             Plugin.Logger.LogInfo(indexToBuy);
         }
+
+        private void createPagination()
+        {
+
+            if (items.Count > limit)
+            {
+                decimal totalPages = total / limit;
+                var last = Math.Ceiling(totalPages);
+
+                //INSERT LAYOUT
+                UIFactory.SetLayoutGroup<VerticalLayoutGroup>(ContentRoot, true, true, true, true, 4, padLeft: 5, padRight: 5);
+
+                ContentPagination = new GameObject();
+
+                // CONTAINER FOR PAGINATION
+                ContentPagination = UIFactory.CreateHorizontalGroup(ContentRoot.gameObject, "PaginationGroup", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
+
+                if (page > 0)
+                {
+                    // Previous BTN
+                    ButtonRef previousBtn = UIFactory.CreateButton(ContentPagination, "previousBtn", "<- Previous");
+                    RuntimeHelper.SetColorBlockAuto(previousBtn.Component,
+                       new Color(23 / 255f, 165 / 255f, 137 / 255f)
+                       );
+                    UIFactory.SetLayoutElement(previousBtn.Component.gameObject, minWidth: 340, minHeight: 30, flexibleHeight: 0, preferredHeight: 30, flexibleWidth: 0, preferredWidth: 340);
+                    previousBtn.OnClick += changePage;
+                }
+
+                if (page < last)
+                {
+                    // Next BTN
+                    ButtonRef nextBtn = UIFactory.CreateButton(ContentPagination, "nextBtn", "Next ->");
+                    RuntimeHelper.SetColorBlockAuto(nextBtn.Component,
+                       new Color(23 / 255f, 165 / 255f, 137 / 255f)
+                       );
+                    UIFactory.SetLayoutElement(nextBtn.Component.gameObject, minWidth: 340, minHeight: 30, flexibleHeight: 0, preferredHeight: 30, flexibleWidth: 0, preferredWidth: 340);
+                    nextBtn.OnClick += changePage;
+                }
+            }
+            
+        }
+
+        private void changePage()
+        {
+            var btnName = EventSystem.current.currentSelectedGameObject.name;
+            if(btnName == "nextBtn")
+            {
+                decimal totalPages = total / limit;
+                var last = Math.Ceiling(totalPages);
+                if (page <= last)
+                {
+                    page++;
+                }
+            } else
+            {
+                if(page > 0)
+                {
+                    page--;
+                }
+            }
+
+            UIManager.RefreshDataPanel();
+
+
+        }
+
 
     }
 

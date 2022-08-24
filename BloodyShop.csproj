@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Client\Coroutine\" />
     <Folder Include="Images\" />
   </ItemGroup>
 	<Target Name="CopyDLLsClient" AfterTargets="Build">
@@ -34,9 +35,9 @@
 		<Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="C:\Program Files (x86)\Steam\steamapps\common\VRising\BepInEx\plugins\" />
 		<Message Text="DLL Client Copied OK" Importance="High" />
 	</Target>
-	<Target Name="CopyDLLsServer" AfterTargets="Build">
+	<!--<Target Name="CopyDLLsServer" AfterTargets="Build">
 		<Message Text="DLL to V Rising Server" Importance="High" />
 		<Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="D:\steamcmd\steamapps\common\VRisingDedicatedServer\BepInEx\plugins\" />
 		<Message Text="DLL Server Copied OK" Importance="High" />
-	</Target>
+	</Target>-->
 </Project>

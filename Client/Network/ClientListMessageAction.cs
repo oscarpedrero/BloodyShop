@@ -26,9 +26,9 @@ namespace BloodyShop.Client.Network
             ClientDB.userModel = GameData.Users.GetCurrentUser();
             if (ClientDB.userModel.IsAdmin)
             {
-                if (ClientDB.itemModels.Count == 0)
+                if (ClientDB._normalizedItemNameCache.Count == 0)
                 {
-                    ClientDB.itemModels = GameData.Items.Prefabs;
+                    ClientDB.generateCacheItems();
                 }
             }
             

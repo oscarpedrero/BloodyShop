@@ -136,6 +136,10 @@ internal class UIManager
         DeleteItemPanel?.RefreshData();
         ClientListMessageAction.Send();
     }
+    public static void RefreshDataAddPanel()
+    {
+        AddItemPanel?.RefreshData();
+    }
 
     public static void CloseMenuPanel()
     {

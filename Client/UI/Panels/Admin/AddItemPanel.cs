@@ -11,6 +11,8 @@ using BloodyShop.Network.Messages;
 using BloodyShop.Client.Network;
 using UniverseLib.UI.Widgets;
 using System.Collections.Generic;
+using BloodyShop.Client.DB.Models;
+using System.Linq;
 
 namespace BloodyShop.Client.UI.Panels.Admin
 {
@@ -41,7 +43,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
         public ButtonRef OpenCloseStoreBtn;
         public List<GameObject> productsListLayers = new List<GameObject>();
 
-        public List<ItemModel> itemsModel = new();
+        public List<PrefabModel> itemsModel = new();
 
         public static float CurrentPanelWidth => Instance.Rect.rect.width;
         public static float CurrentPanelHeight => Instance.Rect.rect.height;
@@ -55,6 +57,8 @@ namespace BloodyShop.Client.UI.Panels.Admin
         List<InputFieldRef> stockArray = new();
 
         List<InputFieldRef> priceArray = new();
+
+        private static int limit = 10;
 
         public AddItemPanel(UIBase owner) : base(owner)
         {
@@ -90,6 +94,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
             // SEARCH INPUT ITEM
             searchInputTXT = UIFactory.CreateInputField(_contentSearch, "SearchInput", "Search Text");
             UIFactory.SetLayoutElement(searchInputTXT.GameObject, minWidth: MinWidth - 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 9999, preferredWidth: MinWidth - 100);
+            searchInputTXT.OnValueChanged += SearchActionText;
 
             // SEARCH BTN
             ButtonRef searchBtn = UIFactory.CreateButton(_contentSearch, "saveBtn-", "Search", new Color(52 / 255f, 73 / 255f, 94 / 255f));
@@ -129,13 +134,13 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
             var _scroolView = UIFactory.CreateScrollView(ContentRoot.gameObject, "scrollView", out contentScroll, out AutoSliderScrollbar autoSliderScrollbar);
 
-            CreateListProductsLayou();
+            CreateListProductsLayout();
 
             SetActive(true);
 
         }
 
-        public void CreateListProductsLayou()
+        public void CreateListProductsLayout()
         {
 
             UnityEngine.Object.Destroy(alertTXT, 0.2f);
@@ -144,7 +149,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
             productsListLayers = new List<GameObject>();
             stockArray = new();
             priceArray = new();
-            foreach (var item in itemsModel)
+            foreach (var item in itemsModel.OrderBy(x=> x.PrefabType).ThenBy(x => x.PrefabName).Take(limit))
             {
                 if (ShareDB.getCoin(out ItemModel coin))
                 {
@@ -154,11 +159,11 @@ namespace BloodyShop.Client.UI.Panels.Admin
                     // ITEM ICON
                     var imageIcon = UIFactory.CreateUIObject("IconItem-" + index, _contentProduct);
                     var iconImage = imageIcon.AddComponent<Image>();
-                    iconImage.sprite = item?.ManagedGameData.ManagedItemData?.Icon;
+                    iconImage.sprite = item?.PrefabIcon;
                     UIFactory.SetLayoutElement(imageIcon, minWidth: 60, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 60);
 
                     //NAME ITEM
-                    Text itemName = UIFactory.CreateLabel(_contentProduct, "itemNameTxt" + index, $" {item.Name}", TextAnchor.MiddleLeft);
+                    Text itemName = UIFactory.CreateLabel(_contentProduct, "itemNameTxt" + index, $" {item.PrefabName}", TextAnchor.MiddleLeft);
                     UIFactory.SetLayoutElement(itemName.gameObject, minWidth: 310, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 310);
 
                     // PRICE ITEM
@@ -195,9 +200,17 @@ namespace BloodyShop.Client.UI.Panels.Admin
             }
         }
 
+        private void SearchActionText(string str)
+        {
+
+            itemsModel = ClientDB.searchItemByName(str.ToLower());
+            RefreshData();
+
+        }
+
         private void SearchAction()
         {
-            itemsModel = ClientDB.searchItemByName(searchInputTXT.Text);
+            itemsModel = ClientDB.searchItemByName(searchInputTXT.Text.ToLower());
             RefreshData();
         }
 
@@ -205,7 +218,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
         {
             var btnName = EventSystem.current.currentSelectedGameObject.name;
             var index = Int32.Parse(btnName.Replace("saveBtn|", ""));
-            var item = itemsModel[index].Internals.PrefabGUID?.GuidHash;
+            var item = itemsModel[index].PrefabGUID;
             
 
             Plugin.Logger.LogInfo(item);
@@ -244,7 +257,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
             }
             productsListLayers = new List<GameObject>();
 
-            CreateListProductsLayou();
+            CreateListProductsLayout();
 
         }
 
