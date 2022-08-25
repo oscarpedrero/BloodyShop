@@ -11,6 +11,15 @@ namespace BloodyShop.Client.Network
         public static void Received(OpenSerializedMessage msg)
         {
 
+            if (ClientDB.userModel.IsAdmin)
+            {
+                UIManager.AdminMenuPanel.openShop();
+            }
+            else
+            {
+                UIManager.MenuPanel.openShop();
+            }
+
             UIManager.RefreshDataPanel();
 
             Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] OpenSerializedMessage");

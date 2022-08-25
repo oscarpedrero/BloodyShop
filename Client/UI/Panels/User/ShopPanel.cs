@@ -160,22 +160,19 @@ namespace BloodyShop.Client.UI.Panels.User
         {
             items = ItemsDB.searchItemByNameForShop(textSearch);
             total = items.Count;
-            //UnityEngine.Object.Destroy(alertTXT, 0.2f);
+
             productsListLayers = new List<GameObject>();
-            decimal totalPages = total / limit;
-            var last = Math.Ceiling(totalPages);
             skip = page * limit;
-            if (skip >= total)
+            if (total > 0 && skip >= total)
             {
                 page--;
+                if(page < 0)
+                {
+                    page = 0;
+                }
                 skip = page * limit;
             }
             var index = skip+1;
-            if (last < page)
-            {
-                page = (int)last;
-            }
-            Plugin.Logger.LogInfo("Total ITEMS 9: "+ items.Count+ "Text Search: "+textSearch);
             foreach (var item in items.Skip(skip).Take(limit))
             {
                 if (ShareDB.getCoin(out ItemModel coin))
@@ -228,8 +225,6 @@ namespace BloodyShop.Client.UI.Panels.User
             decimal totalPages = total / limit;
             var last = Math.Ceiling(totalPages);
 
-            if (last == 0) last = 1;
-
             //INSERT LAYOUT
             UIFactory.SetLayoutGroup<VerticalLayoutGroup>(ContentRoot, true, true, true, true, 4, padLeft: 5, padRight: 5);
 
@@ -238,30 +233,26 @@ namespace BloodyShop.Client.UI.Panels.User
             // CONTAINER FOR PAGINATION
             ContentPagination = UIFactory.CreateHorizontalGroup(ContentRoot.gameObject, "PaginationGroup", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
 
-            Text footerText = UIFactory.CreateLabel(ContentPagination, "footerText", $"Products: {total} Pages: {last}");
+            Text footerText = UIFactory.CreateLabel(ContentPagination, "footerText", $"Products: {total} Pages: {last + 1}");
             UIFactory.SetLayoutElement(footerText.gameObject, minWidth: 50, minHeight: 30, flexibleHeight: 0, preferredHeight: 30, flexibleWidth: 0, preferredWidth: 50);
             if (items.Count > limit)
             {
-                
-                var normalPage = page + 1;
-
-                if (page > 0)
+                var pageNumber = page + 1;
+                if ((page - 1) >= 0)
                 {
                     // Previous BTN
-                    ButtonRef previousBtn = UIFactory.CreateButton(ContentPagination, "previousBtn", $"<- Page {normalPage  - 1}");
+                    ButtonRef previousBtn = UIFactory.CreateButton(ContentPagination, "previousBtn", $"<- Page {pageNumber - 1}");
                     RuntimeHelper.SetColorBlockAuto(previousBtn.Component,
                        new Color(23 / 255f, 165 / 255f, 137 / 255f)
                        );
                     UIFactory.SetLayoutElement(previousBtn.Component.gameObject, minWidth: 150, minHeight: 30, flexibleHeight: 0, preferredHeight: 30, flexibleWidth: 0, preferredWidth: 150);
-                    //previousBtn.Component.transform.SetSiblingIndex(previousBtn.Component.transform.GetSiblingIndex() - 1);
                     previousBtn.OnClick += changePage;
                 }
 
-                Plugin.Logger.LogInfo($"PUTO SKIP "+ (skip * (page + 1)) +" PUTO TOTAL "+total);
-                if (page < last && (skip * (page + 1)) < total)
+                if ((page + 1) <= last)
                 {
                     // Next BTN
-                    ButtonRef nextBtn = UIFactory.CreateButton(ContentPagination, "nextBtn", $"Page {normalPage+1} ->");
+                    ButtonRef nextBtn = UIFactory.CreateButton(ContentPagination, "nextBtn", $"Page {pageNumber + 1} ->");
                     RuntimeHelper.SetColorBlockAuto(nextBtn.Component,
                         new Color(23 / 255f, 165 / 255f, 137 / 255f)
                         );
@@ -316,15 +307,23 @@ namespace BloodyShop.Client.UI.Panels.User
         private void BuyAction()
         {
             var btnName = EventSystem.current.currentSelectedGameObject.name;
-            var indexIntemUI = btnName.Replace("buyItemBtn-", "");
-            var prefabBuy = items[Int32.Parse(indexIntemUI)-1];
-            var indexBuy = ItemsDB.searchIndexForProduct(prefabBuy.PrefabGUID);
-            var msg = new BuySerializedMessage()
+            var indexItemUI = btnName.Replace("buyItemBtn-", "");
+            Plugin.Logger.LogInfo($"BUY INDEX BEFORE: {indexItemUI}");
+            var prefabBuy = items[Int32.Parse(indexItemUI) - 1];
+            indexItemUI = ItemsDB.searchIndexForProduct(prefabBuy.PrefabGUID).ToString();
+
+            Plugin.Logger.LogInfo($"BUY INDEX AFTER: {indexItemUI}");
+
+            if (indexItemUI != "-1")
             {
-                ItemIndex = indexBuy.ToString(),
-            };
-            ClientBuyMessageAction.Send(msg);
-            RefreshAction();
+                var msg = new BuySerializedMessage()
+                {
+                    ItemIndex = indexItemUI,
+                };
+                ClientBuyMessageAction.Send(msg);
+                RefreshAction();
+            }
+
         }
 
         
@@ -334,18 +333,10 @@ namespace BloodyShop.Client.UI.Panels.User
             var btnName = EventSystem.current.currentSelectedGameObject.name;
             if(btnName == "nextBtn")
             {
-                decimal totalPages = total / limit;
-                var last = Math.Ceiling(totalPages);
-                if (page <= last)
-                {
-                    page++;
-                }
+                page++;
             } else
             {
-                if(page > 0)
-                {
-                    page--;
-                }
+                page--;
             }
 
             RefreshData();

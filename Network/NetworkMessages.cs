@@ -12,6 +12,21 @@ namespace BloodyShop.Server.Network
         {
             Plugin.Logger.LogInfo($"RegisterBiDirectional Messages");
 
+            VNetworkRegistry.RegisterBiDirectional<ConfigSerializedMessage>(
+                // invoked when the server sends a message to the client
+                msg =>
+                {
+                    ClientConfigMessageAction.Received(msg);
+                },
+
+                // invoked when a client sends a message to the server
+                (fromCharacter, msg) =>
+                {
+                    var user = VWorld.Server.EntityManager.GetComponentData<User>(fromCharacter.User);
+                    ServerConfigMessageAction.Received(user, msg);
+                }
+            );
+
             VNetworkRegistry.RegisterBiDirectional<ListSerializedMessage>(
                 // invoked when the server sends a message to the client
                 msg =>
@@ -100,6 +115,7 @@ namespace BloodyShop.Server.Network
 
         public static void UnregisterMessages()
         {
+            VNetworkRegistry.Unregister<ConfigSerializedMessage>();
             VNetworkRegistry.Unregister<ListSerializedMessage>();
             VNetworkRegistry.Unregister<BuySerializedMessage>();
             VNetworkRegistry.Unregister<DeleteSerializedMessage>();

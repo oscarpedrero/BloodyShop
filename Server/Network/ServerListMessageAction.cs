@@ -30,17 +30,6 @@ namespace BloodyShop.Server.Network
             var jsonOutPut = JsonSerializer.Serialize(productList);
 
             msg.ItemsJson = jsonOutPut;
-            msg.CoinGUID = ShareDB.getCoinGUID().ToString();
-            msg.ShopName = ConfigDB.getStoreName();
-
-            if (ConfigDB.getShopEnabled())
-            {
-                msg.ShopOpen = "1";
-            }
-            else
-            {
-                msg.ShopOpen = "0";
-            }
 
             return msg;
         }
@@ -48,7 +37,7 @@ namespace BloodyShop.Server.Network
         public static void Send(User fromCharacter, ListSerializedMessage msg)
         {
             VNetwork.SendToClient(fromCharacter, msg);
-            Plugin.Logger.LogInfo($"[SERVER] [SEND] ListSerializedMessage {fromCharacter.CharacterName} - {msg.ItemsJson} - {msg.CoinGUID} - {msg.ShopName} - {msg.ShopOpen}");
+            Plugin.Logger.LogInfo($"[SERVER] [SEND] ListSerializedMessage {fromCharacter.CharacterName} - {msg.ItemsJson}");
         }
 
     }

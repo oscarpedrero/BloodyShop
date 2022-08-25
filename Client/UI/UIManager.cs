@@ -37,119 +37,196 @@ internal class UIManager
     public static MenuPanel MenuPanel { get; private set; }
     public static AdminMenuPanel AdminMenuPanel { get; private set; }
 
-    public static bool ActiveShopPanel { get;  set; }
-    public static bool ActiveAddItemPanel { get;  set; }
-    public static bool ActiveDeleteItemPanel { get;  set; }
-    public static bool ActiveAdminMenuPanel { get;  set; }
-    public static bool ActiveMenuPanel { get;  set; }
     public static int SizeOfProdutcs { get;  set; }
 
     static void OnInitialized()
     {
         Int32 unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
         UiBase = UniversalUI.RegisterUI(unixTimestamp.ToString(), UiUpdate);
-        ActiveShopPanel = false;
-        ActiveDeleteItemPanel = false;
-        ActiveAdminMenuPanel = false;
-        ActiveMenuPanel = false;
+    }
+
+    public static void CreateAllPanels()
+    {
+        CreateMenuPanel();
+        CreateShopPanel();
+        CreateAddItemPanel();
+        CreateDeletePanel();
+    }
+
+    public static void showAllPanels()
+    {
+        ShowMenuPanel();
+        ShowShopPanel();
+        ShowAddItemPanel();
+        ShowDeletePanel();
+    }
+
+    public static void HideAllPanels()
+    {
+        HideMenuPanel();
+        HideShopPanel();
+        HideAddItemPanel();
+        HideDeletePanel();
+    }
+
+    public static void DestroyAllPanels()
+    {
+        HideMenuPanel();
+        HideShopPanel();
+        HideAddItemPanel();
+        HideDeletePanel();
     }
 
     public static void CreateMenuPanel()
     {
         if (ClientDB.userModel.IsAdmin)
         {
-            ActiveAdminMenuPanel = true;
             AdminMenuPanel = new AdminMenuPanel(UiBase);
+            AdminMenuPanel.SetActive(true);
         } else
         {
-            ActiveMenuPanel = true;
             MenuPanel = new MenuPanel(UiBase);
+            MenuPanel.SetActive(true);
         }
     }
 
-    public static void OpenShopPanel()
+    public static void ShowMenuPanel()
+    {
+        if (ClientDB.userModel.IsAdmin)
+        {
+            AdminMenuPanel.SetActive(true);
+        }
+        else
+        {
+            MenuPanel.SetActive(true);
+        }
+    }
+
+    public static void HideMenuPanel()
+    {
+        if (ClientDB.userModel.IsAdmin)
+        {
+            AdminMenuPanel.SetActive(false);
+        } else
+        {
+            MenuPanel.SetActive(false);
+        }
+    }
+
+    public static void DestroyMenuPanel()
+    {
+        if (ClientDB.userModel.IsAdmin)
+        {
+            AdminMenuPanel.Destroy();
+        } else
+        {
+            MenuPanel.Destroy();
+        }
+    }
+
+    public static void CreateShopPanel()
+    {
+        ShopPanel = new ShopPanel(UiBase);
+        ShopPanel.SetActive(false);
+    }
+
+    public static void ShowShopPanel()
     {
         if (ClientDB.shopOpen)
         {
-            if (ActiveShopPanel)
-            {
-                ShopPanel?.Toggle();
-            }
-            else
-            {
-                ActiveShopPanel = true;
-                ShopPanel = new ShopPanel(UiBase);
-            }
+            ShopPanel.SetActive(true);
         }
-        
     }
 
-    public static void OpenAddItemPanel()
+    public static void HideShopPanel()
+    {
+        ShopPanel.SetActive(false);
+    }
+
+    public static void DestroyShopPanel()
+    {
+        ShopPanel.Destroy();
+    }
+
+    public static void CreateAddItemPanel()
     {
         if (ClientDB.userModel.IsAdmin)
         {
-            if (ActiveAddItemPanel)
-            {
-                AddItemPanel?.Toggle();
-            }
-            else
-            {
-                ActiveAddItemPanel = true;
-                AddItemPanel = new AddItemPanel(UiBase);
-            }
+            AddItemPanel = new AddItemPanel(UiBase);
+            AddItemPanel.SetActive(false);
         }
-
     }
 
-    public static void OpenDeletePanel()
+    public static void ShowAddItemPanel()
     {
         if (ClientDB.userModel.IsAdmin)
         {
-            if (ActiveDeleteItemPanel)
-            {
-                DeleteItemPanel?.Toggle();
-            }
-            else
-            {
-                ActiveDeleteItemPanel = true;
-                DeleteItemPanel = new DeleteItemPanel(UiBase);
-            }
+            AddItemPanel.SetActive(true);
         }
-
     }
 
-    public static void OpenAdminMenuPanel()
+    public static void HideAddItemPanel()
     {
         if (ClientDB.userModel.IsAdmin)
         {
-            if (ActiveAdminMenuPanel)
-            {
-                AdminMenuPanel?.Toggle();
-            }
-            else
-            {
-                ActiveAdminMenuPanel = true;
-                AdminMenuPanel = new AdminMenuPanel(UiBase);
-            }
+            AddItemPanel.SetActive(false);
         }
-
     }
+
+    public static void DestroyAddItemPanel()
+    {
+        if (ClientDB.userModel.IsAdmin)
+        {
+            AddItemPanel.Destroy();
+        }
+    }
+
+    public static void CreateDeletePanel()
+    {
+        if (ClientDB.userModel.IsAdmin)
+        {
+            DeleteItemPanel = new DeleteItemPanel(UiBase);
+            DeleteItemPanel.SetActive(false);
+        }
+    }
+
+    public static void ShowDeletePanel()
+    {
+        if (ClientDB.userModel.IsAdmin)
+        {
+            DeleteItemPanel.SetActive(true);
+        }
+    }
+
+    public static void HideDeletePanel()
+    {
+        if (ClientDB.userModel.IsAdmin)
+        {
+            DeleteItemPanel.SetActive(false);
+        }
+    }
+
+    public static void DetroyDeletePanel()
+    {
+        if (ClientDB.userModel.IsAdmin)
+        {
+            DeleteItemPanel.Destroy();
+        }
+    }
+
     public static void RefreshDataPanel()
     {
-        ShopPanel?.RefreshData();
-        DeleteItemPanel?.RefreshData();
+        ShopPanel.RefreshData();
+        if (ClientDB.userModel.IsAdmin)
+        {
+            DeleteItemPanel.RefreshData();
+        }
         ClientListMessageAction.Send();
     }
+
     public static void RefreshDataAddPanel()
     {
         AddItemPanel?.RefreshData();
-    }
-
-    public static void CloseMenuPanel()
-    {
-        MenuPanel?.Toggle();
-        ShopPanel?.Toggle();
-        DeleteItemPanel?.Toggle();
     }
 
     static void UiUpdate()

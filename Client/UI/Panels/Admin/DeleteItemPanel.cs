@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
-using BloodyShop.Client.DB;
 using UnityEngine.EventSystems;
 using BloodyShop.Network.Messages;
 using BloodyShop.Client.Network;
@@ -22,7 +21,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         public static DeleteItemPanel Instance { get; private set; }
 
-        public override string Name => "Admin Shop";
+        public override string Name => "Admin Delete Product";
 
         public override bool CanDragAndResize => true;
 
@@ -37,7 +36,6 @@ namespace BloodyShop.Client.UI.Panels.Admin
         public GameObject ContentHolder;
         public GameObject ContentProduct;
         public RectTransform ContentRect;
-        public Text alertTXT;
         public GameObject contentScroll;
         public Dropdown dropdowntype;
         public Dropdown dropdownitem;
@@ -55,9 +53,6 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         public static bool active = false;
 
-        private static string[] itemsGame { get; set; }
-        private static string[] itemsType { get; set; }
-
         private static int limit = 10;
         private static int page = 0;
         private static int total = 0;
@@ -71,7 +66,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         public override void Update()
         {
-            //InspectorManager.Update();
+            
         }
 
         public override void OnFinishResize()
@@ -155,25 +150,21 @@ namespace BloodyShop.Client.UI.Panels.Admin
         public void CreateListProductsLayout()
         {
 
-            
-            UnityEngine.Object.Destroy(alertTXT, 0.2f);
             items = ItemsDB.searchItemByNameForShop(textSearch);
             total = items.Count;
-            //UnityEngine.Object.Destroy(alertTXT, 0.2f);
+
             productsListLayers = new List<GameObject>();
-            decimal totalPages = total / limit;
-            var last = Math.Ceiling(totalPages);
             skip = page * limit;
-            if(skip >= total)
+            if (total > 0 && skip >= total)
             {
                 page--;
+                if (page < 0)
+                {
+                    page = 0;
+                }
                 skip = page * limit;
             }
             var index = skip + 1;
-            if (last < page)
-            {
-                page = (int)last;
-            }
             
             foreach (var item in items.Skip(skip).Take(10))
             {
@@ -229,8 +220,6 @@ namespace BloodyShop.Client.UI.Panels.Admin
             decimal totalPages = total / limit;
             var last = Math.Ceiling(totalPages);
 
-            if (last == 0) last = 1;
-
             //INSERT LAYOUT
             UIFactory.SetLayoutGroup<VerticalLayoutGroup>(ContentRoot, true, true, true, true, 4, padLeft: 5, padRight: 5);
 
@@ -239,30 +228,27 @@ namespace BloodyShop.Client.UI.Panels.Admin
             // CONTAINER FOR PAGINATION
             ContentPagination = UIFactory.CreateHorizontalGroup(ContentRoot.gameObject, "PaginationGroup", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
 
-            Text footerText = UIFactory.CreateLabel(ContentPagination, "footerText", $"Products: {total} Pages: {last}");
+            Text footerText = UIFactory.CreateLabel(ContentPagination, "footerText", $"Products: {total} Pages: {last + 1 }");
             UIFactory.SetLayoutElement(footerText.gameObject, minWidth: 50, minHeight: 30, flexibleHeight: 0, preferredHeight: 30, flexibleWidth: 0, preferredWidth: 50);
             if (items.Count > limit)
             {
-
-                var normalPage = page + 1;
-
-                if (page > 0)
+                var pageNumber = page + 1;
+                if ((page - 1) >= 0)
                 {
                     // Previous BTN
-                    ButtonRef previousBtn = UIFactory.CreateButton(ContentPagination, "previousBtn", $"<- Page {normalPage - 1}");
+                    ButtonRef previousBtn = UIFactory.CreateButton(ContentPagination, "previousBtn", $"<- Page {pageNumber - 1}");
                     RuntimeHelper.SetColorBlockAuto(previousBtn.Component,
                        new Color(23 / 255f, 165 / 255f, 137 / 255f)
                        );
                     UIFactory.SetLayoutElement(previousBtn.Component.gameObject, minWidth: 150, minHeight: 30, flexibleHeight: 0, preferredHeight: 30, flexibleWidth: 0, preferredWidth: 150);
-                    //previousBtn.Component.transform.SetSiblingIndex(previousBtn.Component.transform.GetSiblingIndex() - 1);
                     previousBtn.OnClick += changePage;
                 }
-
-                Plugin.Logger.LogInfo($"PUTO SKIP " + (skip * (page + 1)) + " PUTO TOTAL " + total);
-                if (page < last && (skip * (page + 1)) < total)
+                
+                if ((page + 1)<=last)
                 {
+                    
                     // Next BTN
-                    ButtonRef nextBtn = UIFactory.CreateButton(ContentPagination, "nextBtn", $"Page {normalPage + 1} ->");
+                    ButtonRef nextBtn = UIFactory.CreateButton(ContentPagination, "nextBtn", $"Page {pageNumber + 1} ->");
                     RuntimeHelper.SetColorBlockAuto(nextBtn.Component,
                         new Color(23 / 255f, 165 / 255f, 137 / 255f)
                         );
@@ -295,17 +281,21 @@ namespace BloodyShop.Client.UI.Panels.Admin
         private void DeleteAction()
         {
             var btnName = EventSystem.current.currentSelectedGameObject.name;
-            var indexIntemUI = btnName.Replace("deleteItemBtn-", "");
-            var prefabDelete = items[Int32.Parse(indexIntemUI)-1];
-            var indexToDelete = ItemsDB.searchIndexForProduct(prefabDelete.PrefabGUID);
-            var msg = new DeleteSerializedMessage()
-            {
-                Item = indexToDelete.ToString()
-            };
-            ClientDeleteMessageAction.Send(msg);
-            RefreshAction();
+            var indexItemUI = btnName.Replace("deleteItemBtn-", "");
+            var prefabDelete = items[Int32.Parse(indexItemUI) - 1];
+            indexItemUI = ItemsDB.searchIndexForProduct(prefabDelete.PrefabGUID).ToString();
 
-            Plugin.Logger.LogInfo(indexToDelete);
+            Plugin.Logger.LogInfo($"DELETE INDEX: {indexItemUI}");
+
+            if (indexItemUI != "-1")
+            {
+                var msg = new DeleteSerializedMessage()
+                {
+                    Item = indexItemUI
+                };
+                ClientDeleteMessageAction.Send(msg);
+                RefreshAction();
+            }
         }
 
         private void RefreshAction()
@@ -322,11 +312,6 @@ namespace BloodyShop.Client.UI.Panels.Admin
             productsListLayers = new List<GameObject>();
             var _contentProduct = UIFactory.CreateHorizontalGroup(contentScroll, "ContentItem", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
 
-            // Alert ITEM
-            alertTXT = new Text();
-            alertTXT = UIFactory.CreateLabel(_contentProduct, "AlertTxt", $"Refreshing...", TextAnchor.MiddleCenter);
-            UIFactory.SetLayoutElement(alertTXT.gameObject, flexibleHeight: 9999, flexibleWidth: 0);
-
             UnityEngine.Object.Destroy(ContentPagination, 0f);
 
         }
@@ -336,19 +321,11 @@ namespace BloodyShop.Client.UI.Panels.Admin
             var btnName = EventSystem.current.currentSelectedGameObject.name;
             if (btnName == "nextBtn")
             {
-                decimal totalPages = total / limit;
-                var last = Math.Ceiling(totalPages);
-                if (page <= last)
-                {
                     page++;
-                }
             }
             else
             {
-                if (page > 0)
-                {
                     page--;
-                }
             }
 
             RefreshData();

@@ -157,17 +157,17 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         private static void OpenShopPanel()
         {
-            UIManager.OpenShopPanel();
+            UIManager.ShowShopPanel();
         }
 
         private static void OpenDeletePanel()
         {
-            UIManager.OpenDeletePanel();
+            UIManager.ShowDeletePanel();
         }
 
         private static void OpenAddItemPanel()
         {
-            UIManager.OpenAddItemPanel();
+            UIManager.ShowAddItemPanel();
         }
 
         private void configShopButtonPanel()

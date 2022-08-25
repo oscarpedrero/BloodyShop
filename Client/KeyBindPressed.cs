@@ -9,6 +9,7 @@ namespace BloodyShop.Client
 {
     public class KeyBindPressed
     {
+        public static bool UIActive = true;
         internal static void OnKeyPressedOpenPanel(KeyBindFunction keybindFunction)
         {
             switch (keybindFunction)
@@ -16,91 +17,15 @@ namespace BloodyShop.Client
                 case KeyBindFunction.ToggleShopUI:
                     if (ClientMod.UIInit)
                     {
-
-                        if (UIManager.ActiveShopPanel || UIManager.ActiveDeleteItemPanel || UIManager.ActiveAddItemPanel)
+                        if (UIActive)
                         {
-                            UIManager.ActiveShopPanel = false;
-                            try
-                            {
-                                UIManager.ShopPanel?.Destroy();
-                            } catch { }
-                            
-                            if (ClientDB.userModel.IsAdmin)
-                            {
-                                UIManager.ActiveDeleteItemPanel = false;
-                                UIManager.DeleteItemPanel?.Destroy();
-                            }
-                            if (ClientDB.userModel.IsAdmin)
-                            {
-                                UIManager.ActiveAddItemPanel = false;
-                                UIManager.AddItemPanel?.Destroy();
-                            }
-
-                            if (UIManager.ActiveMenuPanel == true && !ClientDB.userModel.IsAdmin)
-                            {
-                                try
-                                {
-                                    UIManager.MenuPanel?.Toggle();
-                                    UIManager.ActiveMenuPanel = false;
-                                }
-                                catch { }
-                            }
-
-                            if (UIManager.ActiveAdminMenuPanel == true && ClientDB.userModel.IsAdmin)
-                            {
-                                try
-                                {
-                                    UIManager.AdminMenuPanel?.Toggle();
-                                    UIManager.ActiveAdminMenuPanel = false;
-                                }
-                                catch { }
-                            }
-                        }
-                        else
+                            UIActive = false;
+                            UIManager.HideAllPanels();
+                        } else
                         {
-                            if (UIManager.ActiveShopPanel == false)
-                            {
-                                UIManager.OpenShopPanel();
-                            }
-                            if (UIManager.ActiveDeleteItemPanel == false)
-                            {
-                                if (ClientDB.userModel.IsAdmin)
-                                {
-                                    UIManager.OpenDeletePanel();
-                                }
-                            }
-                            if (UIManager.ActiveAddItemPanel == false)
-                            {
-                                if (ClientDB.userModel.IsAdmin)
-                                {
-                                    UIManager.OpenAddItemPanel();
-                                }
-                            }
-                            if (UIManager.ActiveMenuPanel == false && !ClientDB.userModel.IsAdmin)
-                            {
-                                try
-                                {
-                                    UIManager.MenuPanel?.Toggle();
-                                    UIManager.ActiveMenuPanel = true;
-                                }
-                                catch { }
-                            }
-
-                            if (UIManager.ActiveAdminMenuPanel == false && ClientDB.userModel.IsAdmin)
-                            {
-                                try
-                                {
-                                    UIManager.AdminMenuPanel?.Toggle();
-                                    UIManager.ActiveAdminMenuPanel = true;
-                                }
-                                catch { }
-                            }
-
-                            
-                            
+                            UIActive = true;
+                            UIManager.ShowMenuPanel();
                         }
-                        
-                       
                     }
                     break;
                 default:

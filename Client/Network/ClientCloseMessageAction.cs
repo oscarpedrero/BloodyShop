@@ -1,6 +1,7 @@
 ﻿using BloodyShop.Client.DB;
 using BloodyShop.Client.UI;
 using BloodyShop.Network.Messages;
+using BloodyShop.Server.DB;
 using Wetstone.API;
 
 namespace BloodyShop.Client.Network
@@ -10,15 +11,18 @@ namespace BloodyShop.Client.Network
 
         public static void Received(CloseSerializedMessage msg)
         {
-            try
-            {
-                UIManager.ShopPanel?.Destroy();
-            } catch { }
-            
-            UIManager.ActiveShopPanel = false;
+
+            UIManager.HideShopPanel();
+
             ClientDB.shopOpen = false;
-            UIManager.MenuPanel?.closeShop();
-            UIManager.AdminMenuPanel?.closeShop();
+
+            if (ClientDB.userModel.IsAdmin)
+            {
+                UIManager.AdminMenuPanel.closeShop();
+            } else
+            {
+                UIManager.MenuPanel.closeShop();
+            }
 
             Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] CloseSerializedMessage");
         }

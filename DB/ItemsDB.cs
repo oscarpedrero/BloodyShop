@@ -19,6 +19,7 @@ namespace BloodyShop.DB
         public static List<(string name, int GUID, string type, PrefabModel model)> _normalizedItemShopNameCache = new();
 
         static string _lastQueryAdd;
+        static List<PrefabModel> _lastResultAdd;
 
         public static void generateCacheItems()
         {
@@ -42,6 +43,30 @@ namespace BloodyShop.DB
             Plugin.Logger.LogInfo($"Total Prefabs = {_normalizedItemNameCache.Count}");
         }
 
+        public static bool setProductList(List<ItemShopModel> list)
+        {
+
+            ProductList = new();
+            _normalizedItemShopNameCache = new();
+            foreach (var itemShopModel in list)
+            {
+                var itemModel = GameData.Items.GetPrefabById(new PrefabGUID(itemShopModel.id));
+                var prefabModel = new PrefabModel();
+                prefabModel.PrefabName = itemModel?.Name;
+                prefabModel.PrefabType = itemModel?.ItemType.ToString();
+                prefabModel.PrefabGUID = itemModel?.Internals.PrefabGUID?.GuidHash ?? 0;
+                prefabModel.PrefabIcon = itemModel?.ManagedGameData.ManagedItemData?.Icon;
+                prefabModel.PrefabPrice = itemShopModel.price;
+                prefabModel.PrefabStock = itemShopModel.stock;
+                ProductList.Add(prefabModel);
+                _normalizedItemShopNameCache.Add((prefabModel.PrefabName.ToString().ToLower(), prefabModel.PrefabGUID, prefabModel.PrefabType.ToString().ToLower(), prefabModel));
+            }
+
+            Plugin.Logger.LogInfo($"Total product List Converted {ProductList.Count}");
+
+            return true;
+        }
+
         public static List<PrefabModel> searchItemByNameForAdd(string text)
         {
 
@@ -50,7 +75,7 @@ namespace BloodyShop.DB
                 return new List<PrefabModel>();
             }
 
-            if (string.Equals(text, _lastQueryAdd)) return new List<PrefabModel>(); // avoid duplicate work, idk what calls this
+            if (string.Equals(text, _lastQueryAdd)) return _lastResultAdd; // avoid duplicate work, idk what calls this
             _lastQueryAdd = text;
 
             var result = new List<PrefabModel>();
@@ -62,14 +87,14 @@ namespace BloodyShop.DB
                 }
             }
 
-            return result.OrderBy(x => x.PrefabType).ThenBy(x => x.PrefabName).ToList();
+            _lastResultAdd = result.OrderBy(x => x.PrefabType).ThenBy(x => x.PrefabName).ToList();
+
+            return _lastResultAdd;
         }
 
         public static List<PrefabModel> searchItemByNameForShop(string text)
         {
 
-            /*if (text != "" && string.Equals(text, _lastQueryShop)) return null; // avoid duplicate work, idk what calls this
-            _lastQueryShop = text;*/
             var result = new List<PrefabModel>();
             foreach (var item in _normalizedItemShopNameCache)
             {
@@ -95,75 +120,6 @@ namespace BloodyShop.DB
             }
 
             return -1;
-        }
-
-        /*public static List<PrefabModel> searchItemByType(string text)
-        {
-            if (text == "")
-            {
-                return null;
-            }
-
-            if (string.Equals(text, _lastQueryByName)) return null; // avoid duplicate work, idk what calls this
-            _lastQueryByName = text;
-            //var sw = new Stopwatch();
-            var result = new List<PrefabModel>();
-            foreach (var item in _normalizedItemNameCache)
-            {
-                if (item.type == text)
-                {
-                    result.Add(item.model);
-                }
-            }
-
-            return result;
-        }*/
-
-        /*public static int searchIndexByGUID(int prefabGUID)
-        {
-
-            var result = new List<PrefabModel>();
-            var index = 0;
-            foreach (var item in _normalizedItemShopNameCache)
-            {
-                if (item.GUID == prefabGUID)
-                {
-                    return index;
-                }
-                index++;
-            }
-
-            return -1;
-        }*/
-
-        public static bool setProductList(List<ItemShopModel> list)
-        {
-
-            ProductList = new();
-            _normalizedItemShopNameCache = new();
-            foreach (var itemShopModel in list)
-            {
-                var itemModel = GameData.Items.GetPrefabById(new PrefabGUID(itemShopModel.id));
-                var prefabModel = new PrefabModel();
-                prefabModel.PrefabName = itemModel?.Name;
-                prefabModel.PrefabType = itemModel?.ItemType.ToString();
-                prefabModel.PrefabGUID = itemModel?.Internals.PrefabGUID?.GuidHash ?? 0;
-                prefabModel.PrefabIcon = itemModel?.ManagedGameData.ManagedItemData?.Icon;
-                prefabModel.PrefabPrice = itemShopModel.price;
-                prefabModel.PrefabStock = itemShopModel.stock;
-                ProductList.Add(prefabModel);
-                _normalizedItemShopNameCache.Add((prefabModel.PrefabName.ToString().ToLower(), prefabModel.PrefabGUID, prefabModel.PrefabType.ToString().ToLower(), prefabModel));
-            }
-
-            if(ProductList.Count > 0)
-            {
-                ProductList = ProductList.OrderBy(x => x.PrefabType).ToList();
-                _normalizedItemShopNameCache = _normalizedItemShopNameCache.OrderBy(x => x.type).ToList();
-            }
-
-            Plugin.Logger.LogInfo($"Total product List Converted {ProductList.Count}");
-
-            return true;
         }
 
         public static List<ItemShopModel> getProductListForSaveJSON()

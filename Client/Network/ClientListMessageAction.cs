@@ -16,60 +16,21 @@ namespace BloodyShop.Client.Network
 
         public static void Received(ListSerializedMessage msg)
         {
-            Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] ListSerializedMessage {msg.ItemsJson} - {msg.CoinGUID} - {msg.ShopName} - {msg.ShopOpen} - {msg.ShopOpen}");
+            Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] ListSerializedMessage {msg.ItemsJson}");
 
             var productList = JsonSerializer.Deserialize<List<ItemShopModel>>(msg.ItemsJson);
+
             ItemsDB.setProductList(productList);
-            ShareDB.setCoinGUID(Int32.Parse(msg.CoinGUID));
-            ClientDB.shopName = msg.ShopName;
-            ClientDB.prefix = "!" + ClientDB.shopName.ToLower().Replace(" ", "");
-            ClientDB.userModel = GameData.Users.GetCurrentUser();
+            
+
             if (ClientDB.userModel.IsAdmin)
             {
-                if (ItemsDB._normalizedItemNameCache.Count == 0)
-                {
-                    ItemsDB.generateCacheItems();
-                }
-            }
-            
-            
-
-            if (msg.ShopOpen == "1")
-            {
-                ClientDB.shopOpen = true;
-
-            } else
-            {
-                ClientDB.shopOpen = false;
+                UIManager.DeleteItemPanel.RefreshData();
+                UIManager.DeleteItemPanel.CreateListProductsLayout();
             }
 
-            if (!ClientMod.UIInit)
-            {
-                ClientMod.UIInit = true;
-                UIManager.CreateMenuPanel();
-            } else
-            {
-                if (ClientDB.shopOpen)
-                {
-                    UIManager.MenuPanel?.openShop();
-                    UIManager.AdminMenuPanel?.openShop();
-                } else
-                {
-                    UIManager.MenuPanel?.closeShop();
-                    UIManager.AdminMenuPanel?.closeShop();
-                }
-                if (UIManager.ShopPanel?.productsListLayers.Count > 0)
-                {
-                    UIManager.ShopPanel?.RefreshData();
-                }
-
-                if (UIManager.DeleteItemPanel?.productsListLayers.Count > 0)
-                {
-                    UIManager.DeleteItemPanel?.RefreshData();
-                }
-                UIManager.ShopPanel?.CreateListProductsLayout();
-                UIManager.DeleteItemPanel?.CreateListProductsLayout();
-            }
+            UIManager.ShopPanel.RefreshData();
+            UIManager.ShopPanel.CreateListProductsLayout();
             
         }
 

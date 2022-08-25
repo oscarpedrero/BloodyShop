@@ -29,7 +29,7 @@ namespace BloodyShop.Client.UI.Panels.User
             Instance = this;
         }
 
-        public override string Name => "BloodyShopMenu";
+        public override string Name => "Bloody Shop Menu";
 
         public override int MinWidth => 360;
 
@@ -80,13 +80,6 @@ namespace BloodyShop.Client.UI.Panels.User
 
             configShopButtonPanel();
 
-            // close BTNH
-            /*closeBtn = UIFactory.CreateButton(navbarPanel, "CloseButton", "Close");
-            UIFactory.SetLayoutElement(closeBtn.Component.gameObject, minHeight: 25, minWidth: 60, flexibleWidth: 0);
-            RuntimeHelper.SetColorBlock(closeBtn.Component, new Color(0.63f, 0.32f, 0.31f),
-                new Color(0.81f, 0.25f, 0.2f), new Color(0.6f, 0.18f, 0.16f));
-            closeBtn.OnClick += CloseMenuPanel;*/
-
         }
 
         public static void SetNavBarAnchor()
@@ -116,23 +109,12 @@ namespace BloodyShop.Client.UI.Panels.User
 
         public void openShop()
         {
-
             configShopButtonPanel();
         }
 
         private static void OpenShopPanel()
         {
-            UIManager.OpenShopPanel();
-        }
-
-        private static void OpenMenuAdminPanel()
-        {
-            UIManager.OpenAdminMenuPanel();
-        }
-
-        private static void CloseMenuPanel()
-        {
-            UIManager.CloseMenuPanel();
+            UIManager.ShowShopPanel();
         }
 
         private void configShopButtonPanel()
