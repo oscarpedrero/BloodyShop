@@ -17,8 +17,8 @@ namespace BloodyShop.Client.DB
         public static bool gameDataInit { get; set; } = false;
         public static string shopName { get; set; }
         public static bool shopOpen { get; set; } = true;
+        public static bool IsAdmin { get; set; } = false;
         public static string prefix { get; set; }
-        public static UserModel userModel { get; set; }
         
 
         /*public static List<ItemModel> searchItemByName(string text)

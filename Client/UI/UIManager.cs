@@ -79,7 +79,7 @@ internal class UIManager
 
     public static void CreateMenuPanel()
     {
-        if (ClientDB.userModel.IsAdmin)
+        if (ClientDB.IsAdmin)
         {
             AdminMenuPanel = new AdminMenuPanel(UiBase);
             AdminMenuPanel.SetActive(true);
@@ -92,7 +92,7 @@ internal class UIManager
 
     public static void ShowMenuPanel()
     {
-        if (ClientDB.userModel.IsAdmin)
+        if (ClientDB.IsAdmin)
         {
             AdminMenuPanel.SetActive(true);
         }
@@ -104,7 +104,7 @@ internal class UIManager
 
     public static void HideMenuPanel()
     {
-        if (ClientDB.userModel.IsAdmin)
+        if (ClientDB.IsAdmin)
         {
             AdminMenuPanel.SetActive(false);
         } else
@@ -115,7 +115,7 @@ internal class UIManager
 
     public static void DestroyMenuPanel()
     {
-        if (ClientDB.userModel.IsAdmin)
+        if (ClientDB.IsAdmin)
         {
             AdminMenuPanel.Destroy();
         } else
@@ -150,7 +150,7 @@ internal class UIManager
 
     public static void CreateAddItemPanel()
     {
-        if (ClientDB.userModel.IsAdmin)
+        if (ClientDB.IsAdmin)
         {
             AddItemPanel = new AddItemPanel(UiBase);
             AddItemPanel.SetActive(false);
@@ -159,7 +159,7 @@ internal class UIManager
 
     public static void ShowAddItemPanel()
     {
-        if (ClientDB.userModel.IsAdmin)
+        if (ClientDB.IsAdmin)
         {
             AddItemPanel.SetActive(true);
         }
@@ -167,7 +167,7 @@ internal class UIManager
 
     public static void HideAddItemPanel()
     {
-        if (ClientDB.userModel.IsAdmin)
+        if (ClientDB.IsAdmin)
         {
             AddItemPanel.SetActive(false);
         }
@@ -175,7 +175,7 @@ internal class UIManager
 
     public static void DestroyAddItemPanel()
     {
-        if (ClientDB.userModel.IsAdmin)
+        if (ClientDB.IsAdmin)
         {
             AddItemPanel.Destroy();
         }
@@ -183,7 +183,7 @@ internal class UIManager
 
     public static void CreateDeletePanel()
     {
-        if (ClientDB.userModel.IsAdmin)
+        if (ClientDB.IsAdmin)
         {
             DeleteItemPanel = new DeleteItemPanel(UiBase);
             DeleteItemPanel.SetActive(false);
@@ -192,7 +192,7 @@ internal class UIManager
 
     public static void ShowDeletePanel()
     {
-        if (ClientDB.userModel.IsAdmin)
+        if (ClientDB.IsAdmin)
         {
             DeleteItemPanel.SetActive(true);
         }
@@ -200,7 +200,7 @@ internal class UIManager
 
     public static void HideDeletePanel()
     {
-        if (ClientDB.userModel.IsAdmin)
+        if (ClientDB.IsAdmin)
         {
             DeleteItemPanel.SetActive(false);
         }
@@ -208,7 +208,7 @@ internal class UIManager
 
     public static void DetroyDeletePanel()
     {
-        if (ClientDB.userModel.IsAdmin)
+        if (ClientDB.IsAdmin)
         {
             DeleteItemPanel.Destroy();
         }
@@ -217,7 +217,7 @@ internal class UIManager
     public static void RefreshDataPanel()
     {
         ShopPanel.RefreshData();
-        if (ClientDB.userModel.IsAdmin)
+        if (ClientDB.IsAdmin)
         {
             DeleteItemPanel.RefreshData();
         }

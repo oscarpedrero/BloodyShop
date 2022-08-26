@@ -23,7 +23,7 @@ namespace BloodyShop.Client.Network
             ItemsDB.setProductList(productList);
             
 
-            if (ClientDB.userModel.IsAdmin)
+            if (ClientDB.IsAdmin)
             {
                 UIManager.DeleteItemPanel.RefreshData();
                 UIManager.DeleteItemPanel.CreateListProductsLayout();

@@ -20,12 +20,12 @@ namespace BloodyShop.Client
         {
             Plugin.Logger.LogInfo("ClientEvents_OnGameDataInitialized");
             UIInit = false;
+            ClientConfigMessageAction.Send();
         }
 
         public static void ClientEvents_OnClientUserConnected()
         {
             Plugin.Logger.LogInfo("ClientEvents_OnClientUserConnected");
-            ClientConfigMessageAction.Send();
         }
 
         public static void ClientEvents_OnClientUserDisconnected()

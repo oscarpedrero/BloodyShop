@@ -10,6 +10,7 @@ namespace BloodyShop.Network.Messages
         public string CoinGUID;
         public string ShopName;
         public string ShopOpen;
+        public string isAdmin;
 
         // You need to implement an empty constructor for when your message is
         // received but not yet serialized.
@@ -22,6 +23,7 @@ namespace BloodyShop.Network.Messages
             CoinGUID = reader.ReadString(Allocator.Temp);
             ShopName = reader.ReadString(Allocator.Temp);
             ShopOpen = reader.ReadString(Allocator.Temp);
+            isAdmin = reader.ReadString(Allocator.Temp);
         }
 
         // Write your contents to the writer.
@@ -31,6 +33,7 @@ namespace BloodyShop.Network.Messages
             writer.Write(CoinGUID);
             writer.Write(ShopName);
             writer.Write(ShopOpen);
+            writer.Write(isAdmin);
         }
     }
 }

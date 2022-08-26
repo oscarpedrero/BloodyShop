@@ -16,7 +16,7 @@ namespace BloodyShop.Client.Network
 
             ClientDB.shopOpen = false;
 
-            if (ClientDB.userModel.IsAdmin)
+            if (ClientDB.IsAdmin)
             {
                 UIManager.AdminMenuPanel.closeShop();
             } else

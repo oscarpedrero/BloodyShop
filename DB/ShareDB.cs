@@ -29,7 +29,9 @@ namespace BloodyShop.DB
 
         public static void setCoinGUID(int value)
         {
+            
             CoinGUID = value;
+            Plugin.Logger.LogInfo("setCoinGUID");
         }
     }
 }

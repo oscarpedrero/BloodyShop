@@ -11,7 +11,7 @@ namespace BloodyShop.Client.Network
         public static void Received(OpenSerializedMessage msg)
         {
 
-            if (ClientDB.userModel.IsAdmin)
+            if (ClientDB.IsAdmin)
             {
                 UIManager.AdminMenuPanel.openShop();
             }

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
+using VRising.GameData;
 using Wetstone.API;
 
 namespace BloodyShop.Server.Network
@@ -16,7 +17,7 @@ namespace BloodyShop.Server.Network
         public static void Received(User fromCharacter, ConfigSerializedMessage msg)
         {
 
-            msg = createMsg();
+            msg = createMsg(fromCharacter);
 
             Send(fromCharacter, msg);
 
@@ -24,7 +25,7 @@ namespace BloodyShop.Server.Network
 
         }
 
-        public static ConfigSerializedMessage createMsg()
+        public static ConfigSerializedMessage createMsg(User fromCharacter)
         {
 
             var msg = new ConfigSerializedMessage();
@@ -34,6 +35,15 @@ namespace BloodyShop.Server.Network
             msg.ItemsJson = jsonOutPut;
             msg.CoinGUID = ShareDB.getCoinGUID().ToString();
             msg.ShopName = ConfigDB.getStoreName();
+            var userModel = GameData.Users.GetUserByCharacterName(fromCharacter.CharacterName.ToString());
+
+            if (userModel.IsAdmin)
+            {
+                msg.isAdmin = "1";
+            } else
+            {
+                msg.isAdmin = "0";
+            }
 
             if (ConfigDB.getShopEnabled())
             {

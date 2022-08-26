@@ -22,21 +22,38 @@ namespace BloodyShop.Client.Network
             ItemsDB.setProductList(productList);
             
             ShareDB.setCoinGUID(Int32.Parse(msg.CoinGUID));
-            
+
+            Plugin.Logger.LogInfo("Shopname");
             ClientDB.shopName = msg.ShopName;
-            
+
+            Plugin.Logger.LogInfo("Prefix for command");
             ClientDB.prefix = "!" + ClientDB.shopName.ToLower().Replace(" ", "");
 
-            ClientDB.userModel = GameData.Users.GetCurrentUser();
+            Plugin.Logger.LogInfo("Set Admin");
 
-            if (ClientDB.userModel.IsAdmin)
+            if (msg.isAdmin == "1")
             {
+                ClientDB.IsAdmin = true;
+
+            }
+            else
+            {
+                ClientDB.IsAdmin = false;
+            }
+
+
+            Plugin.Logger.LogInfo("Start generate Cache Items");
+            if (ClientDB.IsAdmin)
+            {
+                Plugin.Logger.LogInfo("Count Cache Itemss");
                 if (ItemsDB._normalizedItemNameCache.Count == 0)
                 {
+                    Plugin.Logger.LogInfo("Generate cache");
                     ItemsDB.generateCacheItems();
                 }
             }
 
+            Plugin.Logger.LogInfo("Shop Status");
             if (msg.ShopOpen == "1")
             {
                 ClientDB.shopOpen = true;
@@ -48,6 +65,7 @@ namespace BloodyShop.Client.Network
             }
 
             ClientMod.UIInit = true;
+            Plugin.Logger.LogInfo("Create Panels");
             UIManager.CreateAllPanels();
 
         }
