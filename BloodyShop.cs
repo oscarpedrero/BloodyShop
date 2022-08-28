@@ -18,7 +18,7 @@ namespace BloodyShop
         {
             _harmony.PatchAll(typeof(ChatMessageSystem_Patch));
             _harmony.PatchAll(typeof(ServerEvents));
-            ServerEvents.OnDeath += RewardSystem.ServerEvents_OnDeath;
+            ServerEvents.OnDeath += DropSystem.ServerEvents_OnDeath;
             ServerMod.CreateFilesConfig();
         }
 
@@ -35,9 +35,9 @@ namespace BloodyShop
 
         }
 
-        public static void onServerGameInitialized(bool ShopEnabled, int CoinGUID, string StoreName)
+        public static void onServerGameInitialized()
         {
-            ServerMod.SetConfigMod(ShopEnabled, CoinGUID, StoreName);
+            ServerMod.SetConfigMod();
         }
 
         public static void onClientGameInitialized()
@@ -47,7 +47,7 @@ namespace BloodyShop
 
         public static void serverUnloadMod()
         {
-            ServerEvents.OnDeath -= RewardSystem.ServerEvents_OnDeath;
+            ServerEvents.OnDeath -= DropSystem.ServerEvents_OnDeath;
         }
 
         public static void clientUnloadMod()

@@ -34,8 +34,8 @@ namespace BloodyShop.Server.Commands
                     return;
                 }
 
-                ConfigDB.setShopEnabled(false);
-                ServerChatUtils.SendSystemMessageToAllClients(ctx.EntityManager, FontColorChat.Yellow($" {FontColorChat.White($" {ConfigDB.getStoreName()} ")} just closed"));
+                ConfigDB.ShopEnabled = false;
+                ServerChatUtils.SendSystemMessageToAllClients(ctx.EntityManager, FontColorChat.Yellow($" {FontColorChat.White($" {ConfigDB.StoreName} ")} just closed"));
                 var usersOnline = GameData.Users.Online;
                 var msg = new CloseSerializedMessage();
                 foreach(var user in usersOnline)
