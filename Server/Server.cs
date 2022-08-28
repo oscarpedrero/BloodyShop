@@ -37,15 +37,36 @@ namespace BloodyShop.Server
             }
         }
 
-        public static void SetConfigMod(bool ShopEnabled, int CoinGUID, string StoreName)
+        public static void SetConfigMod()
         {
-            ConfigDB.setShopEnabled(ShopEnabled);
-            if(StoreName != string.Empty)
+            var _shopEnabled = Plugin.ShopEnabled.Value;
+            ConfigDB.ShopEnabled = _shopEnabled;
+
+            var _storeName = Plugin.StoreName.Value;
+
+
+            if (_storeName != string.Empty)
             {
-                ConfigDB.setStoreName(StoreName);
-                ChatSystem.SetPrefix(StoreName);
+                ConfigDB.StoreName = _storeName;
+                ChatSystem.SetPrefix(_storeName);
             }
-            ShareDB.setCoinGUID(CoinGUID);
+
+            var _coinGUID = Plugin.CoinGUID.Value;
+            ShareDB.setCoinGUID(_coinGUID);
+
+            ConfigDB.DropEnabled = Plugin.DropEnabled.Value;
+
+            ConfigDB.DropNpcPercentage = Plugin.DropNpcPercentage.Value;
+            ConfigDB.DropdNpcCoinsMin = Plugin.DropdNpcCoinsMin.Value;
+            ConfigDB.DropNpcCoinsMax = Plugin.DropNpcCoinsMax.Value;
+
+            ConfigDB.DropdVBloodPercentage = Plugin.DropdVBloodPercentage.Value;
+            ConfigDB.DropVBloodCoinsMin = Plugin.DropVBloodCoinsMin.Value;
+            ConfigDB.DropVBloodCoinsMax = Plugin.DropVBloodCoinsMax.Value;
+
+            ConfigDB.DropPvpPercentage = Plugin.DropPvpPercentage.Value;
+            ConfigDB.DropPvpCoinsMin = Plugin.DropPvpCoinsMin.Value;
+            ConfigDB.DropPvpCoinsMax = Plugin.DropPvpCoinsMax.Value;
         }
     }
 }

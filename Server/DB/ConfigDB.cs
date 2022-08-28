@@ -7,29 +7,23 @@ namespace BloodyShop.Server.DB
 {
     public class ConfigDB
     {
-        private static bool ShopEnabled = true;
+        public static bool ShopEnabled = true;
 
-        private static string StoreName = "BloodyShop";
+        public static string StoreName = "BloodyShop";
 
-        public static bool getShopEnabled()
-        {
-            return ShopEnabled;
-        }
+        public static bool DropEnabled = true;
 
-        public static void setShopEnabled(bool value)
-        {
-            ShopEnabled = value;
-        }
+        public static int DropNpcPercentage { get; set; } = 0;
+        public static int DropdNpcCoinsMin { get; set; } = 0;
+        public static int DropNpcCoinsMax { get; set; } = 0;
 
-        public static string getStoreName()
-        {
-            return StoreName;
-        }
+        public static int DropdVBloodPercentage { get; set; } = 0;
+        public static int DropVBloodCoinsMin { get; set; } = 0;
+        public static int DropVBloodCoinsMax { get; set; } = 0;
 
-        public static void setStoreName(string value)
-        {
-            StoreName = value;
-        }
+        public static int DropPvpPercentage { get; set; } = 0;
+        public static int DropPvpCoinsMin { get; set; } = 0;
+        public static int DropPvpCoinsMax { get; set; } = 0;
 
     }
 }

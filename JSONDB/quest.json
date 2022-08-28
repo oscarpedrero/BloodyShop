@@ -1,0 +1,16 @@
+[
+    {
+        "descriptio": "Defeat Solarus",
+        "PrefabGuid": -740796338,
+        "unitskill": 1,
+        "reward": 50,
+        "isPVP": false
+    },
+    {
+        "descriptio": "Defeat 20 Archer",
+        "PrefabGuid": 426583055,
+        "unitskill": 20,
+        "reward": 10,
+        "isPVP": false
+    }
+]

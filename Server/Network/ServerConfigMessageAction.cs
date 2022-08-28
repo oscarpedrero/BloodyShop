@@ -34,7 +34,7 @@ namespace BloodyShop.Server.Network
 
             msg.ItemsJson = jsonOutPut;
             msg.CoinGUID = ShareDB.getCoinGUID().ToString();
-            msg.ShopName = ConfigDB.getStoreName();
+            msg.ShopName = ConfigDB.StoreName;
             var userModel = GameData.Users.GetUserByCharacterName(fromCharacter.CharacterName.ToString());
 
             if (userModel.IsAdmin)
@@ -45,7 +45,7 @@ namespace BloodyShop.Server.Network
                 msg.isAdmin = "0";
             }
 
-            if (ConfigDB.getShopEnabled())
+            if (ConfigDB.ShopEnabled)
             {
                 msg.ShopOpen = "1";
             }

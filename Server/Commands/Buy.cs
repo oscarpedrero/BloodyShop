@@ -36,7 +36,7 @@ namespace BloodyShop.Server.Commands
 
         public static void BuyItem(Context ctx)
         {
-            if (ConfigDB.getShopEnabled())
+            if (ConfigDB.ShopEnabled)
             {
                 PlayerCharacter = ctx.Event.SenderCharacterEntity;
 
@@ -118,7 +118,7 @@ namespace BloodyShop.Server.Commands
             }
             else
             {
-                Output.CustomErrorMessage(ctx, FontColorChat.Yellow($"{FontColorChat.White($"{ConfigDB.getStoreName()}")} is closed"));
+                Output.CustomErrorMessage(ctx, FontColorChat.Yellow($"{FontColorChat.White($"{ConfigDB.StoreName}")} is closed"));
             }
         }
 

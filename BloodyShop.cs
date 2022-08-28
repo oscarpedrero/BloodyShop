@@ -7,6 +7,8 @@ using BloodyShop.Server.Network;
 using BloodyShop.Client.UI;
 using BloodyShop.Client.DB;
 using VRising.GameData;
+using BloodyShop.Server.Patch;
+using BloodyShop.Server.Systems;
 
 namespace BloodyShop
 {
@@ -15,6 +17,8 @@ namespace BloodyShop
         public static void serverInitMod(Harmony _harmony)
         {
             _harmony.PatchAll(typeof(ChatMessageSystem_Patch));
+            _harmony.PatchAll(typeof(ServerEvents));
+            ServerEvents.OnDeath += DropSystem.ServerEvents_OnDeath;
             ServerMod.CreateFilesConfig();
         }
 
@@ -31,9 +35,9 @@ namespace BloodyShop
 
         }
 
-        public static void onServerGameInitialized(bool ShopEnabled, int CoinGUID, string StoreName)
+        public static void onServerGameInitialized()
         {
-            ServerMod.SetConfigMod(ShopEnabled, CoinGUID, StoreName);
+            ServerMod.SetConfigMod();
         }
 
         public static void onClientGameInitialized()
@@ -43,7 +47,7 @@ namespace BloodyShop
 
         public static void serverUnloadMod()
         {
-            
+            ServerEvents.OnDeath -= DropSystem.ServerEvents_OnDeath;
         }
 
         public static void clientUnloadMod()

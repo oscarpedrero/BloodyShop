@@ -12,7 +12,7 @@ namespace BloodyShop.Server.Commands
     {
         public static void Initialize(Context ctx)
         {
-            if (ConfigDB.getShopEnabled())
+            if (ConfigDB.ShopEnabled)
             {
                 if (ShareDB.getCoin(out ItemModel coin))
                 {
@@ -37,7 +37,7 @@ namespace BloodyShop.Server.Commands
                 }
             } else
             {
-                Output.CustomErrorMessage(ctx, FontColorChat.Yellow($"{FontColorChat.White($"{ConfigDB.getStoreName()}")} is closed"));
+                Output.CustomErrorMessage(ctx, FontColorChat.Yellow($"{FontColorChat.White($"{ConfigDB.StoreName}")} is closed"));
             }
             
 

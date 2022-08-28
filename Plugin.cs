@@ -4,12 +4,9 @@ using BepInEx.IL2CPP;
 using BepInEx.Logging;
 using VRising.GameData;
 using HarmonyLib;
-using BloodyShop.Server.Network;
 using Unity.Entities;
 using UnityEngine;
 using Wetstone.API;
-using System.Linq;
-using BloodyShop.Client.UI.Panels;
 using System;
 
 namespace BloodyShop
@@ -28,8 +25,18 @@ namespace BloodyShop
         private Harmony _harmony;
 
         public static ConfigEntry<bool> ShopEnabled;
+        public static ConfigEntry<bool> DropEnabled;
         public static ConfigEntry<int> CoinGUID;
         public static ConfigEntry<string> StoreName;
+        public static ConfigEntry<int> DropNpcPercentage;
+        public static ConfigEntry<int> DropdVBloodPercentage;
+        public static ConfigEntry<int> DropdNpcCoinsMin;
+        public static ConfigEntry<int> DropNpcCoinsMax;
+        public static ConfigEntry<int> DropVBloodCoinsMin;
+        public static ConfigEntry<int> DropVBloodCoinsMax;
+        public static ConfigEntry<int> DropPvpPercentage;
+        public static ConfigEntry<int> DropPvpCoinsMin;
+        public static ConfigEntry<int> DropPvpCoinsMax;
 
         private static World _serverWorld;
         private static World _clientWorld;
@@ -148,7 +155,25 @@ namespace BloodyShop
             ShopEnabled = Config.Bind("Shop", "enabled", true, "Enable Shop");
             StoreName = Config.Bind("Shop", "name", "Bloody Shop", "Store's name. This name will also serve as a prefix for the command, that is, if you put Black Market, for example, the system will parse the name, remove space and pass it to lowercase, so the command will be !blackmarket");
             CoinGUID = Config.Bind("Config", "coinGUID", -949672483, "Item that will be used as currency within the service, by default they are silver coins, if you want to change the item you must include the GUID of said object that you can get from https://gaming.tools/v-rising/items");
-        }
+
+            // DROP SYSTEM CONFIG
+            DropEnabled = Config.Bind("DropSystem", "enabled", true, "Enable Drop System");
+
+            // NPC DROP CONFIG
+            DropNpcPercentage = Config.Bind("DropSystem", "DropNpcPercentage", 5, "Percent chance that an NPC will drop the type of currency from the shop");
+            DropdNpcCoinsMin = Config.Bind("DropSystem", "DropdNpcCoinsMin", 1, "Minimum currency an NPC can drop");
+            DropNpcCoinsMax = Config.Bind("DropSystem", "DropNpcCoinsMax", 5, "Maximum currency an NPC can drop");
+            
+            // VBLOOD DROP CONFIG
+            DropdVBloodPercentage = Config.Bind("DropSystem", "DropdVBloodPercentage", 20, "Percent chance that an VBlood will drop the type of currency from the shop");
+            DropVBloodCoinsMin = Config.Bind("DropSystem", "DropVBloodCoinsMin", 10, "Minimum currency an VBlood can drop");
+            DropVBloodCoinsMax = Config.Bind("DropSystem", "DropVBloodCoinsMax", 20, "Maximum currency an VBlood can drop");
+
+            // PVP DROP CONFIG
+            DropPvpPercentage = Config.Bind("DropSystem", "DropPvpPercentage", 20, "Percent chance that victory in a PVP duel will drop the type of currency in the store");
+            DropPvpCoinsMin = Config.Bind("DropSystem", "DropPvpCoinsMin", 15, "Minimum currency can drop victory in PVP");
+            DropPvpCoinsMax = Config.Bind("DropSystem", "DropPvpCoinsMax", 20, "Maximum currency can drop victory in PVP");
+    }
 
         public void OnGameInitialized()
         {
@@ -156,7 +181,7 @@ namespace BloodyShop
             Logger.LogInfo("OnGameInitialized");
             if (VWorld.IsServer)
             {
-                BloodyShop.onServerGameInitialized(ShopEnabled.Value, CoinGUID.Value, StoreName.Value);
+                BloodyShop.onServerGameInitialized();
             }
             else
             {
