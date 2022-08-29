@@ -1,5 +1,8 @@
 ﻿using ProjectM.Network;
+using System;
 using Unity.Entities;
+using VampireCommandFramework;
+using Wetstone.API;
 
 namespace BloodyShop.Server.Utils
 {
@@ -33,7 +36,7 @@ namespace BloodyShop.Server.Utils
         }
     }
 
-    public class Context
+    public class Context : VampireCommandFramework.ICommandContext
     {
         public string Prefix { get; set; }
         public VChatEvent Event { get; set; }
@@ -47,6 +50,23 @@ namespace BloodyShop.Server.Utils
             Args = args;
 
             EntityManager = Plugin.Server.EntityManager;
+        }
+
+
+        public IServiceProvider Services { get; }
+
+        public string Name => Event.User?.CharacterName.ToString();
+
+        public bool IsAdmin => Event.User ?.IsAdmin ?? false;
+
+        public void Reply(string v)
+        {
+            Event.User?.SendSystemMessage(v);
+        }
+
+        public ChatCommandException Error(string LogMessage)
+        {
+            return new ChatCommandException(LogMessage);
         }
     }
 }

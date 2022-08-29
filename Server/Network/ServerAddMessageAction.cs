@@ -21,19 +21,19 @@ namespace BloodyShop.Server.Network
             
             var prefix = ChatSystem.GetPrefix();
 
-            var prefabGUID = msg.PrefabGUID;
-            var price = msg.Price;
-            var stock = msg.Stock;
+            var prefabGUID = int.Parse(msg.PrefabGUID);
+            var price = int.Parse(msg.Price);
+            var stock = int.Parse(msg.Stock);
 
             Plugin.Logger.LogInfo($"{prefix} add {prefabGUID} {price} {stock}");
 
             var vchatEvent = new VChatEvent(fromCharacter.User, fromCharacter.Character,$"{prefix} add {prefabGUID} {price} {stock}", new ChatMessageType(), user);
 
-            string[] args = new string[] { prefabGUID, price, stock };
+            string[] args = new string[] {  };
 
             var ctx = new Context(prefix, vchatEvent, args);
 
-            Add.addItem(ctx);
+            Add.addItem(ctx, prefabGUID, price, stock);
 
         }
 

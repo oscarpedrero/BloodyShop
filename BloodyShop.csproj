@@ -24,7 +24,8 @@
     <PackageReference Include="VRising.GameData" Version="0.3.3" />
 	<PackageReference Include="VRising.Unhollowed.Client" Version="0.5.*" />
     <PackageReference Include="Wetstone" Version="1.1.0" />
-  </ItemGroup>
+        <PackageReference Include="VRising.VampireCommandFramework" Version="0.2.*"/>
+	</ItemGroup>
 
   <ItemGroup>
     <Folder Include="Client\Coroutine\" />

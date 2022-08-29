@@ -1,93 +1,64 @@
-﻿using VRising.GameData;
-using ProjectM;
+﻿using BloodyShop.DB;
 using BloodyShop.Server.DB;
-using BloodyShop.DB;
-using BloodyShop.Server.Systems;
-using BloodyShop.Server.Utils;
-using BloodyShop.Utils;
-using System;
-using VRising.GameData.Models;
 using BloodyShop.Server.Network;
+using BloodyShop.Utils;
+using ProjectM;
+using System;
+using VampireCommandFramework;
+using VRising.GameData;
+using VRising.GameData.Models;
+using Wetstone.API;
 
 namespace BloodyShop.Server.Commands
 {
-    [Command("add", Usage = "add <PrefabGuid> <Price> <Stock>", Description = "Add a product to the store. To know the PrefabGuid of an item you must look for the item in the following URL <#4acc45><u>https://gaming.tools/v-rising/items</u></color>")]
     public static class Add
     {
         public static object ItemsData { get; private set; }
 
-        public static void Initialize(Context ctx)
+        [ChatCommand("add", usage: "add <PrefabGuid> <Price> <Stock>", description: "Add a product to the store. To know the PrefabGuid of an item you must look for the item in the following URL <#4acc45><u>https://gaming.tools/v-rising/items</u></color>", adminOnly: true)]
+        public static void addItem(ICommandContext ctx, int item, int price, int stock)
         {
-            addItem(ctx);
-        }
-
-        public static void addItem(Context ctx)
-        {
-            if (ctx.Event.User.IsAdmin)
+            try
             {
-                var args = ctx.Args;
+                var prefabGUID = new PrefabGUID(item);
+                var itemModel = GameData.Items.GetPrefabById(prefabGUID);
 
-                if (args.Length < 3 || args.Length > 3)
+                if (itemModel == null)
                 {
-                    Output.InvalidArguments(ctx);
+                    throw ctx.Error("Invalid item type");
+                }
+
+                if (!ShareDB.getCoin(out ItemModel coin))
+                {
+                    throw ctx.Error("Error loading currency type");
+                }
+
+                if (!ItemsDB.addProductList(item, price, stock))
+                {
+                    throw ctx.Error("Invalid item type");
+                }
+
+                SaveDataToFiles.saveProductList();
+
+                ctx.Reply(FontColorChat.Yellow($"Added item {FontColorChat.White($"{itemModel?.Name.ToString()} ({stock})")} to the store with a price of {FontColorChat.White($"{price} {coin?.Name.ToString()}")}"));
+                if (!ConfigDB.ShopEnabled)
+                {
                     return;
                 }
 
-                try
+                ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{itemModel?.Name.ToString()} ({stock})")} have been added to the Store for {FontColorChat.White($"{price} {coin?.Name.ToString()}")}"));
+                var usersOnline = GameData.Users.Online;
+                foreach (var user in usersOnline)
                 {
-                    var prefabGUID = new PrefabGUID(Int32.Parse(args[0]));
-                    var itemModel = GameData.Items.GetPrefabById(prefabGUID);
-
-                    if (itemModel != null)
-                    {
-                        if (ShareDB.getCoin(out ItemModel coin))
-                        {
-                            if(ItemsDB.addProductList(Int32.Parse(args[0]), Int32.Parse(args[1]), Int32.Parse(args[2])))
-                            {
-                                SaveDataToFiles.saveProductList();
-
-                                Output.SendSystemMessage(ctx, FontColorChat.Yellow($"Added item {FontColorChat.White($"{itemModel?.Name.ToString()} ({args[2]})")} to the store with a price of {FontColorChat.White($"{args[1]} {coin?.Name.ToString()}")}"));
-                                if (ConfigDB.ShopEnabled)
-                                {
-                                    ServerChatUtils.SendSystemMessageToAllClients(ctx.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{itemModel?.Name.ToString()} ({args[2]})")} have been added to the Store for {FontColorChat.White($"{args[1]} {coin?.Name.ToString()}")}"));
-                                    var usersOnline = GameData.Users.Online;
-                                    foreach (var user in usersOnline)
-                                    {
-                                        var msg = ServerListMessageAction.createMsg();
-                                        ServerListMessageAction.Send(user.Internals.User, msg);
-                                    }
-                                }
-                                return;
-                            } else
-                            {
-                                Output.CustomErrorMessage(ctx, "Invalid item type");
-                            }
-                            
-                        }
-                        else
-                        {
-                            Output.CustomErrorMessage(ctx, "Error loading currency type");
-                        }
-
-                    }
-                    else
-                    {
-                        Output.CustomErrorMessage(ctx, "Invalid item type");
-                    }
-
-
+                    var msg = ServerListMessageAction.createMsg();
+                    ServerListMessageAction.Send(user.Internals.User, msg);
                 }
-                catch (Exception error)
-                {
-                    Plugin.Logger.LogError(error.Message);
-                    Output.CustomErrorMessage(ctx, "Error saving the item in the store ");
-                    return;
-                }
-
+                return;
             }
-            else
+            catch (Exception error)
             {
-                Output.InvalidCommand(ctx.Event);
+                Plugin.Logger.LogError(error.Message);
+                throw ctx.Error("Error saving the item in the store ");
             }
         }
     }
