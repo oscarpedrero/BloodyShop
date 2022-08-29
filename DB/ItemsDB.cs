@@ -244,6 +244,7 @@ namespace BloodyShop.DB
                 {
                     var itemShopModel = ProductList[index - 1];
                     var actualStock = itemShopModel.PrefabStock;
+                    if (actualStock < 0) return true;
                     itemShopModel.PrefabStock = actualStock - amount;
                     if (itemShopModel.PrefabStock == 0)
                     {
@@ -324,10 +325,20 @@ namespace BloodyShop.DB
             {
                 foreach (PrefabModel item in ProductList)
                 {
+                    // STOCK ITEM
+                    var finalStock = "";
+                    if (item.PrefabStock <= 0)
+                    {
+                        finalStock = "Infinite";
+                    }
+                    else
+                    {
+                        finalStock = item.PrefabStock.ToString();
+                    }
                     listItems.Add($"{FontColorChat.White("[")}{FontColorChat.Yellow(index.ToString())}{FontColorChat.White("]")} " +
                         $"{FontColorChat.Yellow(item.PrefabName)} " +
                         $"{FontColorChat.Red("Price:")} {FontColorChat.Yellow(item.PrefabPrice.ToString())} {FontColorChat.White($"{coin?.Name.ToString()}")} " +
-                        $"{FontColorChat.Red("Stock:")} {FontColorChat.Yellow(item.PrefabStock.ToString())} units");
+                        $"{FontColorChat.Red("Stock:")} {FontColorChat.Yellow(finalStock)} units");
                     index++;
                 }
             }

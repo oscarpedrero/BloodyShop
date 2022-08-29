@@ -1,5 +1,6 @@
 ﻿using BloodyShop.DB;
 using BloodyShop.Server.DB;
+using BloodyShop.Server.DB.Model;
 using ProjectM;
 using System;
 using Unity.Collections;
@@ -43,23 +44,17 @@ namespace BloodyShop.Server.Systems
         {
             if (em.HasComponent<Minion>(died)) return;
 
-            Plugin.Logger.LogInfo($"PVE REWARD");
-
             var playerCharacterKiller = em.GetComponentData<PlayerCharacter>(killer);
             var userModelKiller = GameData.Users.FromEntity(playerCharacterKiller.UserEntity._Entity);
 
-            /*UnitLevel UnitDiedLevel = em.GetComponentData<UnitLevel>(died);
+            Plugin.Logger.LogInfo($"PVE DROP");
+
+            UnitLevel UnitDiedLevel = em.GetComponentData<UnitLevel>(died);
+
+
             var diedLevel = UnitDiedLevel.Level;
 
             Plugin.Logger.LogInfo($"NPC Level {diedLevel}");
-
-            var killerLevel = userModelKiller.Character.Equipment.Level;
-
-            Plugin.Logger.LogInfo($"User Level {killerLevel}");
-
-            var difference = killerLevel - diedLevel;
-
-            Plugin.Logger.LogInfo($"Difference {difference}");*/
 
             bool isVBlood;
             if (em.HasComponent<BloodConsumeSource>(died))
@@ -74,10 +69,10 @@ namespace BloodyShop.Server.Systems
 
             if (isVBlood)
             {
-                rewardForVBlood(userModelKiller);
+                rewardForVBlood(userModelKiller, diedLevel);
             } else
             {
-                rewardForNPC(userModelKiller);
+                rewardForNPC(userModelKiller, diedLevel);
             }
 
         }
@@ -87,63 +82,130 @@ namespace BloodyShop.Server.Systems
 
             if (em.HasComponent<Minion>(died)) return;
 
-            Plugin.Logger.LogInfo($"PVP REWARD");
-
             var playerCharacterKiller = em.GetComponentData<PlayerCharacter>(killer);
             var userModelKiller = GameData.Users.FromEntity(playerCharacterKiller.UserEntity._Entity);
 
             var prefabCoinGUID = new PrefabGUID(ShareDB.getCoinGUID());
-            if (probabilityOeneratingReward(ConfigDB.DropPvpPercentage))
-            {
-                var totalCoins = rnd.Next(ConfigDB.DropPvpCoinsMin, ConfigDB.DropPvpCoinsMax);
-                userModelKiller.DropItemNearby(prefabCoinGUID, totalCoins);
-            }
 
-            /*var killerLevel = userModelKiller.Character.Equipment.Level;
-
-            Plugin.Logger.LogInfo($"User Killer Level {killerLevel}");
-
+            Plugin.Logger.LogInfo($"PVP DROP");
+            
             var playerCharacterDied = em.GetComponentData<PlayerCharacter>(died);
             var userModelDied = GameData.Users.FromEntity(playerCharacterKiller.UserEntity._Entity);
             var diedLevel = userModelDied.Character.Equipment.Level;
 
             Plugin.Logger.LogInfo($"User Died Level {diedLevel}");
 
-            var difference = killerLevel - diedLevel;
-
-            Plugin.Logger.LogInfo($"Difference {difference}");
-
-            if (difference <= -15)
+            var percentFinal = calculateDropPercentage((int) diedLevel, ConfigDB.DropPvpPercentage, ConfigDB.IncrementPercentageDropEveryTenLevelsPvp);
+            if (probabilityOeneratingReward(percentFinal))
             {
-                var prefabCoinGUID = new PrefabGUID(ShareDB.getCoinGUID());
-                if (probabilityOeneratingReward(25))
+                var totalCoins = rnd.Next(ConfigDB.DropPvpCoinsMin, ConfigDB.DropPvpCoinsMax);
+                if (ConfigDB.searchUserCoinPerDay(userModelKiller.CharacterName, out UserCoinsPerDayModel userCoinsPerDay))
                 {
-                    var totalCoins = rnd.Next(1, 5);
-                    userModelKiller.DropItemNearby(prefabCoinGUID, totalCoins);
+                    var virtualAmount = userCoinsPerDay.AmountPvp + totalCoins;
+                    if (virtualAmount <= ConfigDB.MaxCoinsPerDayPerPlayerPvp)
+                    {
+                        userCoinsPerDay.AmountPvp = virtualAmount;
+                        userModelKiller.DropItemNearby(prefabCoinGUID, totalCoins);
+
+                        ConfigDB.addUserCoinsPerDayToList(userCoinsPerDay);
+                        SaveDataToFiles.saveUsersCoinsPerDay();
+                        Plugin.Logger.LogInfo($"Drop PVP {totalCoins} coins");
+                        return;
+                    }
+                    else if (userCoinsPerDay.AmountNpc < ConfigDB.MaxCoinsPerDayPerPlayerPvp)
+                    {
+                        totalCoins = ConfigDB.MaxCoinsPerDayPerPlayerPvp - userCoinsPerDay.AmountPvp;
+                        userCoinsPerDay.AmountPvp += totalCoins;
+                        userModelKiller.DropItemNearby(prefabCoinGUID, totalCoins);
+
+                        ConfigDB.addUserCoinsPerDayToList(userCoinsPerDay);
+                        SaveDataToFiles.saveUsersCoinsPerDay();
+                        Plugin.Logger.LogInfo($"Drop PVP {totalCoins} coins");
+                        return;
+                    }
                 }
-            }*/
+            }
 
 
         }
 
-        private static void rewardForNPC(UserModel userModelKiller)
+        private static void rewardForNPC(UserModel userModelKiller, int diedLevel)
         {
             var prefabCoinGUID = new PrefabGUID(ShareDB.getCoinGUID());
-            if (probabilityOeneratingReward(ConfigDB.DropNpcPercentage))
+            var percentFinal = calculateDropPercentage(diedLevel, ConfigDB.DropNpcPercentage, ConfigDB.IncrementPercentageDropEveryTenLevelsNpc);
+            if (probabilityOeneratingReward(percentFinal))
             {
                 var totalCoins = rnd.Next(ConfigDB.DropdNpcCoinsMin, ConfigDB.DropNpcCoinsMax);
-                userModelKiller.DropItemNearby(prefabCoinGUID, totalCoins);
+                if (ConfigDB.searchUserCoinPerDay(userModelKiller.CharacterName,out UserCoinsPerDayModel userCoinsPerDay))
+                {
+                    var virtualAmount = userCoinsPerDay.AmountNpc + totalCoins;
+                    if (virtualAmount <= ConfigDB.MaxCoinsPerDayPerPlayerNpc)
+                    {
+                        userCoinsPerDay.AmountNpc = virtualAmount;
+                        userModelKiller.DropItemNearby(prefabCoinGUID, totalCoins);
+
+                        ConfigDB.addUserCoinsPerDayToList(userCoinsPerDay);
+                        SaveDataToFiles.saveUsersCoinsPerDay();
+                        Plugin.Logger.LogInfo($"Drop NPC {totalCoins} coins");
+                        return;
+                    } else if (userCoinsPerDay.AmountNpc < ConfigDB.MaxCoinsPerDayPerPlayerNpc)
+                    {
+                        totalCoins = ConfigDB.MaxCoinsPerDayPerPlayerNpc - userCoinsPerDay.AmountNpc;
+                        userCoinsPerDay.AmountNpc += totalCoins;
+                        userModelKiller.DropItemNearby(prefabCoinGUID, totalCoins);
+
+                        ConfigDB.addUserCoinsPerDayToList(userCoinsPerDay);
+                        SaveDataToFiles.saveUsersCoinsPerDay();
+                        Plugin.Logger.LogInfo($"Drop NPC {totalCoins} coins");
+                        return;
+                    }
+                }
+                    
+                
             }
         }
 
-        private static void rewardForVBlood(UserModel userModelKiller)
+        private static void rewardForVBlood(UserModel userModelKiller, int diedLevel)
         {
             var prefabCoinGUID = new PrefabGUID(ShareDB.getCoinGUID());
-            if (probabilityOeneratingReward(ConfigDB.DropdVBloodPercentage))
+            var percentFinal = calculateDropPercentage(diedLevel, ConfigDB.DropdVBloodPercentage, ConfigDB.IncrementPercentageDropEveryTenLevelsVBlood);
+            if (probabilityOeneratingReward(percentFinal))
             {
                 var totalCoins = rnd.Next(ConfigDB.DropVBloodCoinsMin, ConfigDB.DropVBloodCoinsMax);
-                userModelKiller.DropItemNearby(prefabCoinGUID, totalCoins);
+                if (ConfigDB.searchUserCoinPerDay(userModelKiller.CharacterName, out UserCoinsPerDayModel userCoinsPerDay))
+                {
+                    var virtualAmount = userCoinsPerDay.AmountVBlood + totalCoins;
+                    if (virtualAmount <= ConfigDB.MaxCoinsPerDayPerPlayerVBlood)
+                    {
+                        userCoinsPerDay.AmountVBlood = virtualAmount;
+                        userModelKiller.DropItemNearby(prefabCoinGUID, totalCoins);
+
+                        ConfigDB.addUserCoinsPerDayToList(userCoinsPerDay);
+                        SaveDataToFiles.saveUsersCoinsPerDay();
+                        Plugin.Logger.LogInfo($"Drop NPC {totalCoins} coins");
+                        return;
+                    }
+                    else if (userCoinsPerDay.AmountVBlood < ConfigDB.MaxCoinsPerDayPerPlayerVBlood)
+                    {
+                        totalCoins = ConfigDB.MaxCoinsPerDayPerPlayerVBlood - userCoinsPerDay.AmountVBlood;
+                        userCoinsPerDay.AmountVBlood += totalCoins;
+                        userModelKiller.DropItemNearby(prefabCoinGUID, totalCoins);
+
+                        ConfigDB.addUserCoinsPerDayToList(userCoinsPerDay);
+                        SaveDataToFiles.saveUsersCoinsPerDay();
+                        Plugin.Logger.LogInfo($"Drop NPC {totalCoins} coins");
+                        return;
+                    }
+                }
             }
+        }
+
+        private static int calculateDropPercentage(int level, int initialPercent, int incremental)
+        {
+            decimal tensDecimal = level / 10;
+            decimal tens = Math.Ceiling(tensDecimal);
+
+            return Decimal.ToInt32(tens * incremental) + initialPercent;
         }
 
         private static bool probabilityOeneratingReward(int percentage)
@@ -152,6 +214,7 @@ namespace BloodyShop.Server.Systems
 
             if(number <= percentage)
             {
+                Plugin.Logger.LogInfo($"Drop {number} <= {percentage}");
                 return true;
             }
 

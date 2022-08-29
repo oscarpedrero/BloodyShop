@@ -30,7 +30,6 @@
     <Folder Include="Client\Coroutine\" />
     <Folder Include="Client\DB\Models\" />
     <Folder Include="Images\" />
-    <Folder Include="Server\DB\Model\" />
   </ItemGroup>
 	<!--<Target Name="CopyDLLsClient" AfterTargets="Build">
 		<Message Text="DLL to V Rising Client" Importance="High" />

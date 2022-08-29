@@ -181,7 +181,15 @@ namespace BloodyShop.Client.UI.Panels.User
                     var _contentProduct = UIFactory.CreateHorizontalGroup(contentScroll, "ContentItem-" + index, true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
 
                     // STOCK ITEM
-                    Text itemAval = UIFactory.CreateLabel(_contentProduct, "itemAvalTxt-" + index, $"{item.PrefabStock}", TextAnchor.MiddleCenter);
+                    var finalStock = "";
+                    if (item.PrefabStock <= 0)
+                    {
+                        finalStock = "-";
+                    }else
+                    {
+                        finalStock = item.PrefabStock.ToString();
+                    }
+                    Text itemAval = UIFactory.CreateLabel(_contentProduct, "itemAvalTxt-" + index, $"{finalStock}", TextAnchor.MiddleCenter);
                     UIFactory.SetLayoutElement(itemAval.gameObject, minWidth: 50, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 50);
 
                     // ITEM ICON
