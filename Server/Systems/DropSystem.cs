@@ -16,6 +16,7 @@ namespace BloodyShop.Server.Systems
     {
         private static EntityManager em = VWorld.Server.EntityManager;
 
+
         private static Random rnd = new Random();
 
         private static PrefabGUID vBloodType = new PrefabGUID(1557174542);
@@ -33,9 +34,23 @@ namespace BloodyShop.Server.Systems
                     {
                         pveReward(deathEvent.Killer, deathEvent.Died);
                     }
-                } else if (em.HasComponent<PlayerCharacter>(deathEvent.Killer) && em.HasComponent<PlayerCharacter>(deathEvent.Died))
+                }
+            }
+        }
+
+        public static void ServerEvents_OnVampireDowned(VampireDownedServerEventSystem sender, NativeArray<Entity> vampireDownedEntitys)
+        {
+            if (!ConfigDB.DropEnabled) return;
+
+            foreach (var entity in vampireDownedEntitys)
+            {
+                VampireDownedServerEventSystem.TryFindRootOwner(entity, 1, em, out var Died);
+                Entity Source = em.GetComponentData<VampireDownedBuff>(entity).Source;
+                VampireDownedServerEventSystem.TryFindRootOwner(Source, 1, em, out var Killer);
+
+                if (em.HasComponent<PlayerCharacter>(Killer) && em.HasComponent<PlayerCharacter>(Died) && !Killer.Equals(Died))
                 {
-                    pvpReward(deathEvent.Killer, deathEvent.Died);
+                    pvpReward(Killer, Died);
                 }
             }
         }
