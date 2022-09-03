@@ -25,6 +25,11 @@ namespace BloodyShop.Server.Network
             var price = int.Parse(msg.Price);
             var stock = int.Parse(msg.Stock);
 
+            if(Int32.Parse(stock) <= 0)
+            {
+                stock = "-1";
+            }
+
             Plugin.Logger.LogInfo($"{prefix} add {prefabGUID} {price} {stock}");
 
             var vchatEvent = new VChatEvent(fromCharacter.User, fromCharacter.Character,$"{prefix} add {prefabGUID} {price} {stock}", new ChatMessageType(), user);

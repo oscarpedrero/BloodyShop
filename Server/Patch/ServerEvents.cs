@@ -12,11 +12,13 @@ namespace BloodyShop.Server.Patch
 {
 
     public delegate void DeathEventHandler(DeathEventListenerSystem sender, NativeArray<DeathEvent> deathEvents);
+    public delegate void VampireDownedHandler(VampireDownedServerEventSystem sender, NativeArray<Entity> deathEvents);
     [HarmonyPatch]
     public class ServerEvents
     {
 
         public static event DeathEventHandler OnDeath;
+        public static event VampireDownedHandler OnVampireDowned;
 
         [HarmonyPatch(typeof(DeathEventListenerSystem), nameof(DeathEventListenerSystem.OnUpdate))]
         [HarmonyPostfix]
@@ -35,6 +37,22 @@ namespace BloodyShop.Server.Patch
             {
                 Plugin.Logger.LogError(e);
             }
+        }
+
+        [HarmonyPatch(typeof(VampireDownedServerEventSystem), nameof(VampireDownedServerEventSystem.OnUpdate))]
+        [HarmonyPostfix]
+        public static void VampireDownedServerEventSystem_Postfix(VampireDownedServerEventSystem __instance)
+        {
+
+            if (__instance.__OnUpdate_LambdaJob0_entityQuery == null) return;
+
+            EntityManager em = __instance.EntityManager;
+            var vampireDownedEntitys = __instance.__OnUpdate_LambdaJob0_entityQuery.ToEntityArray(Allocator.Temp);
+            if (vampireDownedEntitys.Length > 0)
+            {
+                OnVampireDowned?.Invoke(__instance, vampireDownedEntitys);
+            }
+
         }
     }
 }

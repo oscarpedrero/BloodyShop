@@ -27,5 +27,23 @@ namespace BloodyShop.Server.DB
             }
 
         }
+
+        public static bool saveUsersCoinsPerDay()
+        {
+            try
+            {
+                var usersCoinsPerDayList = ConfigDB.UsersCoinsPerDay;
+                var jsonOutPut = JsonSerializer.Serialize(usersCoinsPerDayList);
+                File.WriteAllText(ServerMod.UserCoinsPerDayFile, jsonOutPut);
+                
+                return true;
+            }
+            catch (Exception error)
+            {
+                Plugin.Logger.LogError($"Error: {error.Message}");
+                return false;
+            }
+
+        }
     }
 }

@@ -19,6 +19,7 @@ namespace BloodyShop
             _harmony.PatchAll(typeof(ChatMessageSystem_Patch));
             _harmony.PatchAll(typeof(ServerEvents));
             ServerEvents.OnDeath += DropSystem.ServerEvents_OnDeath;
+            ServerEvents.OnVampireDowned += DropSystem.ServerEvents_OnVampireDowned;
             ServerMod.CreateFilesConfig();
         }
 
@@ -61,6 +62,7 @@ namespace BloodyShop
         {
             NetworkMessages.RegisterMessage();
             ServerMod.LoadConfigToDB();
+            ServerMod.LoadUserCoinsPerDayToDB();
         }
 
         public static void onClientGameDataOnInitialize()

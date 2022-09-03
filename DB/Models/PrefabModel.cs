@@ -20,6 +20,8 @@ namespace BloodyShop.DB.Models
 
         public bool CheckStockAvailability(int numberofItemsBuy)
         {
+            if (PrefabStock < 0) return true;
+
             if (PrefabStock >= numberofItemsBuy)
             {
                 return true;

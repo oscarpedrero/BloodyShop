@@ -18,7 +18,11 @@ namespace BloodyShop.Server
 
         public static readonly string ConfigPath = Path.Combine(Paths.ConfigPath, "BloodyShop");
 
+        public static readonly string DropSystemPath = Path.Combine(ConfigPath, "DropSystem");
+
         public static string ProductListFile = Path.Combine(ConfigPath, "products_list.json");
+
+        public static string UserCoinsPerDayFile = Path.Combine(ConfigPath, "user_coins_per_day.json");
 
         public static void CreateFilesConfig()
         {
@@ -26,12 +30,24 @@ namespace BloodyShop.Server
             if (!Directory.Exists(ConfigPath)) Directory.CreateDirectory(ConfigPath);
 
             if (!File.Exists(ProductListFile)) File.WriteAllText(ProductListFile, "");
+
+            if (!Directory.Exists(DropSystemPath)) Directory.CreateDirectory(DropSystemPath);
+
+            if (!File.Exists(UserCoinsPerDayFile)) File.WriteAllText(UserCoinsPerDayFile, "");
             
         }
 
         public static void LoadConfigToDB()
         {
             if (!LoadDataFromFiles.loadProductList())
+            {
+                Plugin.Logger.LogError($"Error loading ProductList");
+            }
+        }
+
+        public static void LoadUserCoinsPerDayToDB()
+        {
+            if (!LoadDataFromFiles.loadUserCoinsPerDay())
             {
                 Plugin.Logger.LogError($"Error loading ProductList");
             }
@@ -57,16 +73,22 @@ namespace BloodyShop.Server
             ConfigDB.DropEnabled = Plugin.DropEnabled.Value;
 
             ConfigDB.DropNpcPercentage = Plugin.DropNpcPercentage.Value;
+            ConfigDB.IncrementPercentageDropEveryTenLevelsNpc = Plugin.IncrementPercentageDropEveryTenLevelsNpc.Value;
             ConfigDB.DropdNpcCoinsMin = Plugin.DropdNpcCoinsMin.Value;
             ConfigDB.DropNpcCoinsMax = Plugin.DropNpcCoinsMax.Value;
+            ConfigDB.MaxCoinsPerDayPerPlayerNpc = Plugin.MaxCoinsPerDayPerPlayerNpc.Value;
 
             ConfigDB.DropdVBloodPercentage = Plugin.DropdVBloodPercentage.Value;
+            ConfigDB.IncrementPercentageDropEveryTenLevelsVBlood = Plugin.IncrementPercentageDropEveryTenLevelsVBlood.Value;
             ConfigDB.DropVBloodCoinsMin = Plugin.DropVBloodCoinsMin.Value;
             ConfigDB.DropVBloodCoinsMax = Plugin.DropVBloodCoinsMax.Value;
+            ConfigDB.MaxCoinsPerDayPerPlayerVBlood = Plugin.MaxCoinsPerDayPerPlayerVBlood.Value;
 
             ConfigDB.DropPvpPercentage = Plugin.DropPvpPercentage.Value;
+            ConfigDB.IncrementPercentageDropEveryTenLevelsPvp = Plugin.IncrementPercentageDropEveryTenLevelsPvp.Value;
             ConfigDB.DropPvpCoinsMin = Plugin.DropPvpCoinsMin.Value;
             ConfigDB.DropPvpCoinsMax = Plugin.DropPvpCoinsMax.Value;
+            ConfigDB.MaxCoinsPerDayPerPlayerPvp = Plugin.MaxCoinsPerDayPerPlayerPvp.Value;
         }
     }
 }
