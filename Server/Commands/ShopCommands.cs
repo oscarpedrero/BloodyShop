@@ -4,6 +4,8 @@ using BloodyShop.Server.Network;
 using BloodyShop.Utils;
 using ProjectM;
 using System;
+using System.Collections.Generic;
+using System.Text;
 using VampireCommandFramework;
 using VRising.GameData;
 using VRising.GameData.Models;
@@ -11,7 +13,8 @@ using Wetstone.API;
 
 namespace BloodyShop.Server.Commands
 {
-    public static class Add
+    [CommandGroup("shop")]
+    internal class ShopCommands
     {
         public static object ItemsData { get; private set; }
 

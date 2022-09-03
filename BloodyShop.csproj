@@ -15,16 +15,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BepInEx.IL2CPP" Version="6.0.0-*" IncludeAssets="compile" />
-    <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
-	<PackageReference Include="Fody" Version="6.6.3" PrivateAssets="All" />
-	<PackageReference Include="ILMerge.Fody" Version="1.23.0" PrivateAssets="All" />
-    <PackageReference Include="System.Text.Json" Version="6.0.5" />
-    <PackageReference Include="UniverseLib.IL2CPP.Unhollower" Version="1.5.1" />
-    <PackageReference Include="VRising.GameData" Version="0.3.3" />
-	<PackageReference Include="VRising.Unhollowed.Client" Version="0.5.*" />
-    <PackageReference Include="Wetstone" Version="1.1.0" />
-        <PackageReference Include="VRising.VampireCommandFramework" Version="0.2.*"/>
+		<PackageReference Include="BepInEx.IL2CPP" Version="6.0.0-*" IncludeAssets="compile" />
+		<PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
+		<PackageReference Include="Fody" Version="6.6.3" PrivateAssets="All" />
+		<PackageReference Include="ILMerge.Fody" Version="1.23.0" PrivateAssets="All" />
+		<PackageReference Include="System.Text.Json" Version="6.0.5" />
+		<PackageReference Include="UniverseLib.IL2CPP.Unhollower" Version="1.5.1" />
+		<PackageReference Include="VRising.GameData" Version="0.3.3" />
+		<PackageReference Include="VRising.Unhollowed.Client" Version="0.5.*" />
+		<PackageReference Include="Wetstone" Version="1.1.0" />
+        <PackageReference Include="VRising.VampireCommandFramework" Version="0.3.*" />
 	</ItemGroup>
 
   <ItemGroup>
@@ -32,12 +32,14 @@
     <Folder Include="Client\DB\Models\" />
     <Folder Include="Images\" />
     <Folder Include="Server\DB\Model\" />
+    <Folder Include="Server\Hooks\" />
+    <Folder Include="Server\Utils\" />
   </ItemGroup>
-	<!--<Target Name="CopyDLLsClient" AfterTargets="Build">
+	<Target Name="CopyDLLsClient" AfterTargets="Build">
 		<Message Text="DLL to V Rising Client" Importance="High" />
 		<Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="C:\Program Files (x86)\Steam\steamapps\common\VRising\BepInEx\plugins\" />
 		<Message Text="DLL Client Copied OK" Importance="High" />
-	</Target>-->
+	</Target>
 	<Target Name="CopyDLLsServer" AfterTargets="Build">
 		<Message Text="DLL to V Rising Server" Importance="High" />
 		<Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="D:\steamcmd\steamapps\common\VRisingDedicatedServer\BepInEx\plugins\" />
