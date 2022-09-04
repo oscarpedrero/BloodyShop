@@ -207,15 +207,15 @@ namespace BloodyShop.Client.UI.Panels.User
 
                     //NAME ITEM
                     Text itemName = UIFactory.CreateLabel(_contentProduct, "itemNameTxt-" + index, $" {item.PrefabName}", TextAnchor.MiddleLeft);
-                    UIFactory.SetLayoutElement(itemName.gameObject, minWidth: 210, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 210);
+                    UIFactory.SetLayoutElement(itemName.gameObject, minWidth: 230, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 230);
 
                     // PRICE ITEM
                     Text itemPrice = UIFactory.CreateLabel(_contentProduct, "itemPriceTxt-" + index, $"{item.PrefabPrice} {coin.Name}");
                     UIFactory.SetLayoutElement(itemPrice.gameObject, minWidth: 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 100);
 
                     // QUANTITY ITEM
-                    var quantityNew = UIFactory.CreateInputField(_contentProduct, "quantityNew|" + index, "Stock");
-                    UIFactory.SetLayoutElement(quantityNew.GameObject, minWidth: 70, minHeight: 30, flexibleHeight: 0, preferredHeight: 30, flexibleWidth: 0, preferredWidth: 50);
+                    var quantityNew = UIFactory.CreateInputField(_contentProduct, "quantityNew|" + index, "Quantity");
+                    UIFactory.SetLayoutElement(quantityNew.GameObject, minWidth: 40, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 40);
                     quantityNew.Component.contentType = InputField.ContentType.IntegerNumber;
                     quantityNew.Text = "1";
                     quantityNew.Text.PadLeft(2);
