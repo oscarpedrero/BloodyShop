@@ -49,14 +49,16 @@ namespace BloodyShop.Server
         {
             if (!LoadDataFromFiles.loadUserCoinsPerDay())
             {
-                Plugin.Logger.LogError($"Error loading ProductList");
+                Plugin.Logger.LogError($"Error loading loadUserCoinsPerDay");
             }
         }
 
         public static void SetConfigMod()
         {
-            var _shopEnabled = Plugin.ShopEnabled.Value;
-            ConfigDB.ShopEnabled = _shopEnabled;
+
+            ConfigDB.ShopEnabled = Plugin.ShopEnabled.Value;
+            ConfigDB.AnnounceAddRemovePublic = Plugin.AnnounceAddRemovePublic.Value;
+            ConfigDB.AnnounceBuyPublic = Plugin.AnnounceBuyPublic.Value;
 
             var _storeName = Plugin.StoreName.Value;
 
@@ -64,7 +66,6 @@ namespace BloodyShop.Server
             if (_storeName != string.Empty)
             {
                 ConfigDB.StoreName = _storeName;
-                ChatSystem.SetPrefix(_storeName);
             }
 
             var _coinGUID = Plugin.CoinGUID.Value;

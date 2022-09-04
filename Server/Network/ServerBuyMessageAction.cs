@@ -3,9 +3,18 @@ using BloodyShop.DB;
 using BloodyShop.Network.Messages;
 using System.Text.Json;
 using Wetstone.API;
-using BloodyShop.Server.Utils;
 using BloodyShop.Server.Systems;
 using BloodyShop.Server.Commands;
+using VampireCommandFramework;
+using System;
+using BloodyShop.Utils;
+using ProjectM;
+using VRising.GameData;
+using BloodyShop.Server.DB;
+using BloodyShop.Server.Core;
+using BloodyShop.DB.Models;
+using VRising.GameData.Models;
+using Unity.Entities;
 
 namespace BloodyShop.Server.Network
 {
@@ -18,21 +27,100 @@ namespace BloodyShop.Server.Network
 
             Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] BuySerializedMessage {user.CharacterName} - {msg.ItemIndex}");
 
-            var buyID = msg.ItemIndex;
+            var buyID = Int32.Parse(msg.ItemIndex);
 
-            var prefix = ChatSystem.GetPrefix();
-
-            var vchatEvent = new VChatEvent(fromCharacter.User, fromCharacter.Character,$"{prefix} buy {buyID} 1", new ChatMessageType(), user);
-
-            string[] args = new string[] { buyID , "1"};
-
-            var ctx = new Context(prefix, vchatEvent, args);
-
-            Buy.BuyItem(ctx);
-
-            
+            BuyItem(user, fromCharacter.Character, buyID, 1);
 
         }
+
+        public static void BuyItem(User user, Entity playerCharacter, int indexPosition, int quantity)
+        {
+
+            try
+            {
+
+                if (!ConfigDB.ShopEnabled)
+                {
+                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"{FontColorChat.White($"{ConfigDB.StoreName}")} is closed"));
+                    return;
+                }
+
+                if (!ShareDB.getCoin(out ItemModel coin))
+                {
+                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("Error loading currency type"));
+                    return;
+                }
+
+                if (quantity <= 0)
+                {
+                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"The minimum purchase quantity of a product is 1"));
+                    return;
+                }
+
+                if (!ItemsDB.SearchItemByCommand(indexPosition, out PrefabModel itemShopModel))
+                {
+                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("This item is not available in the store"));
+                    return;
+                }
+
+                var finalPrice = itemShopModel.PrefabPrice * quantity;
+
+                if (!itemShopModel.CheckStockAvailability(quantity))
+                {
+                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("There is not enough stock of this item"));
+                    return;
+                }
+
+                if (!InventorySystem.verifyHaveSuficientCoins(playerCharacter, coin.PrefabGUID, finalPrice))
+                {
+                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("There is not enough stock of this item"));
+                    return;
+                }
+
+                if (!InventorySystem.getCoinsFromInventory(playerCharacter, user.CharacterName.ToString(), coin.PrefabName, coin.PrefabGUID, finalPrice))
+                {
+                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"You need {FontColorChat.White($"{finalPrice} {coin.Name}")} in your inventory for this purchase"));
+                    return;
+                }
+
+                if (!InventorySystem.AdditemToIneventory(user.CharacterName.ToString(), new PrefabGUID(itemShopModel.PrefabGUID), quantity))
+                {
+                    Plugin.Logger.LogInfo($"Error buying an item User: {user.CharacterName.ToString()} Item: {itemShopModel.PrefabName} Quantity: {quantity} TotalPrice: {finalPrice}");
+                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"An error has occurred when delivering the items, please contact an administrator"));
+                    return;
+                }
+
+                ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Yellow($"Transaction successful. You have purchased {FontColorChat.White($"{quantity}x {itemShopModel.PrefabName}")} for a total of  {FontColorChat.White($"{finalPrice} {coin.Name}")}"));
+
+                if (!ItemsDB.ModifyStockByCommand(indexPosition, quantity))
+                {
+                    Plugin.Logger.LogInfo($"Error ModifyStockByCommand: {user.CharacterName.ToString()} Item: {itemShopModel.PrefabName} Quantity: {quantity} TotalPrice: {finalPrice}");
+                    return;
+                }
+
+                SaveDataToFiles.saveProductList();
+                LoadDataFromFiles.loadProductList();
+
+                var usersOnline = GameData.Users.Online;
+                foreach (var userOnline in usersOnline)
+                {
+                    var msg = ServerListMessageAction.createMsg();
+                    ServerListMessageAction.Send(userOnline.Internals.User, msg);
+                }
+
+                if (ConfigDB.AnnounceBuyPublic)
+                {
+                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{user.CharacterName} has purchased {FontColorChat.White($"{quantity}x {itemShopModel.PrefabName}")} for a total of  {FontColorChat.White($"{finalPrice} {coin.Name}")}"));
+                }
+            }
+            catch (Exception error)
+            {
+                Plugin.Logger.LogInfo($"Error: {error.Message}");
+                ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"Error: {error.Message}"));
+            }
+        }
+
+
 
         public static void Send(User fromCharacter, BuySerializedMessage msg)
         {

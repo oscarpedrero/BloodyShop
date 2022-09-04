@@ -25,10 +25,18 @@ namespace BloodyShop
         private Harmony _harmony;
 
         public static ConfigEntry<bool> ShopEnabled;
-        public static ConfigEntry<bool> DropEnabled;
+        public static ConfigEntry<bool> AnnounceAddRemovePublic;
+        public static ConfigEntry<bool> AnnounceBuyPublic;
         public static ConfigEntry<int> CoinGUID;
         public static ConfigEntry<string> StoreName;
-        
+
+
+        /// 
+        /// DROP SYSTEM
+        /// 
+
+        public static ConfigEntry<bool> DropEnabled;
+
         // NPC CONFIG DROP
         public static ConfigEntry<int> DropNpcPercentage;
         public static ConfigEntry<int> IncrementPercentageDropEveryTenLevelsNpc;
@@ -164,8 +172,10 @@ namespace BloodyShop
         private void InitConfigServer()
         {
             ShopEnabled = Config.Bind("ConfigShop", "enabled", true, "Enable Shop");
-            StoreName = Config.Bind("ConfigShop", "name", "Bloody Shop", "Store's name. This name will also serve as a prefix for the command, that is, if you put Black Market, for example, the system will parse the name, remove space and pass it to lowercase, so the command will be !blackmarket");
+            StoreName = Config.Bind("ConfigShop", "name", "Bloody Shop", "Store's name");
             CoinGUID = Config.Bind("ConfigShop", "coinGUID", -949672483, "Item that will be used as currency within the service, by default they are silver coins, if you want to change the item you must include the GUID of said object that you can get from https://gaming.tools/v-rising/items");
+            AnnounceAddRemovePublic = Config.Bind("ConfigShop", "announceAddRemovePublic", true, "Public announcement when an item is added or removed from the store");
+            AnnounceBuyPublic = Config.Bind("ConfigShop", "announceBuyPublic", true, "Public announcement when someone buys an item from the store");
 
             // DROP SYSTEM CONFIG
             DropEnabled = Config.Bind("DropSystem", "enabled", true, "Enable Drop System");

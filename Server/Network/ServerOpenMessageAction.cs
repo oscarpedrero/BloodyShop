@@ -3,9 +3,12 @@ using BloodyShop.DB;
 using BloodyShop.Network.Messages;
 using System.Text.Json;
 using Wetstone.API;
-using BloodyShop.Server.Utils;
 using BloodyShop.Server.Systems;
 using BloodyShop.Server.Commands;
+using BloodyShop.Server.DB;
+using ProjectM;
+using BloodyShop.Utils;
+using VRising.GameData;
 
 namespace BloodyShop.Server.Network
 {
@@ -18,16 +21,21 @@ namespace BloodyShop.Server.Network
 
             Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] OpenSerializedMessage {user.CharacterName}");
 
-            var prefix = ChatSystem.GetPrefix();
+            OpenShop();
 
-            var vchatEvent = new VChatEvent(fromCharacter.User, fromCharacter.Character,$"{prefix} open", new ChatMessageType(), user);
+        }
 
-            string[] args = new string[0];
+        public static void OpenShop()
+        {
 
-            var ctx = new Context(prefix, vchatEvent, args);
-
-            Open.OpenShop(ctx);
-
+            ConfigDB.ShopEnabled = true;
+            ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($" {FontColorChat.White($" {ConfigDB.StoreName} ")} just opened"));
+            var usersOnline = GameData.Users.Online;
+            var msg = new OpenSerializedMessage();
+            foreach (var user in usersOnline)
+            {
+                Send(user.Internals.User, msg);
+            }
 
         }
 

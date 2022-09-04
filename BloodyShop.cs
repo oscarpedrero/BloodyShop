@@ -2,13 +2,12 @@
 using BloodyShop.Client;
 using BloodyShop.Client.Patch;
 using BloodyShop.Server;
-using BloodyShop.Server.Hooks;
 using BloodyShop.Server.Network;
 using BloodyShop.Client.UI;
-using BloodyShop.Client.DB;
-using VRising.GameData;
 using BloodyShop.Server.Patch;
 using BloodyShop.Server.Systems;
+using VampireCommandFramework;
+using BloodyShop.Server.Commands;
 
 namespace BloodyShop
 {
@@ -16,11 +15,11 @@ namespace BloodyShop
     {
         public static void serverInitMod(Harmony _harmony)
         {
-            _harmony.PatchAll(typeof(ChatMessageSystem_Patch));
             _harmony.PatchAll(typeof(ServerEvents));
             ServerEvents.OnDeath += DropSystem.ServerEvents_OnDeath;
             ServerEvents.OnVampireDowned += DropSystem.ServerEvents_OnVampireDowned;
             ServerMod.CreateFilesConfig();
+            CommandRegistry.RegisterCommandType(typeof(ShopCommands));
         }
 
         public static void clientInitMod(Harmony _harmony)
