@@ -11,7 +11,7 @@ namespace BloodyShop.Server.DB
         public static bool ShopEnabled { get; set; } = true;
         public static bool AnnounceAddRemovePublic { get; set; } = true;
         public static bool AnnounceBuyPublic { get; set; } = true;
-        public static string StoreName { get; set; } = "BloodyShop";
+        public static string StoreName { get; set; } = "Bloody Shop";
         public static bool DropEnabled { get; set; } = true;
         public static int DropNpcPercentage { get; set; } = 0;
         public static int IncrementPercentageDropEveryTenLevelsNpc { get; set; } = 0;

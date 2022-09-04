@@ -15,6 +15,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Client\Coroutine\**" />
+    <Compile Remove="Client\DB\Models\**" />
+    <EmbeddedResource Remove="Client\Coroutine\**" />
+    <EmbeddedResource Remove="Client\DB\Models\**" />
+    <None Remove="Client\Coroutine\**" />
+    <None Remove="Client\DB\Models\**" />
+  </ItemGroup>
+
+  <ItemGroup>
 		<PackageReference Include="BepInEx.IL2CPP" Version="6.0.0-*" IncludeAssets="compile" />
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
 		<PackageReference Include="Fody" Version="6.6.3" PrivateAssets="All" />
@@ -28,8 +37,6 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Client\Coroutine\" />
-    <Folder Include="Client\DB\Models\" />
     <Folder Include="Images\" />
   </ItemGroup>
 	<Target Name="CopyDLLsClient" AfterTargets="Build">

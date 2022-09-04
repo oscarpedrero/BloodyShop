@@ -54,6 +54,8 @@ namespace BloodyShop.Client.UI.Panels.User
 
         public List<PrefabModel> items;
 
+        public static List<(int index, InputFieldRef input)> _quantityArrayCache = new();
+
         private static int limit = 10;
         private static int page = 0;
         private static int total = 0;
@@ -115,9 +117,9 @@ namespace BloodyShop.Client.UI.Panels.User
             // CONTAINER FOR PRODUCTS
             var _contentHeader = UIFactory.CreateHorizontalGroup(ContentRoot.gameObject, "HeaderItem", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
 
-            // Aval ITEM
-            Text headerAval = UIFactory.CreateLabel(_contentHeader, "itemAvalTxt", $"Stock");
-            UIFactory.SetLayoutElement(headerAval.gameObject, minWidth: 50, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 50);
+            // STOCK ITEM
+            Text headerStock = UIFactory.CreateLabel(_contentHeader, "itemAvalTxt", $"Stock");
+            UIFactory.SetLayoutElement(headerStock.gameObject, minWidth: 50, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 50);
 
             // ITEM ICON
             Text headerName = UIFactory.CreateLabel(_contentHeader, "itemNameTxt", $"Name", TextAnchor.MiddleLeft);
@@ -126,11 +128,15 @@ namespace BloodyShop.Client.UI.Panels.User
 
             //NAME ITEM
             var imageHeader = UIFactory.CreateUIObject("IconItem", _contentHeader);
-            UIFactory.SetLayoutElement(imageHeader, minWidth: 310, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 310);
+            UIFactory.SetLayoutElement(imageHeader, minWidth: 210, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 210);
 
             // PRICE ITEM
             Text headerPrice = UIFactory.CreateLabel(_contentHeader, "itemPriceTxt", $"Price");
             UIFactory.SetLayoutElement(headerPrice.gameObject, minWidth: 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 100);
+
+            // QUANTITY ITEM
+            Text headerQuantity = UIFactory.CreateLabel(_contentHeader, "itemAvalTxt", $"Quantity");
+            UIFactory.SetLayoutElement(headerQuantity.gameObject, minWidth: 50, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 50);
 
             // BUY BTN
             var headerBuy = UIFactory.CreateUIObject("BuyItem", _contentHeader);
@@ -173,6 +179,7 @@ namespace BloodyShop.Client.UI.Panels.User
                 skip = page * limit;
             }
             var index = skip+1;
+            _quantityArrayCache = new();
             foreach (var item in items.Skip(skip).Take(limit))
             {
                 if (ShareDB.getCoin(out ItemModel coin))
@@ -200,11 +207,19 @@ namespace BloodyShop.Client.UI.Panels.User
 
                     //NAME ITEM
                     Text itemName = UIFactory.CreateLabel(_contentProduct, "itemNameTxt-" + index, $" {item.PrefabName}", TextAnchor.MiddleLeft);
-                    UIFactory.SetLayoutElement(itemName.gameObject, minWidth: 310, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 310);
+                    UIFactory.SetLayoutElement(itemName.gameObject, minWidth: 210, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 210);
 
                     // PRICE ITEM
                     Text itemPrice = UIFactory.CreateLabel(_contentProduct, "itemPriceTxt-" + index, $"{item.PrefabPrice} {coin.Name}");
                     UIFactory.SetLayoutElement(itemPrice.gameObject, minWidth: 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 100);
+
+                    // QUANTITY ITEM
+                    var quantityNew = UIFactory.CreateInputField(_contentProduct, "quantityNew|" + index, "Stock");
+                    UIFactory.SetLayoutElement(quantityNew.GameObject, minWidth: 70, minHeight: 30, flexibleHeight: 0, preferredHeight: 30, flexibleWidth: 0, preferredWidth: 50);
+                    quantityNew.Component.contentType = InputField.ContentType.IntegerNumber;
+                    quantityNew.Text = "1";
+                    quantityNew.Text.PadLeft(2);
+                    _quantityArrayCache.Add((index,quantityNew));
 
                     // BUY BTN
                     ButtonRef buyBtn = UIFactory.CreateButton(_contentProduct, "buyItemBtn-" + index, "BUY", new Color(212 / 255f, 172 / 255f, 13 / 255f));
@@ -318,6 +333,8 @@ namespace BloodyShop.Client.UI.Panels.User
             var indexItemUI = btnName.Replace("buyItemBtn-", "");
             Plugin.Logger.LogInfo($"BUY INDEX BEFORE: {indexItemUI}");
             var prefabBuy = items[Int32.Parse(indexItemUI) - 1];
+            var quantityBuy = serachQuantityInput(Int32.Parse(indexItemUI));
+            Plugin.Logger.LogInfo($"quantityBuy: {quantityBuy}");
             indexItemUI = ItemsDB.searchIndexForProduct(prefabBuy.PrefabGUID).ToString();
 
             Plugin.Logger.LogInfo($"BUY INDEX AFTER: {indexItemUI}");
@@ -327,11 +344,32 @@ namespace BloodyShop.Client.UI.Panels.User
                 var msg = new BuySerializedMessage()
                 {
                     ItemIndex = indexItemUI,
+                    Quantity = quantityBuy,
                 };
                 ClientBuyMessageAction.Send(msg);
                 RefreshAction();
             }
 
+        }
+
+        private string serachQuantityInput(int indexSearch)
+        {
+
+            foreach (var (index, input) in _quantityArrayCache)
+            {
+                if (index == indexSearch)
+                {
+
+                    if(input.Text == "")
+                    {
+                        return "0";
+                    }
+
+                    return input.Text;
+                }
+            }
+
+            return "0";
         }
 
         

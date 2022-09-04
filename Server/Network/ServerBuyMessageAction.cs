@@ -28,8 +28,9 @@ namespace BloodyShop.Server.Network
             Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] BuySerializedMessage {user.CharacterName} - {msg.ItemIndex}");
 
             var buyID = Int32.Parse(msg.ItemIndex);
+            var quantity = Int32.Parse(msg.Quantity);
 
-            BuyItem(user, fromCharacter.Character, buyID, 1);
+            BuyItem(user, fromCharacter.Character, buyID, quantity);
 
         }
 
