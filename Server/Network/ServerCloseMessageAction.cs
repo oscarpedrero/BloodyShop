@@ -1,11 +1,10 @@
 ﻿using ProjectM.Network;
-using BloodyShop.DB;
 using BloodyShop.Network.Messages;
-using System.Text.Json;
 using Wetstone.API;
-using BloodyShop.Server.Utils;
-using BloodyShop.Server.Systems;
-using BloodyShop.Server.Commands;
+using BloodyShop.Server.DB;
+using VRising.GameData;
+using ProjectM;
+using BloodyShop.Utils;
 
 namespace BloodyShop.Server.Network
 {
@@ -18,16 +17,20 @@ namespace BloodyShop.Server.Network
 
             Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] CloseSerializedMessage {user.CharacterName}");
 
-            var prefix = ChatSystem.GetPrefix();
+            CloseShop();
 
-            var vchatEvent = new VChatEvent(fromCharacter.User, fromCharacter.Character,$"{prefix} close", new ChatMessageType(), user);
+        }
 
-            string[] args = new string[0];
-
-            var ctx = new Context(prefix, vchatEvent, args);
-
-            Close.CloseShop(ctx);
-
+        public static void CloseShop()
+        {
+            ConfigDB.ShopEnabled = false;
+            ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($" {FontColorChat.White($" {ConfigDB.StoreName} ")} just closed"));
+            var usersOnline = GameData.Users.Online;
+            var msg = new CloseSerializedMessage();
+            foreach (var user in usersOnline)
+            {
+                Send(user.Internals.User, msg);
+            }
         }
 
         public static void Send(User fromCharacter, CloseSerializedMessage msg)

@@ -15,20 +15,28 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BepInEx.IL2CPP" Version="6.0.0-*" IncludeAssets="compile" />
-    <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
-	<PackageReference Include="Fody" Version="6.6.3" PrivateAssets="All" />
-	<PackageReference Include="ILMerge.Fody" Version="1.23.0" PrivateAssets="All" />
-    <PackageReference Include="System.Text.Json" Version="6.0.5" />
-    <PackageReference Include="UniverseLib.IL2CPP.Unhollower" Version="1.5.1" />
-    <PackageReference Include="VRising.GameData" Version="0.3.3" />
-	<PackageReference Include="VRising.Unhollowed.Client" Version="0.5.*" />
-    <PackageReference Include="Wetstone" Version="1.1.0" />
+    <Compile Remove="Client\Coroutine\**" />
+    <Compile Remove="Client\DB\Models\**" />
+    <EmbeddedResource Remove="Client\Coroutine\**" />
+    <EmbeddedResource Remove="Client\DB\Models\**" />
+    <None Remove="Client\Coroutine\**" />
+    <None Remove="Client\DB\Models\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Client\Coroutine\" />
-    <Folder Include="Client\DB\Models\" />
+		<PackageReference Include="BepInEx.IL2CPP" Version="6.0.0-*" IncludeAssets="compile" />
+		<PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
+		<PackageReference Include="Fody" Version="6.6.3" PrivateAssets="All" />
+		<PackageReference Include="ILMerge.Fody" Version="1.23.0" PrivateAssets="All" />
+		<PackageReference Include="System.Text.Json" Version="6.0.5" />
+		<PackageReference Include="UniverseLib.IL2CPP.Unhollower" Version="1.5.1" />
+		<PackageReference Include="VRising.GameData" Version="0.3.3" />
+		<PackageReference Include="VRising.Unhollowed.Client" Version="0.5.*" />
+		<PackageReference Include="Wetstone" Version="1.1.0" />
+        <PackageReference Include="VRising.VampireCommandFramework" Version="0.3.*" />
+	</ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Images\" />
   </ItemGroup>
 	<Target Name="CopyDLLsClient" AfterTargets="Build">

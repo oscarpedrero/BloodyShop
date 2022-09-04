@@ -8,24 +8,21 @@ namespace BloodyShop.Server.DB
 {
     public class ConfigDB
     {
-        public static bool ShopEnabled = true;
-
-        public static string StoreName = "BloodyShop";
-
-        public static bool DropEnabled = true;
-
+        public static bool ShopEnabled { get; set; } = true;
+        public static bool AnnounceAddRemovePublic { get; set; } = true;
+        public static bool AnnounceBuyPublic { get; set; } = true;
+        public static string StoreName { get; set; } = "Bloody Shop";
+        public static bool DropEnabled { get; set; } = true;
         public static int DropNpcPercentage { get; set; } = 0;
         public static int IncrementPercentageDropEveryTenLevelsNpc { get; set; } = 0;
         public static int DropdNpcCoinsMin { get; set; } = 0;
         public static int DropNpcCoinsMax { get; set; } = 0;
         public static int MaxCoinsPerDayPerPlayerNpc { get; set; } = 0;
-
         public static int DropdVBloodPercentage { get; set; } = 0;
         public static int IncrementPercentageDropEveryTenLevelsVBlood { get; set; } = 0;
         public static int DropVBloodCoinsMin { get; set; } = 0;
         public static int DropVBloodCoinsMax { get; set; } = 0;
         public static int MaxCoinsPerDayPerPlayerVBlood { get; set; } = 0;
-
         public static int DropPvpPercentage { get; set; } = 0;
         public static int IncrementPercentageDropEveryTenLevelsPvp { get; set; } = 0;
         public static int DropPvpCoinsMin { get; set; } = 0;
@@ -37,17 +34,19 @@ namespace BloodyShop.Server.DB
 
         public static bool setUsersCoinsPerDay(List<UserCoinsPerDayModel> listUsersCoinsPerDay)
         {
+
+            UsersCoinsPerDay = new();
+
             foreach (UserCoinsPerDayModel userCoinsPerDay in listUsersCoinsPerDay)
             {
                 DateTime oDate = DateTime.Parse(userCoinsPerDay.date);
                 if (oDate != DateTime.Today)
                 {
-                    listUsersCoinsPerDay.Remove(userCoinsPerDay);
                     continue;
                 }
                 _normalizedUsersCoinsPerDay.Add((userCoinsPerDay.CharacterName, oDate, userCoinsPerDay));
+                UsersCoinsPerDay.Add(userCoinsPerDay);
             }
-            UsersCoinsPerDay = listUsersCoinsPerDay;
 
             return true;
         }
