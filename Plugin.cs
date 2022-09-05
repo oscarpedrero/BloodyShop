@@ -13,7 +13,7 @@ namespace BloodyShop
 {
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
     [BepInDependency("xyz.molenzwiebel.wetstone")]
-    [BepInDependency("gg.deca.VampireCommandFramework")]
+    [BepInDependency("gg.deca.VampireCommandFramework", BepInDependency.DependencyFlags.SoftDependency)]
     public class Plugin : BasePlugin, IRunOnInitialized
     {
 
@@ -107,14 +107,20 @@ namespace BloodyShop
 
             Logger = Log;
             _harmony = new Harmony(PluginInfo.PLUGIN_GUID);
-            
+
 
             if (VWorld.IsServer)
             {
                 InitConfigServer();
+                var vcfFound = IL2CPPChainloader.Instance.Plugins.TryGetValue("gg.deca.VampireCommandFramework", out var info);
+                if (!vcfFound)
+                {
+                    Logger.LogError("VampireCommandFramework not found! This is required for the server.");
+                    return;
+                }
                 BloodyShop.serverInitMod(_harmony);
-
-            } else
+            }
+            else
             {
                 BloodyShop.clientInitMod(_harmony);
             }
@@ -139,7 +145,7 @@ namespace BloodyShop
             {
                 BloodyShop.clientUnloadMod();
             }
-            
+
             _harmony.UnpatchSelf();
             GameData.OnDestroy -= GameDataOnDestroy;
             GameData.OnInitialize -= GameDataOnInitialize;
@@ -157,7 +163,8 @@ namespace BloodyShop
                 try
                 {
                     BloodyShop.onClientGameDataOnInitialize();
-                } catch ( Exception error)
+                }
+                catch (Exception error)
                 {
                     Logger.LogInfo($"Error GameDataOnInitialize {error.Message}");
                 }
@@ -187,7 +194,7 @@ namespace BloodyShop
             DropdNpcCoinsMin = Config.Bind("DropSystem", "DropdNpcCoinsMin", 1, "Minimum currency an NPC can drop");
             DropNpcCoinsMax = Config.Bind("DropSystem", "DropNpcCoinsMax", 5, "Maximum currency an NPC can drop");
             MaxCoinsPerDayPerPlayerNpc = Config.Bind("DropSystem", "MaxCoinsPerDayPerPlayerNpc", 5, "Maximum number of currency that a user can get per day by NPC death");
-            
+
             // VBLOOD DROP CONFIG
             DropdVBloodPercentage = Config.Bind("DropSystem", "minPercentageDropVBlood", 20, "Percent chance that an VBlood will drop the type of currency from the shop");
             IncrementPercentageDropEveryTenLevelsVBlood = Config.Bind("DropSystem", "IncrementPercentageDropEveryTenLevelsVBlood", 5, "Percentage increase for every rank of 10 levels of the VBlood");
@@ -201,7 +208,7 @@ namespace BloodyShop
             DropPvpCoinsMin = Config.Bind("DropSystem", "DropPvpCoinsMin", 15, "Minimum currency can drop victory in PVP");
             DropPvpCoinsMax = Config.Bind("DropSystem", "DropPvpCoinsMax", 20, "Maximum currency can drop victory in PVP");
             MaxCoinsPerDayPerPlayerPvp = Config.Bind("DropSystem", "MaxCoinsPerDayPerPlayerPvp", 20, "Maximum number of currency that a user can get per day by victory in PVP");
-    }
+        }
 
         public void OnGameInitialized()
         {
