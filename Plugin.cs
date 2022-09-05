@@ -13,6 +13,7 @@ namespace BloodyShop
 {
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
     [BepInDependency("xyz.molenzwiebel.wetstone")]
+    [BepInDependency("gg.deca.VampireCommandFramework")]
     public class Plugin : BasePlugin, IRunOnInitialized
     {
 
