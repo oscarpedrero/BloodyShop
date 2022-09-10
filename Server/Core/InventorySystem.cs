@@ -1,20 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BloodyShop.Server.Systems;
 using Unity.Entities;
 using Unity.Collections;
 using ProjectM;
 using VRising.GameData;
 using VRising.GameData.Methods;
-using BloodyShop.DB;
-using BloodyShop.DB.Models;
-using BloodyShop.Utils;
-using VRising.GameData.Models;
-using BloodyShop.Server.DB;
-using BloodyShop.Server.Network;
-using VampireCommandFramework;
-using Wetstone.API;
 
 namespace BloodyShop.Server.Core
 {

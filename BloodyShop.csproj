@@ -33,7 +33,7 @@
 		<PackageReference Include="VRising.GameData" Version="0.3.3" />
 		<PackageReference Include="VRising.Unhollowed.Client" Version="0.5.*" />
 		<PackageReference Include="Wetstone" Version="1.1.0" />
-        <PackageReference Include="VRising.VampireCommandFramework" Version="0.3.*" />
+        <PackageReference Include="VRising.VampireCommandFramework" Version="0.4.2" />
 	</ItemGroup>
 
   <ItemGroup>

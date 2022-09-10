@@ -18,7 +18,7 @@ namespace BloodyShop.Server.Commands
     internal class ShopCommands
     {
 
-        [Command("add", usage: "add <PrefabGuid> <Price> <Stock>", description: "Add a product to the store. To know the PrefabGuid of an item you must look for the item in the following URL <#4acc45><u>https://gaming.tools/v-rising/items</u></color>", adminOnly: true)]
+        [Command("add", usage: "<PrefabGuid> <Price> <Stock>", description: "Add a product to the store. To know the PrefabGuid of an item you must look for the item in the following URL <#4acc45><u>https://gaming.tools/v-rising/items</u></color>", adminOnly: true)]
         public static void addItem(ChatCommandContext ctx, int item, int price, int stock)
         {
             try
@@ -68,7 +68,7 @@ namespace BloodyShop.Server.Commands
             }
         }
 
-        [Command("buy", usage: "buy <NumberItem> <Quantity> ", description: "Buy an object from the shop", adminOnly: false)]
+        [Command("buy", usage: "<NumberItem> <Quantity> ", description: "Buy an object from the shop", adminOnly: false)]
         public static void BuyItem(ChatCommandContext ctx, int indexPosition, int quantity)
         {
 
@@ -149,7 +149,7 @@ namespace BloodyShop.Server.Commands
             }
         }
 
-        [Command("remove", shortHand: "rm", usage: "remove <NumberItem>", description: "Delete a product from the store", adminOnly: true)]
+        [Command("remove", shortHand: "rm", usage: "<NumberItem>", description: "Delete a product from the store", adminOnly: true)]
         public static void removeItemFromShop(ChatCommandContext ctx, int index)
         {
             try
@@ -188,7 +188,7 @@ namespace BloodyShop.Server.Commands
             }
         }
 
-        [Command("list", usage: "list", description: "List of products available to buy in the store", adminOnly: false)]
+        [Command("list", usage: "", description: "List of products available to buy in the store", adminOnly: false)]
         public static void list(ChatCommandContext ctx)
         {
             if (!ConfigDB.ShopEnabled)
@@ -218,7 +218,7 @@ namespace BloodyShop.Server.Commands
 
         }
 
-        [Command("open", usage:"open", description:"Open store", adminOnly: true)]
+        [Command("open", usage:"", description:"Open store", adminOnly: true)]
         public static void OpenShop(ChatCommandContext ctx)
         {
             
@@ -234,7 +234,7 @@ namespace BloodyShop.Server.Commands
             
         }
 
-        [Command("close", usage:"close", description: "Close store", adminOnly: true)]
+        [Command("close", usage:"", description: "Close store", adminOnly: true)]
         public static void CloseShop(ChatCommandContext ctx)
         {
             ConfigDB.ShopEnabled = false;
