@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>BloodyShop</AssemblyName>
     <Description>Mod to create a store in VRising</Description>
-    <Version>0.4.1</Version>
+    <Version>0.8.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
 	<RestoreSources>
@@ -32,7 +32,7 @@
 		<PackageReference Include="UniverseLib.IL2CPP.Unhollower" Version="1.5.1" />
 		<PackageReference Include="VRising.GameData" Version="0.3.3" />
 		<PackageReference Include="VRising.Unhollowed.Client" Version="0.5.*" />
-		<PackageReference Include="Wetstone" Version="1.1.0" />
+		<PackageReference Include="Wetstone" Version="1.2.0" />
         <PackageReference Include="VRising.VampireCommandFramework" Version="[0.4.5, 0.5.0)" />
 	</ItemGroup>
 

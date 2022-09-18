@@ -1,0 +1,11 @@
+﻿{
+  "name": "BloodyShop",
+  "version_number": "0.8.1",
+  "website_url": "https://github.com/oscarpedrero/BloodyShop",
+  "description": "Mod to create a store in VRising",
+  "dependencies": [
+    "BepInEx-BepInExPack_V_Rising-1.0.0",
+    "molenzwiebel-Wetstone-1.2.0",
+    "deca-VampireCommandFramework-0.4.12"
+  ]
+}
