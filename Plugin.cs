@@ -167,7 +167,7 @@ namespace BloodyShop
                 }
                 catch (Exception error)
                 {
-                    Logger.LogInfo($"Error GameDataOnInitialize {error.Message}");
+                    Logger.LogError($"Error GameDataOnInitialize {error.Message}");
                 }
             }
         }

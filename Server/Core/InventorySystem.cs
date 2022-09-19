@@ -34,7 +34,7 @@ namespace BloodyShop.Server.Core
             }
             catch (Exception error)
             {
-                Plugin.Logger.LogInfo($"Error: {error.Message}");
+                Plugin.Logger.LogError($"Error: {error.Message}");
                 return false;
             }
 
@@ -64,7 +64,7 @@ namespace BloodyShop.Server.Core
             }
             catch (Exception error)
             {
-                Plugin.Logger.LogInfo($"Error: {error.Message}");
+                Plugin.Logger.LogError($"Error: {error.Message}");
                 return false;
             }
 
@@ -132,7 +132,7 @@ namespace BloodyShop.Server.Core
             }
             catch (Exception error)
             {
-                Plugin.Logger.LogInfo($"Error {error.Message}");
+                Plugin.Logger.LogError($"Error {error.Message}");
                 return false;
             }
         }
@@ -159,7 +159,7 @@ namespace BloodyShop.Server.Core
             }
             catch (Exception error)
             {
-                Plugin.Logger.LogInfo($"Error {error.Message}");
+                Plugin.Logger.LogError($"Error {error.Message}");
                 return false;
             }
 

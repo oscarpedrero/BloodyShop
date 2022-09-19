@@ -63,7 +63,7 @@ namespace BloodyShop.Server.Network
             }
             catch (Exception error)
             {
-                Plugin.Logger.LogInfo($"Error: {error.Message}");
+                Plugin.Logger.LogError($"Error: {error.Message}");
                 ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"Error: {error.Message}"));
             }
         }

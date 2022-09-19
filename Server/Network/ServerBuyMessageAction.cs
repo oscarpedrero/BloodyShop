@@ -84,7 +84,7 @@ namespace BloodyShop.Server.Network
 
                 if (!InventorySystem.AdditemToInventory(user.CharacterName.ToString(), new PrefabGUID(itemShopModel.PrefabGUID), quantity))
                 {
-                    Plugin.Logger.LogInfo($"Error buying an item User: {user.CharacterName.ToString()} Item: {itemShopModel.PrefabName} Quantity: {quantity} TotalPrice: {finalPrice}");
+                    Plugin.Logger.LogError($"Error buying an item User: {user.CharacterName.ToString()} Item: {itemShopModel.PrefabName} Quantity: {quantity} TotalPrice: {finalPrice}");
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"An error has occurred when delivering the items, please contact an administrator"));
                     return;
                 }
@@ -93,7 +93,7 @@ namespace BloodyShop.Server.Network
 
                 if (!ItemsDB.ModifyStockByCommand(indexPosition, quantity))
                 {
-                    Plugin.Logger.LogInfo($"Error ModifyStockByCommand: {user.CharacterName.ToString()} Item: {itemShopModel.PrefabName} Quantity: {quantity} TotalPrice: {finalPrice}");
+                    Plugin.Logger.LogError($"Error ModifyStockByCommand: {user.CharacterName.ToString()} Item: {itemShopModel.PrefabName} Quantity: {quantity} TotalPrice: {finalPrice}");
                     return;
                 }
 
@@ -114,7 +114,7 @@ namespace BloodyShop.Server.Network
             }
             catch (Exception error)
             {
-                Plugin.Logger.LogInfo($"Error: {error.Message}");
+                Plugin.Logger.LogError($"Error: {error.Message}");
                 ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"Error: {error.Message}"));
             }
         }

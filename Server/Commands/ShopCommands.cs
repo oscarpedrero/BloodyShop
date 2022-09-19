@@ -115,7 +115,7 @@ namespace BloodyShop.Server.Commands
 
                 if (!InventorySystem.AdditemToInventory(ctx.Event.User.CharacterName.ToString(), new PrefabGUID(itemShopModel.PrefabGUID), quantity))
                 {
-                    Plugin.Logger.LogInfo($"Error buying an item User: {ctx.Event.User.CharacterName.ToString()} Item: {itemShopModel.PrefabName} Quantity: {quantity} TotalPrice: {finalPrice}");
+                    Plugin.Logger.LogError($"Error buying an item User: {ctx.Event.User.CharacterName.ToString()} Item: {itemShopModel.PrefabName} Quantity: {quantity} TotalPrice: {finalPrice}");
                     throw ctx.Error($"An error has occurred when delivering the items, please contact an administrator");
                 }
 
@@ -123,7 +123,7 @@ namespace BloodyShop.Server.Commands
 
                 if (!ItemsDB.ModifyStockByCommand(indexPosition, quantity))
                 {
-                    Plugin.Logger.LogInfo($"Error ModifyStockByCommand: {ctx.Event.User.CharacterName.ToString()} Item: {itemShopModel.PrefabName} Quantity: {quantity} TotalPrice: {finalPrice}");
+                    Plugin.Logger.LogError($"Error ModifyStockByCommand: {ctx.Event.User.CharacterName.ToString()} Item: {itemShopModel.PrefabName} Quantity: {quantity} TotalPrice: {finalPrice}");
                     return;
                 }
 
@@ -144,7 +144,7 @@ namespace BloodyShop.Server.Commands
             }
             catch (Exception error)
             {
-                Plugin.Logger.LogInfo($"Error: {error.Message}");
+                Plugin.Logger.LogError($"Error: {error.Message}");
                 throw ctx.Error($"Error: {error.Message}");
             }
         }
@@ -183,7 +183,7 @@ namespace BloodyShop.Server.Commands
 
             } catch (Exception error)
             {
-                Plugin.Logger.LogInfo($"Error: {error.Message}");
+                Plugin.Logger.LogError($"Error: {error.Message}");
                 throw ctx.Error($"Error: {error.Message}");
             }
         }
