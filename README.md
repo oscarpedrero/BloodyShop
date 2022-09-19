@@ -1,4 +1,4 @@
-# BloodyShop Shop mod for VRising 
+# BloodyShop Mod to create a store in VRising (with optional client UI)
 
 ![alt text](https://github.com/oscarpedrero/BloodyShop/blob/master/Images/userui.png?raw=true)
 
