@@ -118,12 +118,7 @@ namespace BloodyShop
                     Logger.LogError("VampireCommandFramework not found! This is required for the server.");
                     return;
                 }
-                var ifFound = IL2CPPChainloader.Instance.Plugins.TryGetValue("com.trodi.VRisingInventoryFramework", out var ifinfo);
-                if (!ifFound)
-                {
-                    Logger.LogError("VRisingInventoryFramework not found! This is required for the server.");
-                    return;
-                }
+         
                 BloodyShop.serverInitMod(_harmony);
             }
             else
