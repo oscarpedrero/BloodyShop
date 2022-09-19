@@ -14,7 +14,7 @@ namespace BloodyShop.Client.Network
 
         public static void Received(BuySerializedMessage msg)
         {
-            Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] BuySerializedMessage {msg.ItemIndex}");
+            //Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] BuySerializedMessage {msg.ItemIndex}");
         }
 
         public static void Send(BuySerializedMessage msg = null)
@@ -27,7 +27,7 @@ namespace BloodyShop.Client.Network
             }
 
             VNetwork.SendToServer(msg);
-            Plugin.Logger.LogInfo($"[CLIENT] [SEND] BuySerializedMessage - {msg.ItemIndex}");
+            //Plugin.Logger.LogInfo($"[CLIENT] [SEND] BuySerializedMessage - {msg.ItemIndex}");
         }
 
     }

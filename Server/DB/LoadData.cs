@@ -17,7 +17,7 @@ namespace BloodyShop.Server.DB
             {
                 string json = File.ReadAllText(ServerMod.ProductListFile);
                 var productList = JsonSerializer.Deserialize<List<ItemShopModel>>(json);
-                Plugin.Logger.LogInfo($"Total product List FROM JSON {productList.Count}");
+                //Plugin.Logger.LogInfo($"Total product List FROM JSON {productList.Count}");
                 return ItemsDB.setProductList(productList);
             }
             catch (Exception error)
@@ -34,7 +34,7 @@ namespace BloodyShop.Server.DB
             {
                 string json = File.ReadAllText(ServerMod.UserCoinsPerDayFile);
                 var usersCoinsPerDaList = JsonSerializer.Deserialize<List<UserCoinsPerDayModel>>(json);
-                Plugin.Logger.LogInfo($"Total usersCoinsPerDay List FROM JSON {usersCoinsPerDaList.Count}");
+                //Plugin.Logger.LogInfo($"Total usersCoinsPerDay List FROM JSON {usersCoinsPerDaList.Count}");
                 return ConfigDB.setUsersCoinsPerDay(usersCoinsPerDaList);
             }
             catch (Exception error)

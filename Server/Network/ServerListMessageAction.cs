@@ -18,7 +18,7 @@ namespace BloodyShop.Server.Network
 
             Send(fromCharacter,msg);
 
-            Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] ListSerializedMessage {fromCharacter.CharacterName}");
+            //Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] ListSerializedMessage {fromCharacter.CharacterName}");
 
         }
 
@@ -37,7 +37,7 @@ namespace BloodyShop.Server.Network
         public static void Send(User fromCharacter, ListSerializedMessage msg)
         {
             VNetwork.SendToClient(fromCharacter, msg);
-            Plugin.Logger.LogInfo($"[SERVER] [SEND] ListSerializedMessage {fromCharacter.CharacterName} - {msg.ItemsJson}");
+            //Plugin.Logger.LogInfo($"[SERVER] [SEND] ListSerializedMessage {fromCharacter.CharacterName} - {msg.ItemsJson}");
         }
 
     }

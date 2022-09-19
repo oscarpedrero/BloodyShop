@@ -9,14 +9,20 @@ namespace BloodyShop.Server.Core
 {
     public  class InventorySystem
     {
-        public static bool verifyHaveSuficientCoins(Entity playerCharacter, PrefabGUID prefabCoinGUID, int coins)
+        public static bool searchPrefabsInInventory(string characterName, PrefabGUID prefabCoinGUID, out int total)
         {
+            total = 0;
             try
             {
+
+                var userData = GameData.Users.GetUserByCharacterName(characterName);
+                var characterEntity = userData.Character.Entity;
+
                 NativeArray<InventoryBuffer> inventory = new NativeArray<InventoryBuffer>();
-                InventoryUtilities.TryGetInventory(Plugin.Server.EntityManager, playerCharacter, out inventory);
-                var totalCoins = InventoryUtilities.ItemCount(ref inventory, prefabCoinGUID);
-                if (totalCoins >= coins)
+                InventoryUtilities.TryGetInventory(Plugin.Server.EntityManager, characterEntity, out inventory);
+
+                total = InventoryUtilities.ItemCount(ref inventory, prefabCoinGUID);
+                if (total >= 0)
                 {
                     return true;
                 }
@@ -33,43 +39,79 @@ namespace BloodyShop.Server.Core
             }
 
         }
+        public static bool verifyHaveSuficientPrefabsInInventory(string characterName, PrefabGUID prefabCoinGUID, int quantity = 1)
+        {
+            try
+            {
 
-        public static bool getCoinsFromInventory(Entity playerCharacter, string characterName, string prefabCoinName, PrefabGUID prefabCoinGUID, int price)
+                if (searchPrefabsInInventory(characterName, prefabCoinGUID, out int total))
+                {
+                    if (total >= quantity)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+
+
+            }
+            catch (Exception error)
+            {
+                Plugin.Logger.LogInfo($"Error: {error.Message}");
+                return false;
+            }
+
+        }
+
+        public static bool getPrefabFromInventory(string characterName, PrefabGUID prefabGUID, int quantity)
         {
 
             try
             {
+
+                var totalItemsRemove = quantity;
+
                 var userData = GameData.Users.GetUserByCharacterName(characterName);
 
-                var coins = price;
+                var prefabGameData = GameData.Items.GetPrefabById(prefabGUID);
 
-                int totalSlots = InventoryUtilities.GetItemSlots(Plugin.Server.EntityManager, playerCharacter);
+                var userEntity = userData.Character.Entity;
 
-                var gameData = Plugin.Server.GetExistingSystem<GameDataSystem>();
+                int totalSlots = InventoryUtilities.GetItemSlots(Plugin.Server.EntityManager, userEntity);
+
+                var gameDataSystem = Plugin.Server.GetExistingSystem<GameDataSystem>();
 
                 for (int i = 0; i < totalSlots; i++)
                 {
-                    if (InventoryUtilities.TryGetItemAtSlot(Plugin.Server.EntityManager, playerCharacter, i, out var item))
+
+                    if (InventoryUtilities.TryGetItemAtSlot(Plugin.Server.EntityManager, userEntity, i, out var item))
                     {
-                        var itemData = gameData.ManagedDataRegistry.GetOrDefault<ManagedItemData>(item.ItemType);
+                        var itemData = gameDataSystem.ManagedDataRegistry.GetOrDefault<ManagedItemData>(item.ItemType);
 
                         if (itemData != null)
                         {
-                            if (itemData.PrefabName == prefabCoinName)
+                            if (itemData.PrefabName == prefabGameData.PrefabName)
                             {
-                                if (item.Stacks >= coins)
+                                if (item.Stacks >= totalItemsRemove)
                                 {
-                                    InventoryUtilitiesServer.TryRemoveItemAtIndex(Plugin.Server.EntityManager, playerCharacter, item.ItemType, coins, i, false);
-                                    coins = 0;
+                                    InventoryUtilitiesServer.TryRemoveItemAtIndex(Plugin.Server.EntityManager, userEntity, item.ItemType, totalItemsRemove, i, false);
+                                    totalItemsRemove = 0;
                                     break;
                                 }
-                                else if (item.Stacks < coins)
+                                else if (item.Stacks < totalItemsRemove)
                                 {
-                                    InventoryUtilitiesServer.TryRemoveItemAtIndex(Plugin.Server.EntityManager, playerCharacter, item.ItemType, item.Stacks, i, true);
-                                    coins -= item.Stacks;
+                                    InventoryUtilitiesServer.TryRemoveItemAtIndex(Plugin.Server.EntityManager, userEntity, item.ItemType, item.Stacks, i, true);
+                                    totalItemsRemove -= item.Stacks;
                                 }
 
-                                if (coins == 0)
+                                if (totalItemsRemove == 0)
                                 {
                                     break;
                                 }
@@ -79,9 +121,9 @@ namespace BloodyShop.Server.Core
                     }
                 }
 
-                if (coins > 0)
+                if (totalItemsRemove > 0)
                 {
-                    AdditemToIneventory(userData.CharacterName, prefabCoinGUID, price - coins);
+                    AdditemToInventory(userData.CharacterName, prefabGUID, quantity - totalItemsRemove);
                     return false;
                 }
 
@@ -90,18 +132,20 @@ namespace BloodyShop.Server.Core
             }
             catch (Exception error)
             {
-                Plugin.Logger.LogError($"Error {error.Message}");
+                Plugin.Logger.LogInfo($"Error {error.Message}");
                 return false;
             }
         }
 
-        public static bool AdditemToIneventory(string characterName, PrefabGUID prefabGUID, int amount)
+        public static bool AdditemToInventory(string characterName, PrefabGUID prefabGUID, int quantity)
         {
 
             try
             {
+
                 var user = GameData.Users.GetUserByCharacterName(characterName);
-                for (int i = 0; i < amount; i++)
+
+                for (int i = 0; i < quantity; i++)
                 {
                     var hasAdded = user.TryGiveItem(prefabGUID, 1, out Entity itemEntity);
                     if (!hasAdded)
@@ -115,7 +159,7 @@ namespace BloodyShop.Server.Core
             }
             catch (Exception error)
             {
-                Plugin.Logger.LogError($"Error {error.Message}");
+                Plugin.Logger.LogInfo($"Error {error.Message}");
                 return false;
             }
 

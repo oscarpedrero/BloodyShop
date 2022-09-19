@@ -11,10 +11,10 @@ using BloodyShop.Utils;
 using ProjectM;
 using VRising.GameData;
 using BloodyShop.Server.DB;
-using BloodyShop.Server.Core;
 using BloodyShop.DB.Models;
 using VRising.GameData.Models;
 using Unity.Entities;
+using BloodyShop.Server.Core;
 
 namespace BloodyShop.Server.Network
 {
@@ -24,8 +24,6 @@ namespace BloodyShop.Server.Network
         public static void Received(FromCharacter fromCharacter, BuySerializedMessage msg)
         {
             var user = VWorld.Server.EntityManager.GetComponentData<User>(fromCharacter.User);
-
-            Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] BuySerializedMessage {user.CharacterName} - {msg.ItemIndex}");
 
             var buyID = Int32.Parse(msg.ItemIndex);
             var quantity = Int32.Parse(msg.Quantity);
@@ -72,19 +70,19 @@ namespace BloodyShop.Server.Network
                     return;
                 }
 
-                if (!InventorySystem.verifyHaveSuficientCoins(playerCharacter, coin.PrefabGUID, finalPrice))
-                {
-                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("There is not enough stock of this item"));
-                    return;
-                }
-
-                if (!InventorySystem.getCoinsFromInventory(playerCharacter, user.CharacterName.ToString(), coin.PrefabName, coin.PrefabGUID, finalPrice))
+                if (!InventorySystem.verifyHaveSuficientPrefabsInInventory(user.CharacterName.ToString(), coin.PrefabGUID, finalPrice))
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"You need {FontColorChat.White($"{finalPrice} {coin.Name}")} in your inventory for this purchase"));
                     return;
                 }
 
-                if (!InventorySystem.AdditemToIneventory(user.CharacterName.ToString(), new PrefabGUID(itemShopModel.PrefabGUID), quantity))
+                if (!InventorySystem.getPrefabFromInventory(user.CharacterName.ToString(), coin.PrefabGUID, finalPrice))
+                {
+                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"You need {FontColorChat.White($"{finalPrice} {coin.Name}")} in your inventory for this purchase"));
+                    return;
+                }
+
+                if (!InventorySystem.AdditemToInventory(user.CharacterName.ToString(), new PrefabGUID(itemShopModel.PrefabGUID), quantity))
                 {
                     Plugin.Logger.LogInfo($"Error buying an item User: {user.CharacterName.ToString()} Item: {itemShopModel.PrefabName} Quantity: {quantity} TotalPrice: {finalPrice}");
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"An error has occurred when delivering the items, please contact an administrator"));

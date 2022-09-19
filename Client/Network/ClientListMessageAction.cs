@@ -16,7 +16,7 @@ namespace BloodyShop.Client.Network
 
         public static void Received(ListSerializedMessage msg)
         {
-            Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] ListSerializedMessage {msg.ItemsJson}");
+           // Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] ListSerializedMessage {msg.ItemsJson}");
 
             var productList = JsonSerializer.Deserialize<List<ItemShopModel>>(msg.ItemsJson);
 
@@ -36,7 +36,7 @@ namespace BloodyShop.Client.Network
 
         public static void Send(ListSerializedMessage msg = null)
         {
-            Plugin.Logger.LogInfo($"[CLIENT] [SEND] ListSerializedMessage");
+            //Plugin.Logger.LogInfo($"[CLIENT] [SEND] ListSerializedMessage");
             if (msg == null)
             {
                 msg = new ListSerializedMessage();

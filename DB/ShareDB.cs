@@ -31,7 +31,7 @@ namespace BloodyShop.DB
         {
             
             CoinGUID = value;
-            Plugin.Logger.LogInfo("setCoinGUID");
+            
         }
     }
 }

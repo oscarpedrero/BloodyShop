@@ -62,14 +62,14 @@ namespace BloodyShop.Server.Systems
             var playerCharacterKiller = em.GetComponentData<PlayerCharacter>(killer);
             var userModelKiller = GameData.Users.FromEntity(playerCharacterKiller.UserEntity._Entity);
 
-            Plugin.Logger.LogInfo($"PVE DROP");
+            //Plugin.Logger.LogInfo($"PVE DROP");
 
             UnitLevel UnitDiedLevel = em.GetComponentData<UnitLevel>(died);
 
 
             var diedLevel = UnitDiedLevel.Level;
 
-            Plugin.Logger.LogInfo($"NPC Level {diedLevel}");
+           // Plugin.Logger.LogInfo($"NPC Level {diedLevel}");
 
             bool isVBlood;
             if (em.HasComponent<BloodConsumeSource>(died))
@@ -102,13 +102,13 @@ namespace BloodyShop.Server.Systems
 
             var prefabCoinGUID = new PrefabGUID(ShareDB.getCoinGUID());
 
-            Plugin.Logger.LogInfo($"PVP DROP");
+            //Plugin.Logger.LogInfo($"PVP DROP");
             
             var playerCharacterDied = em.GetComponentData<PlayerCharacter>(died);
             var userModelDied = GameData.Users.FromEntity(playerCharacterKiller.UserEntity._Entity);
             var diedLevel = userModelDied.Character.Equipment.Level;
 
-            Plugin.Logger.LogInfo($"User Died Level {diedLevel}");
+            //Plugin.Logger.LogInfo($"User Died Level {diedLevel}");
 
             var percentFinal = calculateDropPercentage((int) diedLevel, ConfigDB.DropPvpPercentage, ConfigDB.IncrementPercentageDropEveryTenLevelsPvp);
             if (probabilityOeneratingReward(percentFinal))
@@ -124,7 +124,7 @@ namespace BloodyShop.Server.Systems
 
                         ConfigDB.addUserCoinsPerDayToList(userCoinsPerDay);
                         SaveDataToFiles.saveUsersCoinsPerDay();
-                        Plugin.Logger.LogInfo($"Drop PVP {totalCoins} coins");
+                        //Plugin.Logger.LogInfo($"Drop PVP {totalCoins} coins");
                         return;
                     }
                     else if (userCoinsPerDay.AmountNpc < ConfigDB.MaxCoinsPerDayPerPlayerPvp)
@@ -135,7 +135,7 @@ namespace BloodyShop.Server.Systems
 
                         ConfigDB.addUserCoinsPerDayToList(userCoinsPerDay);
                         SaveDataToFiles.saveUsersCoinsPerDay();
-                        Plugin.Logger.LogInfo($"Drop PVP {totalCoins} coins");
+                        //Plugin.Logger.LogInfo($"Drop PVP {totalCoins} coins");
                         return;
                     }
                 }
@@ -161,7 +161,7 @@ namespace BloodyShop.Server.Systems
 
                         ConfigDB.addUserCoinsPerDayToList(userCoinsPerDay);
                         SaveDataToFiles.saveUsersCoinsPerDay();
-                        Plugin.Logger.LogInfo($"Drop NPC {totalCoins} coins");
+                        //Plugin.Logger.LogInfo($"Drop NPC {totalCoins} coins");
                         return;
                     } else if (userCoinsPerDay.AmountNpc < ConfigDB.MaxCoinsPerDayPerPlayerNpc)
                     {
@@ -171,7 +171,7 @@ namespace BloodyShop.Server.Systems
 
                         ConfigDB.addUserCoinsPerDayToList(userCoinsPerDay);
                         SaveDataToFiles.saveUsersCoinsPerDay();
-                        Plugin.Logger.LogInfo($"Drop NPC {totalCoins} coins");
+                       // Plugin.Logger.LogInfo($"Drop NPC {totalCoins} coins");
                         return;
                     }
                 }
@@ -197,7 +197,7 @@ namespace BloodyShop.Server.Systems
 
                         ConfigDB.addUserCoinsPerDayToList(userCoinsPerDay);
                         SaveDataToFiles.saveUsersCoinsPerDay();
-                        Plugin.Logger.LogInfo($"Drop NPC {totalCoins} coins");
+                        //Plugin.Logger.LogInfo($"Drop NPC {totalCoins} coins");
                         return;
                     }
                     else if (userCoinsPerDay.AmountVBlood < ConfigDB.MaxCoinsPerDayPerPlayerVBlood)
@@ -208,7 +208,7 @@ namespace BloodyShop.Server.Systems
 
                         ConfigDB.addUserCoinsPerDayToList(userCoinsPerDay);
                         SaveDataToFiles.saveUsersCoinsPerDay();
-                        Plugin.Logger.LogInfo($"Drop NPC {totalCoins} coins");
+                        //Plugin.Logger.LogInfo($"Drop NPC {totalCoins} coins");
                         return;
                     }
                 }
@@ -229,7 +229,7 @@ namespace BloodyShop.Server.Systems
 
             if(number <= percentage)
             {
-                Plugin.Logger.LogInfo($"Drop {number} <= {percentage}");
+                //Plugin.Logger.LogInfo($"Drop {number} <= {percentage}");
                 return true;
             }
 

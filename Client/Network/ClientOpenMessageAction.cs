@@ -22,7 +22,7 @@ namespace BloodyShop.Client.Network
 
             UIManager.RefreshDataPanel();
 
-            Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] OpenSerializedMessage");
+           // Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] OpenSerializedMessage");
         }
 
         public static void Send(OpenSerializedMessage msg = null)
@@ -34,7 +34,7 @@ namespace BloodyShop.Client.Network
             }
 
             VNetwork.SendToServer(msg);
-            Plugin.Logger.LogInfo($"[CLIENT] [SEND] OpenSerializedMessage");
+            //Plugin.Logger.LogInfo($"[CLIENT] [SEND] OpenSerializedMessage");
         }
 
     }

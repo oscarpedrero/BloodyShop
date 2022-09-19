@@ -331,13 +331,13 @@ namespace BloodyShop.Client.UI.Panels.User
         {
             var btnName = EventSystem.current.currentSelectedGameObject.name;
             var indexItemUI = btnName.Replace("buyItemBtn-", "");
-            Plugin.Logger.LogInfo($"BUY INDEX BEFORE: {indexItemUI}");
+            //Plugin.Logger.LogInfo($"BUY INDEX BEFORE: {indexItemUI}");
             var prefabBuy = items[Int32.Parse(indexItemUI) - 1];
             var quantityBuy = serachQuantityInput(Int32.Parse(indexItemUI));
-            Plugin.Logger.LogInfo($"quantityBuy: {quantityBuy}");
+            //Plugin.Logger.LogInfo($"quantityBuy: {quantityBuy}");
             indexItemUI = ItemsDB.searchIndexForProduct(prefabBuy.PrefabGUID).ToString();
 
-            Plugin.Logger.LogInfo($"BUY INDEX AFTER: {indexItemUI}");
+            //Plugin.Logger.LogInfo($"BUY INDEX AFTER: {indexItemUI}");
 
             if (indexItemUI != "-1")
             {

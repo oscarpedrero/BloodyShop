@@ -10,7 +10,7 @@ namespace BloodyShop.Server.Network
 
         public static void RegisterMessage()
         {
-            Plugin.Logger.LogInfo($"RegisterBiDirectional Messages");
+            //Plugin.Logger.LogInfo($"RegisterBiDirectional Messages");
 
             VNetworkRegistry.RegisterBiDirectional<ConfigSerializedMessage>(
                 // invoked when the server sends a message to the client

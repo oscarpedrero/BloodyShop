@@ -112,10 +112,16 @@ namespace BloodyShop
             if (VWorld.IsServer)
             {
                 InitConfigServer();
-                var vcfFound = IL2CPPChainloader.Instance.Plugins.TryGetValue("gg.deca.VampireCommandFramework", out var info);
+                var vcfFound = IL2CPPChainloader.Instance.Plugins.TryGetValue("gg.deca.VampireCommandFramework", out var vcfinfo);
                 if (!vcfFound)
                 {
                     Logger.LogError("VampireCommandFramework not found! This is required for the server.");
+                    return;
+                }
+                var ifFound = IL2CPPChainloader.Instance.Plugins.TryGetValue("com.trodi.VRisingInventoryFramework", out var ifinfo);
+                if (!ifFound)
+                {
+                    Logger.LogError("VRisingInventoryFramework not found! This is required for the server.");
                     return;
                 }
                 BloodyShop.serverInitMod(_harmony);
@@ -126,7 +132,7 @@ namespace BloodyShop
             }
 
             // Plugin startup logic
-            Log.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
+            Log.LogInfo($"BloodyShop is loaded!");
 
             GameData.OnInitialize += GameDataOnInitialize;
             GameData.OnDestroy += GameDataOnDestroy;
@@ -173,7 +179,7 @@ namespace BloodyShop
 
         private static void GameDataOnDestroy()
         {
-            Logger.LogInfo("GameDataOnDestroy");
+            //Logger.LogInfo("GameDataOnDestroy");
         }
 
 
@@ -213,7 +219,7 @@ namespace BloodyShop
         public void OnGameInitialized()
         {
 
-            Logger.LogInfo("OnGameInitialized");
+            //Logger.LogInfo("OnGameInitialized");
             if (VWorld.IsServer)
             {
                 BloodyShop.onServerGameInitialized();
