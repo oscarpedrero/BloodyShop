@@ -18,19 +18,19 @@ namespace BloodyShop.Client
 
         public static void ClientEvents_OnGameDataInitialized()
         {
-            Plugin.Logger.LogInfo("ClientEvents_OnGameDataInitialized");
+            //Plugin.Logger.LogInfo("ClientEvents_OnGameDataInitialized");
             UIInit = false;
             ClientConfigMessageAction.Send();
         }
 
         public static void ClientEvents_OnClientUserConnected()
         {
-            Plugin.Logger.LogInfo("ClientEvents_OnClientUserConnected");
+            //Plugin.Logger.LogInfo("ClientEvents_OnClientUserConnected");
         }
 
         public static void ClientEvents_OnClientUserDisconnected()
         {
-            Plugin.Logger.LogInfo("ClientEvents_OnClientUserDisconnected");
+            //Plugin.Logger.LogInfo("ClientEvents_OnClientUserDisconnected");
             UIInit = false;
             UIManager.DestroyAllPanels();
         }

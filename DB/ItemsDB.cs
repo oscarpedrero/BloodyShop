@@ -40,7 +40,7 @@ namespace BloodyShop.DB
                 }
             }
 
-            Plugin.Logger.LogInfo($"Total Prefabs = {_normalizedItemNameCache.Count}");
+            //Plugin.Logger.LogInfo($"Total Prefabs = {_normalizedItemNameCache.Count}");
         }
 
         public static bool setProductList(List<ItemShopModel> list)
@@ -62,7 +62,7 @@ namespace BloodyShop.DB
                 _normalizedItemShopNameCache.Add((prefabModel.PrefabName.ToString().ToLower(), prefabModel.PrefabGUID, prefabModel.PrefabType.ToString().ToLower(), prefabModel));
             }
 
-            Plugin.Logger.LogInfo($"Total product List Converted {ProductList.Count}");
+            //Plugin.Logger.LogInfo($"Total product List Converted {ProductList.Count}");
 
             return true;
         }

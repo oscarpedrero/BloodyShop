@@ -16,20 +16,20 @@ namespace BloodyShop.Client.Network
 
         public static void Received(ConfigSerializedMessage msg)
         {
-            Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] ConfigSerializedMessage {msg.ItemsJson} - {msg.CoinGUID} - {msg.ShopName} - {msg.ShopOpen} - {msg.ShopOpen}");
+            //Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] ConfigSerializedMessage {msg.ItemsJson} - {msg.CoinGUID} - {msg.ShopName} - {msg.ShopOpen} - {msg.ShopOpen}");
 
             var productList = JsonSerializer.Deserialize<List<ItemShopModel>>(msg.ItemsJson);
             ItemsDB.setProductList(productList);
             
             ShareDB.setCoinGUID(Int32.Parse(msg.CoinGUID));
 
-            Plugin.Logger.LogInfo("Shopname");
+            //Plugin.Logger.LogInfo("Shopname");
             ClientDB.shopName = msg.ShopName;
 
-            Plugin.Logger.LogInfo("Prefix for command");
+            //Plugin.Logger.LogInfo("Prefix for command");
             ClientDB.prefix = "!" + ClientDB.shopName.ToLower().Replace(" ", "");
 
-            Plugin.Logger.LogInfo("Set Admin");
+            //Plugin.Logger.LogInfo("Set Admin");
 
             if (msg.isAdmin == "1")
             {
@@ -42,18 +42,18 @@ namespace BloodyShop.Client.Network
             }
 
 
-            Plugin.Logger.LogInfo("Start generate Cache Items");
+           // Plugin.Logger.LogInfo("Start generate Cache Items");
             if (ClientDB.IsAdmin)
             {
-                Plugin.Logger.LogInfo("Count Cache Itemss");
+                //Plugin.Logger.LogInfo("Count Cache Itemss");
                 if (ItemsDB._normalizedItemNameCache.Count == 0)
                 {
-                    Plugin.Logger.LogInfo("Generate cache");
+                    //Plugin.Logger.LogInfo("Generate cache");
                     ItemsDB.generateCacheItems();
                 }
             }
 
-            Plugin.Logger.LogInfo("Shop Status");
+            //Plugin.Logger.LogInfo("Shop Status");
             if (msg.ShopOpen == "1")
             {
                 ClientDB.shopOpen = true;
@@ -65,14 +65,14 @@ namespace BloodyShop.Client.Network
             }
 
             ClientMod.UIInit = true;
-            Plugin.Logger.LogInfo("Create Panels");
+            //Plugin.Logger.LogInfo("Create Panels");
             UIManager.CreateAllPanels();
 
         }
 
         public static void Send(ConfigSerializedMessage msg = null)
         {
-            Plugin.Logger.LogInfo($"[CLIENT] [SEND] ConfigSerializedMessage");
+            //Plugin.Logger.LogInfo($"[CLIENT] [SEND] ConfigSerializedMessage");
             if (msg == null)
             {
                 msg = new ConfigSerializedMessage();

@@ -285,7 +285,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
             var prefabDelete = items[Int32.Parse(indexItemUI) - 1];
             indexItemUI = ItemsDB.searchIndexForProduct(prefabDelete.PrefabGUID).ToString();
 
-            Plugin.Logger.LogInfo($"DELETE INDEX: {indexItemUI}");
+            //Plugin.Logger.LogInfo($"DELETE INDEX: {indexItemUI}");
 
             if (indexItemUI != "-1")
             {

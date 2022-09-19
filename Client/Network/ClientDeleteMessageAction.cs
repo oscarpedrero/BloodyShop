@@ -14,7 +14,7 @@ namespace BloodyShop.Client.Network
 
         public static void Received(DeleteSerializedMessage msg)
         {
-            Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] DeleteSerializedMessage {msg.Item}");
+            //Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] DeleteSerializedMessage {msg.Item}");
         }
 
         public static void Send(DeleteSerializedMessage msg = null)
@@ -27,7 +27,7 @@ namespace BloodyShop.Client.Network
             }
 
             VNetwork.SendToServer(msg);
-            Plugin.Logger.LogInfo($"[CLIENT] [SEND] DeleteSerializedMessage - {msg.Item}");
+            //Plugin.Logger.LogInfo($"[CLIENT] [SEND] DeleteSerializedMessage - {msg.Item}");
         }
 
     }

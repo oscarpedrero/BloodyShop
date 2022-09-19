@@ -201,7 +201,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         private void SearchActionText(string str)
         {
-            Plugin.Logger.LogInfo("SearchActionText " + str.ToLower());
+            
             itemsModel = ItemsDB.searchItemByNameForAdd(str.ToLower());
             RefreshData();
 
@@ -209,7 +209,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         private void SearchAction()
         {
-            Plugin.Logger.LogInfo("SearchAction " + searchInputTXT.Text.ToLower());
+            
             itemsModel = ItemsDB.searchItemByNameForAdd(searchInputTXT.Text.ToLower());
             RefreshData();
         }
@@ -220,14 +220,8 @@ namespace BloodyShop.Client.UI.Panels.Admin
             var index = Int32.Parse(btnName.Replace("saveBtn|", ""));
             var item = itemsModel[index].PrefabGUID;
             
-
-            Plugin.Logger.LogInfo(item);
-
             var inputPrice = priceArray[index];
             var inputStock = stockArray[index];
-
-            Plugin.Logger.LogInfo(inputPrice.Text);
-            Plugin.Logger.LogInfo(inputStock.Text);
 
             var price = inputPrice.Text;
             var stock = inputStock.Text;

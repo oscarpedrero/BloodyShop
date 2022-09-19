@@ -24,7 +24,7 @@ namespace BloodyShop.Server.Network
         {
             var user = VWorld.Server.EntityManager.GetComponentData<User>(fromCharacter.User);
 
-            Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] AddSerializedMessage {user.CharacterName}");
+            //Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] AddSerializedMessage {user.CharacterName}");
             
 
             var prefabGUID = int.Parse(msg.PrefabGUID);
@@ -36,7 +36,7 @@ namespace BloodyShop.Server.Network
                 stock = -1;
             }
 
-            Plugin.Logger.LogInfo($"shop add {prefabGUID} {price} {stock}");
+            //Plugin.Logger.LogInfo($"shop add {prefabGUID} {price} {stock}");
 
             addItem(user, prefabGUID, price, stock);
 

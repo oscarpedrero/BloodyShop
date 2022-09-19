@@ -1,6 +1,6 @@
 ﻿{
   "name": "BloodyShop",
-  "version_number": "0.8.1",
+  "version_number": "0.8.3",
   "website_url": "https://github.com/oscarpedrero/BloodyShop",
   "description": "Mod to create a store in VRising",
   "dependencies": [

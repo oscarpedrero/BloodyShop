@@ -21,7 +21,7 @@ namespace BloodyShop.Server.Network
         {
             var user = VWorld.Server.EntityManager.GetComponentData<User>(fromCharacter.User);
 
-            Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] DeleteSerializedMessage {user.CharacterName} - {msg.Item}");
+            //Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] DeleteSerializedMessage {user.CharacterName} - {msg.Item}");
 
             var itemID = Int32.Parse(msg.Item);
 

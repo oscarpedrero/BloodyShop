@@ -8,7 +8,7 @@ namespace BloodyShop.Client.Network
 
         public static void Received(AddSerializedMessage msg)
         {
-            Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] CloseSerializedMessage");
+            //Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] CloseSerializedMessage");
         }
 
         public static void Send(AddSerializedMessage msg = null)
@@ -23,7 +23,7 @@ namespace BloodyShop.Client.Network
             }
 
             VNetwork.SendToServer(msg);
-            Plugin.Logger.LogInfo($"[CLIENT] [SEND] CloseSerializedMessage");
+            //Plugin.Logger.LogInfo($"[CLIENT] [SEND] CloseSerializedMessage");
         }
 
     }

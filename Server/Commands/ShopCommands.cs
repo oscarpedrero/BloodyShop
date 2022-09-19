@@ -103,17 +103,17 @@ namespace BloodyShop.Server.Commands
                     throw ctx.Error("There is not enough stock of this item");
                 }
 
-                if (!InventorySystem.verifyHaveSuficientCoins(playerCharacter, coin.PrefabGUID, finalPrice))
-                {
-                    throw ctx.Error("There is not enough stock of this item");
-                }
-
-                if (!InventorySystem.getCoinsFromInventory(playerCharacter, ctx.Event.User.CharacterName.ToString(), coin.PrefabName, coin.PrefabGUID, finalPrice))
+                if (!InventorySystem.verifyHaveSuficientPrefabsInInventory(ctx.Event.User.CharacterName.ToString(), coin.PrefabGUID, finalPrice))
                 {
                     throw ctx.Error($"You need {FontColorChat.White($"{finalPrice} {coin.Name}")} in your inventory for this purchase");
                 }
 
-                if (!InventorySystem.AdditemToIneventory(ctx.Event.User.CharacterName.ToString(), new PrefabGUID(itemShopModel.PrefabGUID), quantity))
+                if (!InventorySystem.getPrefabFromInventory(ctx.Event.User.CharacterName.ToString(), coin.PrefabGUID, finalPrice))
+                {
+                    throw ctx.Error($"You need {FontColorChat.White($"{finalPrice} {coin.Name}")} in your inventory for this purchase");
+                }
+
+                if (!InventorySystem.AdditemToInventory(ctx.Event.User.CharacterName.ToString(), new PrefabGUID(itemShopModel.PrefabGUID), quantity))
                 {
                     Plugin.Logger.LogInfo($"Error buying an item User: {ctx.Event.User.CharacterName.ToString()} Item: {itemShopModel.PrefabName} Quantity: {quantity} TotalPrice: {finalPrice}");
                     throw ctx.Error($"An error has occurred when delivering the items, please contact an administrator");

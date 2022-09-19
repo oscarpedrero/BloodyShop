@@ -19,7 +19,7 @@ namespace BloodyShop.Server.Network
         {
             var user = VWorld.Server.EntityManager.GetComponentData<User>(fromCharacter.User);
 
-            Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] OpenSerializedMessage {user.CharacterName}");
+            //Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] OpenSerializedMessage {user.CharacterName}");
 
             OpenShop();
 
@@ -42,7 +42,7 @@ namespace BloodyShop.Server.Network
         public static void Send(User fromCharacter, OpenSerializedMessage msg)
         {
             VNetwork.SendToClient(fromCharacter, msg);
-            Plugin.Logger.LogInfo($"[SERVER] [SEND] CloseSerializedMessage {fromCharacter.CharacterName}");
+            //Plugin.Logger.LogInfo($"[SERVER] [SEND] CloseSerializedMessage {fromCharacter.CharacterName}");
         }
 
     }

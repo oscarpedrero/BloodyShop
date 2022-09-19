@@ -24,7 +24,7 @@ namespace BloodyShop.Client.Network
                 UIManager.MenuPanel.closeShop();
             }
 
-            Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] CloseSerializedMessage");
+            //Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] CloseSerializedMessage");
         }
 
         public static void Send(CloseSerializedMessage msg = null)
@@ -36,7 +36,7 @@ namespace BloodyShop.Client.Network
             }
 
             VNetwork.SendToServer(msg);
-            Plugin.Logger.LogInfo($"[CLIENT] [SEND] CloseSerializedMessage");
+            //Plugin.Logger.LogInfo($"[CLIENT] [SEND] CloseSerializedMessage");
         }
 
     }
