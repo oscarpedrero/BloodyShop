@@ -1,10 +1,21 @@
 # BloodyShop Mod to create a store in VRising (with optional client UI)
 
+<details>
+<summary>Changelog</summary>
+
+`0.8.3`
+- Removed debug logs to improve server performance
+
+`0.8.2`
+- Simplified core inventory
+
+`0.8.1`
+
+- First public version of the mod
+
+</details>
+
 ![alt text](https://github.com/oscarpedrero/BloodyShop/blob/master/Images/userui.png?raw=true)
-
-Being the first public version of the mod, I would like you to help me with the feedback if you use it, for this I have created a Test template to perform and in case of finding any error, I would like you to leave everything you have been able to on issue find or new ideas.
-
-[TESTTORUN.md](https://github.com/oscarpedrero/BloodyShop/blob/master/TESTTORUN.md) 
 
 [Manual](https://github.com/oscarpedrero/BloodyShop/wiki/Manual)
 
@@ -25,4 +36,6 @@ This mod idea was a suggestion from [@Daavy](https://ideas.vrisingmods.com/posts
 [@Paps](https://github.com/phillipsOG) for all the help and encouragement he has given us to get this idea off the ground.
 
 [@Molenzwiebel](https://github.com/molenzwiebel) for helping with his magnificent [WetStone](https://github.com/molenzwiebel/Wetstone) framework to solve the errors that we have detected.
+
+
 
