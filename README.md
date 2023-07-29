@@ -21,7 +21,7 @@
 
 ![alt text](https://github.com/oscarpedrero/BloodyShop/blob/master/Images/userui.png?raw=true)
 
-[Manual](https://github.com/oscarpedrero/BloodyShop/wiki/Manual)
+[Manual](https://github.com/oscarpedrero/BloodyShop/wiki/Manual-%E2%80%90-Gloomrot-Update)
 
 [Known bugs](https://github.com/oscarpedrero/BloodyShop/wiki/Known-bugs)
 
@@ -35,7 +35,9 @@ New command:
 Example:
 .shop add "Silver Coin" -949672483 1 100
 
-For this same reason, it is best to manage the store from the client, which implies that you must install the BloodyShop mod on the client and the server if you are a server administrator.
+This name is only visible through the chat commands, if the client uses the mod he will see it in the language that the game has configured
+
+For this same reason, it is best to manage the store from the client, which implies that you must [install the BloodyShop mod on the client](https://github.com/oscarpedrero/BloodyShop/wiki/Manual#requirements) and the server if you are a server administrator.
 
 [Complete list of prefabs](https://discord.com/channels/978094827830915092/1117273637024714862/1117273642817044571)
 
