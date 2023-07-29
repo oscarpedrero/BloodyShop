@@ -30,7 +30,7 @@
 Since the update to Gloomrot the server does not have the names of the Prefabs, so the name of the Prefab has been added to the add command as a necessary parameter.
 
 New command:
-.shop add "<NameOfProduct" \<PrefabGUID\> \<Price\> \<Stock\>
+.shop add "\<NameOfProduct\>" \<PrefabGUID\> \<Price\> \<Stock\>
 
 Example:
 .shop add "Silver Coin" -949672483 1 100
