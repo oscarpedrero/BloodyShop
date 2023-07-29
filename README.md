@@ -1,3 +1,4 @@
+
 # BloodyShop Mod to create a store in VRising (with optional client UI)
 
 <details>
@@ -29,7 +30,7 @@
 Since the update to Gloomrot the server does not have the names of the Prefabs, so the name of the Prefab has been added to the add command as a necessary parameter.
 
 New command:
-.shop add "<NameOfProduct" <PrefabGUID> <Price> <Stock>
+.shop add "<NameOfProduct" \<PrefabGUID\> \<Price\> \<Stock\>
 
 Example:
 .shop add "Silver Coin" -949672483 1 100
@@ -51,6 +52,3 @@ This mod idea was a suggestion from [@Daavy](https://ideas.vrisingmods.com/posts
 [@Adain](https://github.com/adainrivers) for encouraging me to develop a UI to be able to use the mod from the client, for the support and for its [VRising.GameData](https://github.com/adainrivers/VRising.GameData) framework
 
 [@Paps](https://github.com/phillipsOG) for all the help and encouragement he has given us to get this idea off the ground.
-
-
-
