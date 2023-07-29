@@ -10,7 +10,7 @@ namespace BloodyShop.AutoAnnouncer
         {
             ClientConfigMessageAction.Send();
 
-            Plugin.Logger.LogWarning("Timer executed");
+            //Plugin.Logger.LogWarning("Timer executed");
         }
     }
 }

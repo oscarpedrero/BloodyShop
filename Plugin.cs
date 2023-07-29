@@ -191,7 +191,7 @@ namespace BloodyShop
             ShopEnabled = Config.Bind("ConfigShop", "enabled", true, "Enable Shop");
             StoreName = Config.Bind("ConfigShop", "name", "Bloody Shop", "Store's name");
             CoinName = Config.Bind("ConfigShop", "coinName", "Silver Coin", "Coin name.");
-            CoinGUID = Config.Bind("ConfigShop", "coinGUID", -949672483, "Item that will be used as currency within the service, by default they are silver coins, if you want to change the item you must include the GUID of said object that you can get from https://gaming.tools/v-rising/items");
+            CoinGUID = Config.Bind("ConfigShop", "coinGUID", -949672483, "Item that will be used as currency within the service, by default they are silver coins, if you want to change the item you must include the GUID of said object that you can get from https://discord.com/channels/978094827830915092/1117273637024714862/1117273642817044571");
             AnnounceAddRemovePublic = Config.Bind("ConfigShop", "announceAddRemovePublic", true, "Public announcement when an item is added or removed from the store");
             AnnounceBuyPublic = Config.Bind("ConfigShop", "announceBuyPublic", true, "Public announcement when someone buys an item from the store");
 

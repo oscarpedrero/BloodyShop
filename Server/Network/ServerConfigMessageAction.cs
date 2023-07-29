@@ -16,7 +16,7 @@ namespace BloodyShop.Server.Network
 
         public static void Received(User fromCharacter, ConfigSerializedMessage msg)
         {
-            Plugin.Logger.LogError($"[SERVER] [RECEIVED] ConfigSerializedMessage {fromCharacter.CharacterName}");
+            //Plugin.Logger.LogError($"[SERVER] [RECEIVED] ConfigSerializedMessage {fromCharacter.CharacterName}");
             msg = createMsg(fromCharacter);
 
             Send(fromCharacter, msg);
@@ -60,7 +60,7 @@ namespace BloodyShop.Server.Network
         public static void Send(User fromCharacter, ConfigSerializedMessage msg)
         {
             VNetwork.SendToClient(fromCharacter, msg);
-            Plugin.Logger.LogInfo($"[SERVER] [SEND] ConfigSerializedMessage {fromCharacter.CharacterName} - {msg.ItemsJson} - {msg.CoinGUID} - {msg.ShopName} - {msg.ShopOpen}");
+            //Plugin.Logger.LogInfo($"[SERVER] [SEND] ConfigSerializedMessage {fromCharacter.CharacterName} - {msg.ItemsJson} - {msg.CoinGUID} - {msg.ShopName} - {msg.ShopOpen}");
         }
     }
 }

@@ -54,7 +54,7 @@ namespace BloodyShop.AutoAnnouncer.Timers
             _isRunning = true;
             try
             {
-                Plugin.Logger.LogDebug("Executing timer.");
+                //Plugin.Logger.LogDebug("Executing timer.");
                 _action.Invoke(world);
             }
             catch (Exception ex)

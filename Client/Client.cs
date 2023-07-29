@@ -22,7 +22,7 @@ namespace BloodyShop.Client
 
         public static void ClientEvents_OnGameDataInitialized()
         {
-            Plugin.Logger.LogInfo("ClientEvents_OnGameDataInitialized");
+            //Plugin.Logger.LogInfo("ClientEvents_OnGameDataInitialized");
             UIInit = false;
             _autoLoadUiTimer = new AutoLoadUiTimer();
             StartAutoUI();
@@ -46,7 +46,7 @@ namespace BloodyShop.Client
             _autoLoadUiTimer.Start(
                 world =>
                 {
-                    Plugin.Logger.LogInfo("Starting UI...");
+                    //Plugin.Logger.LogInfo("Starting UI...");
                     AutoUIFunction.OnTimedAutoUI();
                 },
                 input =>
@@ -58,7 +58,7 @@ namespace BloodyShop.Client
                     }
 
                     var seconds = 30;
-                    Plugin.Logger.LogInfo($"Next Starting UI will start in {seconds} seconds.");
+                    //Plugin.Logger.LogInfo($"Next Starting UI will start in {seconds} seconds.");
                     return TimeSpan.FromSeconds(seconds);
                 });
         }
