@@ -1,5 +1,5 @@
 ﻿using BloodyShop.Network.Messages;
-using Wetstone.API;
+using Bloodstone.API;
 
 namespace BloodyShop.Client.Network
 {
@@ -20,6 +20,7 @@ namespace BloodyShop.Client.Network
                 msg.PrefabGUID = "0";
                 msg.Price = "0";
                 msg.Stock = "0";
+                msg.Name = "";
             }
 
             VNetwork.SendToServer(msg);

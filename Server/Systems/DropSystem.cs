@@ -8,7 +8,7 @@ using Unity.Entities;
 using VRising.GameData;
 using VRising.GameData.Methods;
 using VRising.GameData.Models;
-using Wetstone.API;
+using Bloodstone.API;
 
 namespace BloodyShop.Server.Systems
 {
@@ -60,7 +60,7 @@ namespace BloodyShop.Server.Systems
             if (em.HasComponent<Minion>(died)) return;
 
             var playerCharacterKiller = em.GetComponentData<PlayerCharacter>(killer);
-            var userModelKiller = GameData.Users.FromEntity(playerCharacterKiller.UserEntity._Entity);
+            var userModelKiller = GameData.Users.FromEntity(playerCharacterKiller.UserEntity);
 
             //Plugin.Logger.LogInfo($"PVE DROP");
 
@@ -98,14 +98,14 @@ namespace BloodyShop.Server.Systems
             if (em.HasComponent<Minion>(died)) return;
 
             var playerCharacterKiller = em.GetComponentData<PlayerCharacter>(killer);
-            var userModelKiller = GameData.Users.FromEntity(playerCharacterKiller.UserEntity._Entity);
+            var userModelKiller = GameData.Users.FromEntity(playerCharacterKiller.UserEntity);
 
             var prefabCoinGUID = new PrefabGUID(ShareDB.getCoinGUID());
 
             //Plugin.Logger.LogInfo($"PVP DROP");
             
             var playerCharacterDied = em.GetComponentData<PlayerCharacter>(died);
-            var userModelDied = GameData.Users.FromEntity(playerCharacterKiller.UserEntity._Entity);
+            var userModelDied = GameData.Users.FromEntity(playerCharacterKiller.UserEntity);
             var diedLevel = userModelDied.Character.Equipment.Level;
 
             //Plugin.Logger.LogInfo($"User Died Level {diedLevel}");

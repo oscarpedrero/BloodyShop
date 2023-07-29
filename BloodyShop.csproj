@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+	  <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>BloodyShop</AssemblyName>
     <Description>Mod to create a store in VRising</Description>
     <Version>0.8.3</Version>
@@ -23,17 +23,26 @@
     <None Remove="Client\DB\Models\**" />
   </ItemGroup>
 
-  <ItemGroup>
-		<PackageReference Include="BepInEx.IL2CPP" Version="6.0.0-*" IncludeAssets="compile" />
-		<PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
-		<PackageReference Include="Fody" Version="6.6.3" PrivateAssets="All" />
-		<PackageReference Include="ILMerge.Fody" Version="1.23.0" PrivateAssets="All" />
-		<PackageReference Include="System.Text.Json" Version="6.0.5" />
-		<PackageReference Include="UniverseLib.IL2CPP.Unhollower" Version="1.5.1" />
-		<PackageReference Include="VRising.GameData" Version="0.3.3" />
-		<PackageReference Include="VRising.Unhollowed.Client" Version="0.5.*" />
-		<PackageReference Include="Wetstone" Version="1.2.0" />
-        <PackageReference Include="VRising.VampireCommandFramework" Version="[0.4.5, 0.5.0)" />
+	<ItemGroup>
+		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be*" IncludeAssets="compile" />
+		<PackageReference Include="BepInEx.Core" Version="6.0.0-be*" IncludeAssets="compile" />
+		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+		<PackageReference Include="VRising.Unhollowed.Client" Version="0.6.5.57575090" />
+		<PackageReference Include="VRising.VampireCommandFramework" Version="0.8.0" />
+		<PackageReference Include="VRising.Bloodstone" Version="0.1.*" />
+		<PackageReference Include="Fody" Version="6.7.0" PrivateAssets="All" />
+		<PackageReference Include="ILMerge.Fody" Version="1.24.0" PrivateAssets="All" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="UniverseLib.IL2CPP.Interop">
+			<HintPath>UniverseLib.IL2CPP.Interop.dll</HintPath>
+			<Private>true</Private>
+		</Reference>
+		<Reference Include="VRising.GameData">
+			<HintPath>VRising.GameData.dll</HintPath>
+			<Private>true</Private>
+		</Reference>
 	</ItemGroup>
 
   <ItemGroup>
@@ -41,7 +50,7 @@
   </ItemGroup>
 	<Target Name="CopyDLLsClient" AfterTargets="Build">
 		<Message Text="DLL to V Rising Client" Importance="High" />
-		<Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="C:\Program Files (x86)\Steam\steamapps\common\VRising\BepInEx\plugins\" />
+		<Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="D:\SteamLibrary\steamapps\common\VRising\BepInEx\plugins\" />
 		<Message Text="DLL Client Copied OK" Importance="High" />
 	</Target>
 	<Target Name="CopyDLLsServer" AfterTargets="Build">

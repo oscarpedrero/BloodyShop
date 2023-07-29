@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using VRising.GameData;
-using Wetstone.API;
+using Bloodstone.API;
 
 namespace BloodyShop.Client.Network
 {
@@ -16,7 +16,7 @@ namespace BloodyShop.Client.Network
 
         public static void Received(ConfigSerializedMessage msg)
         {
-            //Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] ConfigSerializedMessage {msg.ItemsJson} - {msg.CoinGUID} - {msg.ShopName} - {msg.ShopOpen} - {msg.ShopOpen}");
+            Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] ConfigSerializedMessage {msg.ItemsJson} - {msg.CoinGUID} - {msg.ShopName} - {msg.ShopOpen} - {msg.ShopOpen}");
 
             var productList = JsonSerializer.Deserialize<List<ItemShopModel>>(msg.ItemsJson);
             ItemsDB.setProductList(productList);
@@ -65,14 +65,16 @@ namespace BloodyShop.Client.Network
             }
 
             ClientMod.UIInit = true;
-            //Plugin.Logger.LogInfo("Create Panels");
+            Plugin.Logger.LogInfo("Create Panels");
             UIManager.CreateAllPanels();
+            ClientMod.StopAutoUI();
 
         }
 
         public static void Send(ConfigSerializedMessage msg = null)
         {
-            //Plugin.Logger.LogInfo($"[CLIENT] [SEND] ConfigSerializedMessage");
+            Plugin.Logger.LogInfo($"[CLIENT] [SEND] ConfigSerializedMessage");
+
             if (msg == null)
             {
                 msg = new ConfigSerializedMessage();

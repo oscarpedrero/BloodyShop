@@ -2,7 +2,7 @@
 using BloodyShop.DB;
 using BloodyShop.Network.Messages;
 using System.Text.Json;
-using Wetstone.API;
+using Bloodstone.API;
 using BloodyShop.Server.Systems;
 using BloodyShop.Server.Commands;
 using System;
@@ -14,6 +14,7 @@ using BloodyShop.Utils;
 using Unity.Entities;
 using VampireCommandFramework.Breadstone;
 using Unity.Collections;
+using BloodyShop.DB.Models;
 
 namespace BloodyShop.Server.Network
 {
@@ -30,6 +31,7 @@ namespace BloodyShop.Server.Network
             var prefabGUID = int.Parse(msg.PrefabGUID);
             var price = int.Parse(msg.Price);
             var stock = int.Parse(msg.Stock);
+            var name = msg.Name;
 
             if(stock <= 0)
             {
@@ -38,11 +40,11 @@ namespace BloodyShop.Server.Network
 
             //Plugin.Logger.LogInfo($"shop add {prefabGUID} {price} {stock}");
 
-            addItem(user, prefabGUID, price, stock);
+            addItem(user, prefabGUID, price, stock, name);
 
         }
 
-        private static void addItem(User user, int item, int price, int stock)
+        private static void addItem(User user, int item, int price, int stock, string name)
         {
             try
             {
@@ -55,13 +57,13 @@ namespace BloodyShop.Server.Network
                     return;
                 }
 
-                if (!ShareDB.getCoin(out ItemModel coin))
+                if (!ShareDB.getCoin(out PrefabModel coin))
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("Error loading currency type"));
                     return;
                 }
 
-                if (!ItemsDB.addProductList(item, price, stock))
+                if (!ItemsDB.addProductList(item, price, stock, name))
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("Invalid item type"));
                     return;
@@ -69,7 +71,7 @@ namespace BloodyShop.Server.Network
 
                 SaveDataToFiles.saveProductList();
 
-                ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, $"Added item {FontColorChat.White($"{ itemModel?.Name.ToString()} ({stock})")} to the store with a price of {FontColorChat.White($"{price} {coin?.Name.ToString()}")}");
+                ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, $"Added item {FontColorChat.White($"{name} ({stock})")} to the store with a price of {FontColorChat.White($"{price} {coin?.PrefabName.ToString()}")}");
 
                 if (!ConfigDB.ShopEnabled)
                 {
@@ -78,14 +80,14 @@ namespace BloodyShop.Server.Network
 
                 if (ConfigDB.AnnounceAddRemovePublic)
                 {
-                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{itemModel?.Name.ToString()} ({stock})")} have been added to the Store for {FontColorChat.White($"{price} {coin?.Name.ToString()}")}"));
+                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{name} ({stock})")} have been added to the Store for {FontColorChat.White($"{price} {coin?.PrefabName.ToString()}")}"));
                 }
 
                 var usersOnline = GameData.Users.Online;
                 foreach (var userOnline in usersOnline)
                 {
                     var msg = ServerListMessageAction.createMsg();
-                    ServerListMessageAction.Send(userOnline.Internals.User, msg);
+                    ServerListMessageAction.Send((ProjectM.Network.User)userOnline.Internals.User, msg);
                 }
                 return;
             }

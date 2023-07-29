@@ -2,7 +2,7 @@
 using BloodyShop.DB;
 using BloodyShop.Network.Messages;
 using System.Text.Json;
-using Wetstone.API;
+using Bloodstone.API;
 using BloodyShop.Server.Systems;
 using BloodyShop.Server.Commands;
 using BloodyShop.Server.DB;
@@ -34,7 +34,7 @@ namespace BloodyShop.Server.Network
             var msg = new OpenSerializedMessage();
             foreach (var user in usersOnline)
             {
-                Send(user.Internals.User, msg);
+                Send((User)user.Internals.User, msg);
             }
 
         }

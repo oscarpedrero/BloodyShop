@@ -149,7 +149,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
             priceArray = new();
             foreach (var item in itemsModel.Take(limit))
             {
-                if (ShareDB.getCoin(out ItemModel coin))
+                if (ShareDB.getCoin(out PrefabModel coin))
                 {
                     // CONTAINER FOR PRODUCTS
                     var _contentProduct = UIFactory.CreateHorizontalGroup(contentScroll, "ContentItem-" + index, true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
@@ -219,6 +219,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
             var btnName = EventSystem.current.currentSelectedGameObject.name;
             var index = Int32.Parse(btnName.Replace("saveBtn|", ""));
             var item = itemsModel[index].PrefabGUID;
+            var name = itemsModel[index].PrefabName;
             
             var inputPrice = priceArray[index];
             var inputStock = stockArray[index];
@@ -230,6 +231,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
                 var msg = new AddSerializedMessage()
                 {
                     PrefabGUID = item.ToString(),
+                    Name = name,
                     Price = price,
                     Stock = stock,
                 };

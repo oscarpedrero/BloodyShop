@@ -1,5 +1,6 @@
 ﻿using ProjectM;
 using UnityEngine;
+using VRising.GameData.Models;
 
 namespace BloodyShop.DB.Models
 {
@@ -11,7 +12,8 @@ namespace BloodyShop.DB.Models
         public string PrefabType { get; set; }
         public int PrefabGUID { get; set; }
         public Sprite PrefabIcon { get; set; }
-        
+        public ItemModel itemModel { get; set; }
+
 
         /*public PrefabGUID getPrefabGUID()
         {

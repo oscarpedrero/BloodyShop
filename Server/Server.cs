@@ -69,7 +69,9 @@ namespace BloodyShop.Server
             }
 
             var _coinGUID = Plugin.CoinGUID.Value;
+            var _coinName = Plugin.CoinName.Value;
             ShareDB.setCoinGUID(_coinGUID);
+            ShareDB.setCoinName(_coinName);
 
             ConfigDB.DropEnabled = Plugin.DropEnabled.Value;
 

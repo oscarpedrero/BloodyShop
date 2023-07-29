@@ -182,7 +182,7 @@ namespace BloodyShop.Client.UI.Panels.User
             _quantityArrayCache = new();
             foreach (var item in items.Skip(skip).Take(limit))
             {
-                if (ShareDB.getCoin(out ItemModel coin))
+                if (ShareDB.getCoin(out PrefabModel coin))
                 {
                     // CONTAINER FOR PRODUCTS
                     var _contentProduct = UIFactory.CreateHorizontalGroup(contentScroll, "ContentItem-" + index, true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
@@ -210,7 +210,7 @@ namespace BloodyShop.Client.UI.Panels.User
                     UIFactory.SetLayoutElement(itemName.gameObject, minWidth: 230, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 230);
 
                     // PRICE ITEM
-                    Text itemPrice = UIFactory.CreateLabel(_contentProduct, "itemPriceTxt-" + index, $"{item.PrefabPrice} {coin.Name}");
+                    Text itemPrice = UIFactory.CreateLabel(_contentProduct, "itemPriceTxt-" + index, $"{item.PrefabPrice} {coin.PrefabName}");
                     UIFactory.SetLayoutElement(itemPrice.gameObject, minWidth: 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 100);
 
                     // QUANTITY ITEM
@@ -345,6 +345,7 @@ namespace BloodyShop.Client.UI.Panels.User
                 {
                     ItemIndex = indexItemUI,
                     Quantity = quantityBuy,
+                    Name = prefabBuy.PrefabName,
                 };
                 ClientBuyMessageAction.Send(msg);
                 RefreshAction();

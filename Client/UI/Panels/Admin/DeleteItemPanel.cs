@@ -168,7 +168,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
             
             foreach (var item in items.Skip(skip).Take(10))
             {
-                if (ShareDB.getCoin(out ItemModel coin))
+                if (ShareDB.getCoin(out PrefabModel coin))
                 {
                     // CONTAINER FOR PRODUCTS
                     var _contentProduct = UIFactory.CreateHorizontalGroup(contentScroll, "ContentItem-" + index, true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
@@ -188,7 +188,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
                     UIFactory.SetLayoutElement(itemName.gameObject, minWidth: 310, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 310);
 
                     // PRICE ITEM
-                    Text itemPrice = UIFactory.CreateLabel(_contentProduct, "itemPriceTxt-" + index, $"{item.PrefabPrice} {coin.Name}");
+                    Text itemPrice = UIFactory.CreateLabel(_contentProduct, "itemPriceTxt-" + index, $"{item.PrefabPrice} {coin.PrefabName}");
                     UIFactory.SetLayoutElement(itemPrice.gameObject, minWidth: 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 100);
 
                     // DELETE BTN

@@ -22,7 +22,7 @@ internal class UIManager
             Disable_EventSystem_Override = false, // or null
             Force_Unlock_Mouse = false, // or null
             Allow_UI_Selection_Outside_UIBase = true,
-            Unhollowed_Modules_Folder = Path.Combine(BepInEx.Paths.BepInExRootPath, "unhollowed") // or null
+            Unhollowed_Modules_Folder = Path.Combine(BepInEx.Paths.BepInExRootPath, "interop") // or null
         };
 
         Universe.Init(startupDelay, OnInitialized, LogHandler, config);

@@ -1,6 +1,6 @@
 ﻿using Stunlock.Network;
 using Unity.Collections;
-using Wetstone.API;
+using Bloodstone.API;
 
 namespace BloodyShop.Network.Messages
 {
@@ -27,7 +27,7 @@ namespace BloodyShop.Network.Messages
         }
 
         // Write your contents to the writer.
-        public void Serialize(NetBufferOut writer)
+        public void Serialize(ref NetBufferOut writer)
         {
             writer.Write(ItemsJson);
             writer.Write(CoinGUID);

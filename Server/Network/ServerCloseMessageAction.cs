@@ -1,6 +1,6 @@
 ﻿using ProjectM.Network;
 using BloodyShop.Network.Messages;
-using Wetstone.API;
+using Bloodstone.API;
 using BloodyShop.Server.DB;
 using VRising.GameData;
 using ProjectM;
@@ -29,7 +29,7 @@ namespace BloodyShop.Server.Network
             var msg = new CloseSerializedMessage();
             foreach (var user in usersOnline)
             {
-                Send(user.Internals.User, msg);
+                Send((ProjectM.Network.User)user.Internals.User, msg);
             }
         }
 

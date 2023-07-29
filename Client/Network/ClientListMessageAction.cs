@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using VRising.GameData;
-using Wetstone.API;
+using Bloodstone.API;
 
 namespace BloodyShop.Client.Network
 {

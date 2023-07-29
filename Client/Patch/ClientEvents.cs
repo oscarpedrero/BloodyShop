@@ -41,7 +41,7 @@ public static class ClientEvents
         {
             Plugin.Logger.LogError(e);
         }
-
+    
     }
 
     [HarmonyPatch(typeof(ClientBootstrapSystem), nameof(ClientBootstrapSystem.OnDestroy))]
@@ -66,4 +66,5 @@ public static class ClientEvents
         
 
     }
+
 }

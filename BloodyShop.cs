@@ -8,11 +8,20 @@ using BloodyShop.Server.Patch;
 using BloodyShop.Server.Systems;
 using VampireCommandFramework;
 using BloodyShop.Server.Commands;
+using Stunlock;
+using System.IO;
+using BepInEx;
+using Unity.Entities;
+using Bloodstone.API;
+using System;
+using Stunlock.Localization;
 
 namespace BloodyShop
 {
     public class BloodyShop
     {
+        public static readonly string ConfigPath = Path.Combine(Paths.ConfigPath, "BloodyShop");
+
         public static void serverInitMod(Harmony _harmony)
         {
             _harmony.PatchAll(typeof(ServerEvents));
@@ -66,6 +75,7 @@ namespace BloodyShop
 
         public static void onClientGameDataOnInitialize()
         {
+            //Plugin.Logger.LogDebug("onClientGameDataOnInitialize");
             ClientMod.ClientEvents_OnGameDataInitialized();
         }
 

@@ -4,7 +4,7 @@ using BloodyShop.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Wetstone.API;
+using Bloodstone.API;
 using ProjectM;
 using VRising.GameData;
 
@@ -24,7 +24,7 @@ namespace BloodyShop.DB
         public static void generateCacheItems()
         {
 
-            var allPrefabs = VWorld.Client.GetExistingSystem<PrefabCollectionSystem>().PrefabLookupMap;
+            var allPrefabs = VWorld.Client.GetExistingSystem<PrefabCollectionSystem>()._PrefabGuidToEntityMap;
             foreach (var prefabEntity in allPrefabs)
             {
                 var itemModel = GameData.Items.FromEntity(prefabEntity.Value);
@@ -52,7 +52,7 @@ namespace BloodyShop.DB
             {
                 var itemModel = GameData.Items.GetPrefabById(new PrefabGUID(itemShopModel.id));
                 var prefabModel = new PrefabModel();
-                prefabModel.PrefabName = itemModel?.Name;
+                prefabModel.PrefabName = itemShopModel?.name;
                 prefabModel.PrefabType = itemModel?.ItemType.ToString();
                 prefabModel.PrefabGUID = itemModel?.Internals.PrefabGUID?.GuidHash ?? 0;
                 prefabModel.PrefabIcon = itemModel?.ManagedGameData.ManagedItemData?.Icon;
@@ -130,6 +130,7 @@ namespace BloodyShop.DB
             {
                 var itemShopModel = new ItemShopModel();
                 itemShopModel.id = prefabModel.PrefabGUID;
+                itemShopModel.name = prefabModel.PrefabName;
                 itemShopModel.stock = prefabModel.PrefabStock;
                 itemShopModel.price = prefabModel.PrefabPrice;
                 productListReturn.Add(itemShopModel);
@@ -138,14 +139,14 @@ namespace BloodyShop.DB
             return productListReturn;
         }
 
-        public static bool addProductList(int item, int price, int stock)
+        public static bool addProductList(int item, int price, int stock, string name)
         {
 
             var itemModel = GameData.Items.GetPrefabById(new PrefabGUID(item));
             if (itemModel == null) return false;
 
             PrefabModel prefabModel = new PrefabModel();
-            prefabModel.PrefabName = itemModel?.Name;
+            prefabModel.PrefabName = name;
             prefabModel.PrefabType = itemModel?.ItemType.ToString();
             prefabModel.PrefabGUID = itemModel?.Internals.PrefabGUID?.GuidHash ?? 0;
             prefabModel.PrefabIcon = itemModel?.ManagedGameData.ManagedItemData?.Icon;
@@ -321,7 +322,7 @@ namespace BloodyShop.DB
 
             int index = 1;
 
-            if (ShareDB.getCoin(out ItemModel coin))
+            if (ShareDB.getCoin(out PrefabModel coin))
             {
                 foreach (PrefabModel item in ProductList)
                 {
@@ -337,7 +338,7 @@ namespace BloodyShop.DB
                     }
                     listItems.Add($"{FontColorChat.White("[")}{FontColorChat.Yellow(index.ToString())}{FontColorChat.White("]")} " +
                         $"{FontColorChat.Yellow(item.PrefabName)} " +
-                        $"{FontColorChat.Red("Price:")} {FontColorChat.Yellow(item.PrefabPrice.ToString())} {FontColorChat.White($"{coin?.Name.ToString()}")} " +
+                        $"{FontColorChat.Red("Price:")} {FontColorChat.Yellow(item.PrefabPrice.ToString())} {FontColorChat.White($"{coin?.PrefabName.ToString()}")} " +
                         $"{FontColorChat.Red("Stock:")} {FontColorChat.Yellow(finalStock)} units");
                     index++;
                 }

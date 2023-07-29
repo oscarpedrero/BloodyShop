@@ -21,7 +21,7 @@ namespace BloodyShop.Server.Core
                 NativeArray<InventoryBuffer> inventory = new NativeArray<InventoryBuffer>();
                 InventoryUtilities.TryGetInventory(Plugin.Server.EntityManager, characterEntity, out inventory);
 
-                total = InventoryUtilities.ItemCount(ref inventory, prefabCoinGUID);
+                total = InventoryUtilities.GetItemAmount(Plugin.Server.EntityManager, characterEntity, prefabCoinGUID);
                 if (total >= 0)
                 {
                     return true;
@@ -84,7 +84,7 @@ namespace BloodyShop.Server.Core
 
                 var userEntity = userData.Character.Entity;
 
-                int totalSlots = InventoryUtilities.GetItemSlots(Plugin.Server.EntityManager, userEntity);
+                int totalSlots = InventoryUtilities.GetInventorySize(Plugin.Server.EntityManager, userEntity);
 
                 var gameDataSystem = Plugin.Server.GetExistingSystem<GameDataSystem>();
 
@@ -99,16 +99,16 @@ namespace BloodyShop.Server.Core
                         {
                             if (itemData.PrefabName == prefabGameData.PrefabName)
                             {
-                                if (item.Stacks >= totalItemsRemove)
+                                if (item.Amount >= totalItemsRemove)
                                 {
                                     InventoryUtilitiesServer.TryRemoveItemAtIndex(Plugin.Server.EntityManager, userEntity, item.ItemType, totalItemsRemove, i, false);
                                     totalItemsRemove = 0;
                                     break;
                                 }
-                                else if (item.Stacks < totalItemsRemove)
+                                else if (item.Amount < totalItemsRemove)
                                 {
-                                    InventoryUtilitiesServer.TryRemoveItemAtIndex(Plugin.Server.EntityManager, userEntity, item.ItemType, item.Stacks, i, true);
-                                    totalItemsRemove -= item.Stacks;
+                                    InventoryUtilitiesServer.TryRemoveItemAtIndex(Plugin.Server.EntityManager, userEntity, item.ItemType, item.Amount, i, true);
+                                    totalItemsRemove -= item.Amount;
                                 }
 
                                 if (totalItemsRemove == 0)

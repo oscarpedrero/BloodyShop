@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using Wetstone;
-using Wetstone.API;
+using Bloodstone;
+using Bloodstone.API;
 
 namespace BloodyShop.Client.Patch
 {

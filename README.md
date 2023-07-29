@@ -35,7 +35,7 @@ This mod idea was a suggestion from [@Daavy](https://ideas.vrisingmods.com/posts
 
 [@Paps](https://github.com/phillipsOG) for all the help and encouragement he has given us to get this idea off the ground.
 
-[@Molenzwiebel](https://github.com/molenzwiebel) for helping with his magnificent [WetStone](https://github.com/molenzwiebel/Wetstone) framework to solve the errors that we have detected.
+[@Molenzwiebel](https://github.com/molenzwiebel) for helping with his magnificent [Bloodstone](https://github.com/molenzwiebel/Bloodstone) framework to solve the errors that we have detected.
 
 
 

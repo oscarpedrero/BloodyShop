@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using VRising.GameData;
 using VRising.GameData.Models;
-using Wetstone.API;
+using Bloodstone.API;
 
 namespace BloodyShop.Client.DB
 {

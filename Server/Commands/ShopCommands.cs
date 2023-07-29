@@ -10,7 +10,7 @@ using System;
 using VampireCommandFramework;
 using VRising.GameData;
 using VRising.GameData.Models;
-using Wetstone.API;
+using Bloodstone.API;
 
 namespace BloodyShop.Server.Commands
 {
@@ -18,8 +18,8 @@ namespace BloodyShop.Server.Commands
     internal class ShopCommands
     {
 
-        [Command("add", usage: "<PrefabGuid> <Price> <Stock>", description: "Add a product to the store. To know the PrefabGuid of an item you must look for the item in the following URL <#4acc45><u>https://gaming.tools/v-rising/items</u></color>", adminOnly: true)]
-        public static void addItem(ChatCommandContext ctx, int item, int price, int stock)
+        [Command("add", usage: "\"<Name>\" <PrefabGuid> <Price> <Stock>", description: "Add a product to the store. To know the PrefabGuid of an item you must look for the item in the following URL <#4acc45><u>https://gaming.tools/v-rising/items</u></color>", adminOnly: true)]
+        public static void AddItem(ChatCommandContext ctx, string name, int item, int price, int stock)
         {
             try
             {
@@ -31,19 +31,19 @@ namespace BloodyShop.Server.Commands
                     throw ctx.Error("Invalid item type");
                 }
 
-                if (!ShareDB.getCoin(out ItemModel coin))
+                if (!ShareDB.getCoin(out PrefabModel coin))
                 {
                     throw ctx.Error("Error loading currency type");
                 }
 
-                if (!ItemsDB.addProductList(item, price, stock))
+                if (!ItemsDB.addProductList(item, price, stock, name))
                 {
                     throw ctx.Error("Invalid item type");
                 }
 
                 SaveDataToFiles.saveProductList();
 
-                ctx.Reply(FontColorChat.Yellow($"Added item {FontColorChat.White($"{itemModel?.Name.ToString()} ({stock})")} to the store with a price of {FontColorChat.White($"{price} {coin?.Name.ToString()}")}"));
+                ctx.Reply(FontColorChat.Yellow($"Added item {FontColorChat.White($"{itemModel?.Name.ToString()} ({stock})")} to the store with a price of {FontColorChat.White($"{price} {coin?.PrefabName.ToString()}")}"));
                 if (!ConfigDB.ShopEnabled)
                 {
                     return;
@@ -51,13 +51,13 @@ namespace BloodyShop.Server.Commands
 
                 if (ConfigDB.AnnounceAddRemovePublic)
                 {
-                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{itemModel?.Name.ToString()} ({stock})")} have been added to the Store for {FontColorChat.White($"{price} {coin?.Name.ToString()}")}"));
+                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{itemModel?.Name.ToString()} ({stock})")} have been added to the Store for {FontColorChat.White($"{price} {coin?.PrefabName.ToString()}")}"));
                 }
                 var usersOnline = GameData.Users.Online;
                 foreach (var user in usersOnline)
                 {
                     var msg = ServerListMessageAction.createMsg();
-                    ServerListMessageAction.Send(user.Internals.User, msg);
+                    ServerListMessageAction.Send((ProjectM.Network.User) user.Internals.User, msg);
                 }
                 return;
             }
@@ -81,7 +81,7 @@ namespace BloodyShop.Server.Commands
                     throw ctx.Error(FontColorChat.Yellow($"{FontColorChat.White($"{ConfigDB.StoreName}")} is closed"));
                 }
 
-                if (!ShareDB.getCoin(out ItemModel coin))
+                if (!ShareDB.getCoin(out PrefabModel coin))
                 {
                     throw ctx.Error("Error loading currency type");
                 }
@@ -103,14 +103,14 @@ namespace BloodyShop.Server.Commands
                     throw ctx.Error("There is not enough stock of this item");
                 }
 
-                if (!InventorySystem.verifyHaveSuficientPrefabsInInventory(ctx.Event.User.CharacterName.ToString(), coin.PrefabGUID, finalPrice))
+                if (!InventorySystem.verifyHaveSuficientPrefabsInInventory(ctx.Event.User.CharacterName.ToString(), coin.itemModel.PrefabGUID, finalPrice))
                 {
-                    throw ctx.Error($"You need {FontColorChat.White($"{finalPrice} {coin.Name}")} in your inventory for this purchase");
+                    throw ctx.Error($"You need {FontColorChat.White($"{finalPrice} {coin.PrefabName}")} in your inventory for this purchase");
                 }
 
-                if (!InventorySystem.getPrefabFromInventory(ctx.Event.User.CharacterName.ToString(), coin.PrefabGUID, finalPrice))
+                if (!InventorySystem.getPrefabFromInventory(ctx.Event.User.CharacterName.ToString(), coin.itemModel.PrefabGUID, finalPrice))
                 {
-                    throw ctx.Error($"You need {FontColorChat.White($"{finalPrice} {coin.Name}")} in your inventory for this purchase");
+                    throw ctx.Error($"You need {FontColorChat.White($"{finalPrice} {coin.PrefabName}")} in your inventory for this purchase");
                 }
 
                 if (!InventorySystem.AdditemToInventory(ctx.Event.User.CharacterName.ToString(), new PrefabGUID(itemShopModel.PrefabGUID), quantity))
@@ -119,7 +119,7 @@ namespace BloodyShop.Server.Commands
                     throw ctx.Error($"An error has occurred when delivering the items, please contact an administrator");
                 }
 
-                ctx.Reply(FontColorChat.Yellow($"Transaction successful. You have purchased {FontColorChat.White($"{quantity}x {itemShopModel.PrefabName}")} for a total of  {FontColorChat.White($"{finalPrice} {coin.Name}")}"));
+                ctx.Reply(FontColorChat.Yellow($"Transaction successful. You have purchased {FontColorChat.White($"{quantity}x {itemShopModel.PrefabName}")} for a total of  {FontColorChat.White($"{finalPrice} {coin.PrefabName}")}"));
 
                 if (!ItemsDB.ModifyStockByCommand(indexPosition, quantity))
                 {
@@ -134,12 +134,12 @@ namespace BloodyShop.Server.Commands
                 foreach (var user in usersOnline)
                 {
                     var msg = ServerListMessageAction.createMsg();
-                    ServerListMessageAction.Send(user.Internals.User, msg);
+                    ServerListMessageAction.Send((ProjectM.Network.User)user.Internals.User, msg);
                 }
 
                 if (ConfigDB.AnnounceBuyPublic)
                 {
-                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{ctx.Event.User.CharacterName} has purchased {FontColorChat.White($"{quantity}x {itemShopModel.PrefabName}")} for a total of  {FontColorChat.White($"{finalPrice} {coin.Name}")}"));
+                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{ctx.Event.User.CharacterName} has purchased {FontColorChat.White($"{quantity}x {itemShopModel.PrefabName}")} for a total of  {FontColorChat.White($"{finalPrice} {coin.PrefabName}")}"));
                 }
             }
             catch (Exception error)
@@ -172,7 +172,7 @@ namespace BloodyShop.Server.Commands
                 foreach (var user in usersOnline)
                 {
                     var msg = ServerListMessageAction.createMsg();
-                    ServerListMessageAction.Send(user.Internals.User, msg);
+                    ServerListMessageAction.Send((ProjectM.Network.User)user.Internals.User, msg);
                 }
 
                 if(ConfigDB.AnnounceAddRemovePublic)
@@ -196,7 +196,7 @@ namespace BloodyShop.Server.Commands
                 throw ctx.Error(FontColorChat.Yellow($"{FontColorChat.White($"{ConfigDB.StoreName}")} is closed"));
             }
 
-            if (!ShareDB.getCoin(out ItemModel coin))
+            if (!ShareDB.getCoin(out PrefabModel coin))
             {
                 throw ctx.Error("Error loading currency type");
             }
@@ -213,7 +213,7 @@ namespace BloodyShop.Server.Commands
                 ctx.Reply(item);
             }
 
-            ctx.Reply(FontColorChat.Yellow($"To buy an object you must have in your inventory the number of {FontColorChat.White(coin.Name.ToString())} indicated by each product."));
+            ctx.Reply(FontColorChat.Yellow($"To buy an object you must have in your inventory the number of {FontColorChat.White(coin.PrefabName.ToString())} indicated by each product."));
             ctx.Reply(FontColorChat.Yellow($"Use the chat command \"{FontColorChat.White($"shop buy <NumberItem> <Quantity> ")}\""));
 
         }
@@ -229,7 +229,7 @@ namespace BloodyShop.Server.Commands
             var msg = new OpenSerializedMessage();
             foreach (var user in usersOnline)
             {
-                ServerOpenMessageAction.Send(user.Internals.User, msg);
+                ServerOpenMessageAction.Send((ProjectM.Network.User)user.Internals.User, msg);
             }
             
         }
@@ -243,7 +243,7 @@ namespace BloodyShop.Server.Commands
             var msg = new CloseSerializedMessage();
             foreach (var user in usersOnline)
             {
-                ServerCloseMessageAction.Send(user.Internals.User, msg);
+                ServerCloseMessageAction.Send((ProjectM.Network.User)user.Internals.User, msg);
             }
         }
     }

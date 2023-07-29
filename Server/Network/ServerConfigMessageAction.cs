@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using VRising.GameData;
-using Wetstone.API;
+using Bloodstone.API;
 
 namespace BloodyShop.Server.Network
 {
@@ -16,12 +16,12 @@ namespace BloodyShop.Server.Network
 
         public static void Received(User fromCharacter, ConfigSerializedMessage msg)
         {
-
+            Plugin.Logger.LogError($"[SERVER] [RECEIVED] ConfigSerializedMessage {fromCharacter.CharacterName}");
             msg = createMsg(fromCharacter);
 
             Send(fromCharacter, msg);
 
-            //Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] ConfigSerializedMessage {fromCharacter.CharacterName}");
+            
 
         }
 
@@ -60,7 +60,7 @@ namespace BloodyShop.Server.Network
         public static void Send(User fromCharacter, ConfigSerializedMessage msg)
         {
             VNetwork.SendToClient(fromCharacter, msg);
-            //Plugin.Logger.LogInfo($"[SERVER] [SEND] ConfigSerializedMessage {fromCharacter.CharacterName} - {msg.ItemsJson} - {msg.CoinGUID} - {msg.ShopName} - {msg.ShopOpen}");
+            Plugin.Logger.LogInfo($"[SERVER] [SEND] ConfigSerializedMessage {fromCharacter.CharacterName} - {msg.ItemsJson} - {msg.CoinGUID} - {msg.ShopName} - {msg.ShopOpen}");
         }
     }
 }

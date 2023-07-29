@@ -1,6 +1,7 @@
 ﻿using VRising.GameData;
 using VRising.GameData.Models;
 using ProjectM;
+using BloodyShop.DB.Models;
 
 namespace BloodyShop.DB
 {
@@ -8,17 +9,26 @@ namespace BloodyShop.DB
     {
         public static int CoinGUID = 0;
 
+        public static string CoinName = "";
+
         public static int getCoinGUID()
         {
             return CoinGUID;
         }
 
-        public static bool getCoin( out ItemModel coin)
+        public static int getCoinName()
         {
-            coin = null;
+            return CoinGUID;
+        }
+
+        public static bool getCoin( out PrefabModel coin)
+        {
+            coin = new PrefabModel();
+
             if (CoinGUID != 0)
             {
-                coin = GameData.Items.GetPrefabById(new PrefabGUID(CoinGUID));
+                coin.PrefabName = CoinName;
+                coin.itemModel = GameData.Items.GetPrefabById(new PrefabGUID(CoinGUID));
                 return true;
             } else
             {
@@ -31,6 +41,13 @@ namespace BloodyShop.DB
         {
             
             CoinGUID = value;
+            
+        }
+
+        public static void setCoinName(string name)
+        {
+            
+            CoinName = name;
             
         }
     }

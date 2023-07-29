@@ -2,7 +2,7 @@
 using BloodyShop.DB;
 using BloodyShop.Network.Messages;
 using System.Text.Json;
-using Wetstone.API;
+using Bloodstone.API;
 using BloodyShop.Server.Systems;
 using BloodyShop.Server.Commands;
 using System;
@@ -53,7 +53,7 @@ namespace BloodyShop.Server.Network
                 foreach (var userOnline in usersOnline)
                 {
                     var msg = ServerListMessageAction.createMsg();
-                    ServerListMessageAction.Send(userOnline.Internals.User, msg);
+                    ServerListMessageAction.Send((ProjectM.Network.User)userOnline.Internals.User, msg);
                 }
 
                 if (ConfigDB.AnnounceAddRemovePublic)

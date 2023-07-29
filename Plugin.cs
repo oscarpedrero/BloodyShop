@@ -1,26 +1,33 @@
 ﻿using BepInEx;
+using BepInEx.Unity.IL2CPP;
 using BepInEx.Configuration;
-using BepInEx.IL2CPP;
 using BepInEx.Logging;
 using VRising.GameData;
 using HarmonyLib;
 using Unity.Entities;
 using UnityEngine;
-using Wetstone.API;
+using Bloodstone.API;
 using System;
+using VampireCommandFramework;
+using BloodyShop.Client.Patch;
+using BloodyShop.Client;
+using BloodyShop.Server.Patch;
+using ProjectM.Network;
+using Stunlock.Localization;
 
 namespace BloodyShop
 {
-    [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
-    [BepInDependency("xyz.molenzwiebel.wetstone")]
-    [BepInDependency("gg.deca.VampireCommandFramework", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+    [BepInDependency("gg.deca.VampireCommandFramework")]
+    [BepInDependency("gg.deca.Bloodstone")]
+
     public class Plugin : BasePlugin, IRunOnInitialized
     {
 
         internal static Plugin Instance;
-        internal static string Name = PluginInfo.PLUGIN_NAME;
-        internal static string Guid = PluginInfo.PLUGIN_GUID;
-        internal static string Version = PluginInfo.PLUGIN_VERSION;
+        internal static string Name = MyPluginInfo.PLUGIN_NAME;
+        internal static string Guid = MyPluginInfo.PLUGIN_GUID;
+        internal static string Version = MyPluginInfo.PLUGIN_VERSION;
 
         public static ManualLogSource Logger;
         private Harmony _harmony;
@@ -29,6 +36,7 @@ namespace BloodyShop
         public static ConfigEntry<bool> AnnounceAddRemovePublic;
         public static ConfigEntry<bool> AnnounceBuyPublic;
         public static ConfigEntry<int> CoinGUID;
+        public static ConfigEntry<string> CoinName;
         public static ConfigEntry<string> StoreName;
 
 
@@ -71,6 +79,7 @@ namespace BloodyShop
                 _serverWorld = GetWorld("Server")
                     ?? throw new System.Exception("There is no Server world (yet). Did you install a server mod on the client?");
                 return _serverWorld;
+                
             }
         }
         public static World Client
@@ -106,31 +115,28 @@ namespace BloodyShop
             Instance = this;
 
             Logger = Log;
-            _harmony = new Harmony(PluginInfo.PLUGIN_GUID);
+            _harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
 
+            GameData.OnInitialize += GameDataOnInitialize;
+            GameData.OnDestroy += GameDataOnDestroy;
 
             if (VWorld.IsServer)
             {
                 InitConfigServer();
-                var vcfFound = IL2CPPChainloader.Instance.Plugins.TryGetValue("gg.deca.VampireCommandFramework", out var vcfinfo);
-                if (!vcfFound)
-                {
-                    Logger.LogError("VampireCommandFramework not found! This is required for the server.");
-                    return;
-                }
-         
                 BloodyShop.serverInitMod(_harmony);
+                //ServerEvents.OnGameDataInitialized += GameDataOnInitialize;
             }
             else
             {
                 BloodyShop.clientInitMod(_harmony);
+                //ClientEvents.OnGameDataInitialized += GameDataOnInitialize;
+                //ClientEvents.OnGameDataDestroyed += GameDataOnDestroy;
             }
 
             // Plugin startup logic
             Log.LogInfo($"BloodyShop is loaded!");
-
-            GameData.OnInitialize += GameDataOnInitialize;
-            GameData.OnDestroy += GameDataOnDestroy;
+            
+            
 
         }
 
@@ -141,6 +147,7 @@ namespace BloodyShop
             {
                 Config.Clear();
                 BloodyShop.serverUnloadMod();
+                CommandRegistry.UnregisterAssembly();
             }
             else
             {
@@ -148,6 +155,7 @@ namespace BloodyShop
             }
 
             _harmony.UnpatchSelf();
+            
             GameData.OnDestroy -= GameDataOnDestroy;
             GameData.OnInitialize -= GameDataOnInitialize;
             return true;
@@ -182,6 +190,7 @@ namespace BloodyShop
         {
             ShopEnabled = Config.Bind("ConfigShop", "enabled", true, "Enable Shop");
             StoreName = Config.Bind("ConfigShop", "name", "Bloody Shop", "Store's name");
+            CoinName = Config.Bind("ConfigShop", "coinName", "Silver Coin", "Coin name.");
             CoinGUID = Config.Bind("ConfigShop", "coinGUID", -949672483, "Item that will be used as currency within the service, by default they are silver coins, if you want to change the item you must include the GUID of said object that you can get from https://gaming.tools/v-rising/items");
             AnnounceAddRemovePublic = Config.Bind("ConfigShop", "announceAddRemovePublic", true, "Public announcement when an item is added or removed from the store");
             AnnounceBuyPublic = Config.Bind("ConfigShop", "announceBuyPublic", true, "Public announcement when someone buys an item from the store");
