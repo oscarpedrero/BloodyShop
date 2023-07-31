@@ -18,8 +18,8 @@ namespace BloodyShop.Server.Commands
     internal class ShopCommands
     {
 
-        [Command("add", usage: "\"<Name>\" <PrefabGuid> <Price> <Stock>", description: "Add a product to the store. To know the PrefabGuid of an item you must look for the item in the following URL <#4acc45><u>https://gaming.tools/v-rising/items</u></color>", adminOnly: true)]
-        public static void AddItem(ChatCommandContext ctx, string name, int item, int price, int stock)
+        [Command("add", usage: "\"<Name>\" <PrefabGuid> <Price> <Stock> <Stack>", description: "Add a product to the store. To know the PrefabGuid of an item you must look for the item in the following URL <#4acc45><u>https://gaming.tools/v-rising/items</u></color>", adminOnly: true)]
+        public static void AddItem(ChatCommandContext ctx, string name, int item, int price, int stock, int stack=1)
         {
             try
             {
@@ -36,14 +36,14 @@ namespace BloodyShop.Server.Commands
                     throw ctx.Error("Error loading currency type");
                 }
 
-                if (!ItemsDB.addProductList(item, price, stock, name))
+                if (!ItemsDB.addProductList(item, price, stock, name, stack))
                 {
                     throw ctx.Error("Invalid item type");
                 }
 
                 SaveDataToFiles.saveProductList();
 
-                ctx.Reply(FontColorChat.Yellow($"Added item {FontColorChat.White($"{itemModel?.Name.ToString()} ({stock})")} to the store with a price of {FontColorChat.White($"{price} {coin?.PrefabName.ToString()}")}"));
+                ctx.Reply(FontColorChat.Yellow($"Added item {FontColorChat.White($"{stack}x {name} ({stock})")} to the store with a price of {FontColorChat.White($"{price} {coin?.PrefabName.ToString()}")}"));
                 if (!ConfigDB.ShopEnabled)
                 {
                     return;
@@ -51,7 +51,7 @@ namespace BloodyShop.Server.Commands
 
                 if (ConfigDB.AnnounceAddRemovePublic)
                 {
-                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{itemModel?.Name.ToString()} ({stock})")} have been added to the Store for {FontColorChat.White($"{price} {coin?.PrefabName.ToString()}")}"));
+                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{stack}x {name} ({stock})")} have been added to the Store for {FontColorChat.White($"{price} {coin?.PrefabName.ToString()}")}"));
                 }
                 var usersOnline = GameData.Users.Online;
                 foreach (var user in usersOnline)
@@ -113,7 +113,9 @@ namespace BloodyShop.Server.Commands
                     throw ctx.Error($"You need {FontColorChat.White($"{finalPrice} {coin.PrefabName}")} in your inventory for this purchase");
                 }
 
-                if (!InventorySystem.AdditemToInventory(ctx.Event.User.CharacterName.ToString(), new PrefabGUID(itemShopModel.PrefabGUID), quantity))
+                var finalQuantity = itemShopModel.PrefabStack * quantity;
+
+                if (!InventorySystem.AdditemToInventory(ctx.Event.User.CharacterName.ToString(), new PrefabGUID(itemShopModel.PrefabGUID), finalQuantity))
                 {
                     Plugin.Logger.LogError($"Error buying an item User: {ctx.Event.User.CharacterName.ToString()} Item: {itemShopModel.PrefabName} Quantity: {quantity} TotalPrice: {finalPrice}");
                     throw ctx.Error($"An error has occurred when delivering the items, please contact an administrator");
@@ -139,7 +141,7 @@ namespace BloodyShop.Server.Commands
 
                 if (ConfigDB.AnnounceBuyPublic)
                 {
-                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{ctx.Event.User.CharacterName} has purchased {FontColorChat.White($"{quantity}x {itemShopModel.PrefabName}")} for a total of  {FontColorChat.White($"{finalPrice} {coin.PrefabName}")}"));
+                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{ctx.Event.User.CharacterName} has purchased {FontColorChat.White($"{finalQuantity}x {itemShopModel.PrefabName}")} for a total of  {FontColorChat.White($"{finalPrice} {coin.PrefabName}")}"));
                 }
             }
             catch (Exception error)

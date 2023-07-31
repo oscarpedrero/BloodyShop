@@ -184,7 +184,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
                     UIFactory.SetLayoutElement(imageIcon, minWidth: 60, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 60);
 
                     //NAME ITEM
-                    Text itemName = UIFactory.CreateLabel(_contentProduct, "itemNameTxt-" + index, $" {item.PrefabName}", TextAnchor.MiddleLeft);
+                    Text itemName = UIFactory.CreateLabel(_contentProduct, "itemNameTxt-" + index, $" {item.PrefabStack}x {item.PrefabName}", TextAnchor.MiddleLeft);
                     UIFactory.SetLayoutElement(itemName.gameObject, minWidth: 310, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 310);
 
                     // PRICE ITEM

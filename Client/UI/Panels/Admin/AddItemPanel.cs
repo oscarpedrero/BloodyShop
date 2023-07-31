@@ -25,7 +25,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         public override bool CanDragAndResize => true;
 
-        public override int MinWidth => 680;
+        public override int MinWidth => 780;
         public override int MinHeight => 535;
         public override Vector2 DefaultAnchorMin => new Vector2(0.5f, 1f);
         public override Vector2 DefaultAnchorMax => new Vector2(0.5f, 1f);
@@ -55,6 +55,8 @@ namespace BloodyShop.Client.UI.Panels.Admin
         InputFieldRef searchInputTXT;
 
         List<InputFieldRef> stockArray = new();
+
+        List<InputFieldRef> stackArray = new();
 
         List<InputFieldRef> priceArray = new();
 
@@ -124,6 +126,10 @@ namespace BloodyShop.Client.UI.Panels.Admin
             Text headerAval = UIFactory.CreateLabel(_contentHeader, "itemAvalTxt", $"Stock");
             UIFactory.SetLayoutElement(headerAval.gameObject, minWidth: 50, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 50);
 
+            // STACK ITEM
+            Text headerStack = UIFactory.CreateLabel(_contentHeader, "itemStackTxt", $"Stack");
+            UIFactory.SetLayoutElement(headerAval.gameObject, minWidth: 50, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 50);
+
             // ADDITEM BTN
             var headerAdd = UIFactory.CreateUIObject("AddItem", _contentHeader);
             UIFactory.SetLayoutElement(headerAdd, minWidth: 110, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 110);
@@ -146,6 +152,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
             var index = 0;
             productsListLayers = new List<GameObject>();
             stockArray = new();
+            stackArray = new();
             priceArray = new();
             foreach (var item in itemsModel.Take(limit))
             {
@@ -179,6 +186,15 @@ namespace BloodyShop.Client.UI.Panels.Admin
                     stockNew.Text.PadLeft(2);
 
                     stockArray.Add(stockNew);
+
+                    // STACK ITEM
+                    var stackNew = UIFactory.CreateInputField(_contentProduct, "stackNew|" + index, "Stack");
+                    UIFactory.SetLayoutElement(stackNew.GameObject, minWidth: 70, minHeight: 30, flexibleHeight: 0, preferredHeight: 30, flexibleWidth: 0, preferredWidth: 50);
+                    stackNew.Component.contentType = InputField.ContentType.IntegerNumber;
+                    stackNew.Text = "1";
+                    stackNew.Text.PadLeft(2);
+
+                    stackArray.Add(stackNew);
 
                     // SAVE BTN
                     ButtonRef saveBtn = UIFactory.CreateButton(_contentProduct, "saveBtn|" + index, "Add Item", new Color(183 / 255f, 149 / 255f, 11 / 255f));
@@ -223,17 +239,25 @@ namespace BloodyShop.Client.UI.Panels.Admin
             
             var inputPrice = priceArray[index];
             var inputStock = stockArray[index];
+            var inputStack = stackArray[index];
 
             var price = inputPrice.Text;
             var stock = inputStock.Text;
+            var stack = inputStack.Text;
             if (price != "" || stock != "")
             {
+                if(stack == "")
+                {
+                    stack = "1";
+                }
+
                 var msg = new AddSerializedMessage()
                 {
                     PrefabGUID = item.ToString(),
                     Name = name,
                     Price = price,
                     Stock = stock,
+                    Stack = stack,
                 };
                 ClientAddMessageAction.Send(msg);
                 RefreshAction();

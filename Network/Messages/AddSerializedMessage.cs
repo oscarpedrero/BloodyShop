@@ -13,6 +13,8 @@ namespace BloodyShop.Network.Messages
 
         public string Stock;
 
+        public string Stack;
+
         public string Name;
 
         // You need to implement an empty constructor for when your message is
@@ -25,6 +27,7 @@ namespace BloodyShop.Network.Messages
             PrefabGUID = reader.ReadString(Allocator.Temp);
             Price = reader.ReadString(Allocator.Temp);
             Stock = reader.ReadString(Allocator.Temp);
+            Stack = reader.ReadString(Allocator.Temp);
             Name = reader.ReadString(Allocator.Temp);
         }
 
@@ -34,6 +37,7 @@ namespace BloodyShop.Network.Messages
             writer.Write(PrefabGUID);
             writer.Write(Price);
             writer.Write(Stock);
+            writer.Write(Stack);
             writer.Write(Name);
         }
 

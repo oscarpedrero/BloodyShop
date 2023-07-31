@@ -15,6 +15,7 @@ using Unity.Entities;
 using VampireCommandFramework.Breadstone;
 using Unity.Collections;
 using BloodyShop.DB.Models;
+using static RootMotion.FinalIK.Grounding;
 
 namespace BloodyShop.Server.Network
 {
@@ -31,6 +32,7 @@ namespace BloodyShop.Server.Network
             var prefabGUID = int.Parse(msg.PrefabGUID);
             var price = int.Parse(msg.Price);
             var stock = int.Parse(msg.Stock);
+            var stack = int.Parse(msg.Stack);
             var name = msg.Name;
 
             if(stock <= 0)
@@ -40,11 +42,11 @@ namespace BloodyShop.Server.Network
 
             //Plugin.Logger.LogInfo($"shop add {prefabGUID} {price} {stock}");
 
-            addItem(user, prefabGUID, price, stock, name);
+            addItem(user, prefabGUID, price, stock, name, stack);
 
         }
 
-        private static void addItem(User user, int item, int price, int stock, string name)
+        private static void addItem(User user, int item, int price, int stock, string name, int stack)
         {
             try
             {
@@ -57,13 +59,23 @@ namespace BloodyShop.Server.Network
                     return;
                 }
 
+                if (stock <= 0)
+                {
+                    stock = 1;
+                }
+
+                if (stack <= 0)
+                {
+                    stack = 1;
+                }
+
                 if (!ShareDB.getCoin(out PrefabModel coin))
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("Error loading currency type"));
                     return;
                 }
 
-                if (!ItemsDB.addProductList(item, price, stock, name))
+                if (!ItemsDB.addProductList(item, price, stock, name, stack))
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("Invalid item type"));
                     return;
@@ -80,7 +92,7 @@ namespace BloodyShop.Server.Network
 
                 if (ConfigDB.AnnounceAddRemovePublic)
                 {
-                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{name} ({stock})")} have been added to the Store for {FontColorChat.White($"{price} {coin?.PrefabName.ToString()}")}"));
+                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{stack}x {name} ({stock})")} have been added to the Store for {FontColorChat.White($"{price} {coin?.PrefabName.ToString()}")}"));
                 }
 
                 var usersOnline = GameData.Users.Online;

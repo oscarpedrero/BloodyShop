@@ -11,6 +11,7 @@ namespace BloodyShop.Network.Messages
     {
         public string ItemIndex;
         public string Quantity;
+        public string Stack;
         public string Name;
 
         // You need to implement an empty constructor for when your message is
@@ -22,6 +23,7 @@ namespace BloodyShop.Network.Messages
         {
             ItemIndex = reader.ReadString(Allocator.Temp);
             Quantity = reader.ReadString(Allocator.Temp);
+            Stack = reader.ReadString(Allocator.Temp);
             Name = reader.ReadString(Allocator.Temp);
         }
 
@@ -30,6 +32,7 @@ namespace BloodyShop.Network.Messages
         {
             writer.Write(ItemIndex);
             writer.Write(Quantity);
+            writer.Write(Stack);
             writer.Write(Name);
         }
     }

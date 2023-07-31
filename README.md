@@ -4,6 +4,9 @@
 <details>
 <summary>Changelog</summary>
 
+`0.9.5`
+- Added Stacks for products
+
 `0.9.0`
 - Gloomrot Update
 
@@ -48,6 +51,8 @@ This mod idea was a suggestion from [@Daavy](https://ideas.vrisingmods.com/posts
 [V Rising Mod Community](https://discord.gg/vrisingmods) the best community of mods for V Rising
 
 @Godwin for all the ideas you have brought to the project and testing the mod on your server.
+
+[@Vexor Gaming](https://discord.gg/AyyenSJH) For giving me ideas and testing the mods on your server and with your community.
 
 [@Deca](https://github.com/decaprime) for your help and the wonderful framework [VampireCommandFramework](https://github.com/decaprime/VampireCommandFramework) and [BloodStone](https://github.com/decaprime/Bloodstone) based in [WetStone](https://github.com/molenzwiebel/Wetstone) by [@Molenzwiebel](https://github.com/molenzwiebel)
 

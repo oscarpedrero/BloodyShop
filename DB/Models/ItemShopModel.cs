@@ -16,6 +16,7 @@ namespace BloodyShop.DB.Models
         public int price { get; set; }
 
         public int stock { get; set; }
+        public int stack { get; set; }
 
     }
 }

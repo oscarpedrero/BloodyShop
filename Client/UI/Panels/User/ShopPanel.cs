@@ -56,6 +56,8 @@ namespace BloodyShop.Client.UI.Panels.User
 
         public static List<(int index, InputFieldRef input)> _quantityArrayCache = new();
 
+        public static List<(int index, int input)> _stackArrayCache = new();
+
         private static int limit = 10;
         private static int page = 0;
         private static int total = 0;
@@ -206,7 +208,7 @@ namespace BloodyShop.Client.UI.Panels.User
                     UIFactory.SetLayoutElement(imageIcon, minWidth: 60, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 60);
 
                     //NAME ITEM
-                    Text itemName = UIFactory.CreateLabel(_contentProduct, "itemNameTxt-" + index, $" {item.PrefabName}", TextAnchor.MiddleLeft);
+                    Text itemName = UIFactory.CreateLabel(_contentProduct, "itemNameTxt-" + index, $"{item.PrefabStack}x {item.PrefabName}", TextAnchor.MiddleLeft);
                     UIFactory.SetLayoutElement(itemName.gameObject, minWidth: 230, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 230);
 
                     // PRICE ITEM
@@ -220,6 +222,7 @@ namespace BloodyShop.Client.UI.Panels.User
                     quantityNew.Text = "1";
                     quantityNew.Text.PadLeft(2);
                     _quantityArrayCache.Add((index,quantityNew));
+                    _stackArrayCache.Add((index, item.PrefabStack));
 
                     // BUY BTN
                     ButtonRef buyBtn = UIFactory.CreateButton(_contentProduct, "buyItemBtn-" + index, "BUY", new Color(212 / 255f, 172 / 255f, 13 / 255f));
@@ -334,6 +337,7 @@ namespace BloodyShop.Client.UI.Panels.User
             //Plugin.Logger.LogInfo($"BUY INDEX BEFORE: {indexItemUI}");
             var prefabBuy = items[Int32.Parse(indexItemUI) - 1];
             var quantityBuy = serachQuantityInput(Int32.Parse(indexItemUI));
+            var stackBuy = serachStackInput(Int32.Parse(indexItemUI));
             //Plugin.Logger.LogInfo($"quantityBuy: {quantityBuy}");
             indexItemUI = ItemsDB.searchIndexForProduct(prefabBuy.PrefabGUID).ToString();
 
@@ -345,6 +349,7 @@ namespace BloodyShop.Client.UI.Panels.User
                 {
                     ItemIndex = indexItemUI,
                     Quantity = quantityBuy,
+                    Stack = stackBuy,
                     Name = prefabBuy.PrefabName,
                 };
                 ClientBuyMessageAction.Send(msg);
@@ -371,6 +376,26 @@ namespace BloodyShop.Client.UI.Panels.User
             }
 
             return "0";
+        }
+
+        private string serachStackInput(int indexSearch)
+        {
+
+            foreach (var (index, input) in _stackArrayCache)
+            {
+                if (index == indexSearch)
+                {
+
+                    if(input == 0)
+                    {
+                        return "1";
+                    }
+
+                    return input.ToString();
+                }
+            }
+
+            return "1";
         }
 
         
