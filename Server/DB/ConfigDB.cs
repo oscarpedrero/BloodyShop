@@ -15,61 +15,61 @@ namespace BloodyShop.Server.DB
         public static bool DropEnabled { get; set; } = true;
         public static int DropNpcPercentage { get; set; } = 0;
         public static int IncrementPercentageDropEveryTenLevelsNpc { get; set; } = 0;
-        public static int DropdNpcCoinsMin { get; set; } = 0;
-        public static int DropNpcCoinsMax { get; set; } = 0;
-        public static int MaxCoinsPerDayPerPlayerNpc { get; set; } = 0;
+        public static int DropdNpcCurrenciesMin { get; set; } = 0;
+        public static int DropNpcCurrenciesMax { get; set; } = 0;
+        public static int MaxCurrenciesPerDayPerPlayerNpc { get; set; } = 0;
         public static int DropdVBloodPercentage { get; set; } = 0;
         public static int IncrementPercentageDropEveryTenLevelsVBlood { get; set; } = 0;
-        public static int DropVBloodCoinsMin { get; set; } = 0;
-        public static int DropVBloodCoinsMax { get; set; } = 0;
-        public static int MaxCoinsPerDayPerPlayerVBlood { get; set; } = 0;
+        public static int DropVBloodCurrenciesMin { get; set; } = 0;
+        public static int DropVBloodCurrenciesMax { get; set; } = 0;
+        public static int MaxCurrenciesPerDayPerPlayerVBlood { get; set; } = 0;
         public static int DropPvpPercentage { get; set; } = 0;
         public static int IncrementPercentageDropEveryTenLevelsPvp { get; set; } = 0;
-        public static int DropPvpCoinsMin { get; set; } = 0;
-        public static int DropPvpCoinsMax { get; set; } = 0;
-        public static int MaxCoinsPerDayPerPlayerPvp { get; set; } = 0;
-        public static List<UserCoinsPerDayModel> UsersCoinsPerDay { get; set; } = new List<UserCoinsPerDayModel>();
+        public static int DropPvpCurrenciesMin { get; set; } = 0;
+        public static int DropPvpCurrenciesMax { get; set; } = 0;
+        public static int MaxCurrenciesPerDayPerPlayerPvp { get; set; } = 0;
+        public static List<UserCurrenciesPerDayModel> UsersCurrenciesPerDay { get; set; } = new List<UserCurrenciesPerDayModel>();
 
-        public static List<(string name, DateTime date, UserCoinsPerDayModel model)> _normalizedUsersCoinsPerDay = new();
+        public static List<(string name, DateTime date, UserCurrenciesPerDayModel model)> _normalizedUsersCurrenciesPerDay = new();
 
-        public static bool setUsersCoinsPerDay(List<UserCoinsPerDayModel> listUsersCoinsPerDay)
+        public static bool setUsersCurrenciesPerDay(List<UserCurrenciesPerDayModel> listUsersCurrenciesPerDay)
         {
 
-            UsersCoinsPerDay = new();
+            UsersCurrenciesPerDay = new();
 
-            foreach (UserCoinsPerDayModel userCoinsPerDay in listUsersCoinsPerDay)
+            foreach (UserCurrenciesPerDayModel userCurrenciesPerDay in listUsersCurrenciesPerDay)
             {
-                DateTime oDate = DateTime.Parse(userCoinsPerDay.date);
+                DateTime oDate = DateTime.Parse(userCurrenciesPerDay.date);
                 if (oDate != DateTime.Today)
                 {
                     continue;
                 }
-                _normalizedUsersCoinsPerDay.Add((userCoinsPerDay.CharacterName, oDate, userCoinsPerDay));
-                UsersCoinsPerDay.Add(userCoinsPerDay);
+                _normalizedUsersCurrenciesPerDay.Add((userCurrenciesPerDay.CharacterName, oDate, userCurrenciesPerDay));
+                UsersCurrenciesPerDay.Add(userCurrenciesPerDay);
             }
 
             return true;
         }
 
-        public static void addUserCoinsPerDayToList(UserCoinsPerDayModel userCoinsPerDay)
+        public static void addUserCurrenciesPerDayToList(UserCurrenciesPerDayModel userCurrenciesPerDay)
         {
-            foreach (var (name, date, model) in _normalizedUsersCoinsPerDay)
+            foreach (var (name, date, model) in _normalizedUsersCurrenciesPerDay)
             {
-                if (name == userCoinsPerDay.CharacterName)
+                if (name == userCurrenciesPerDay.CharacterName)
                 {
-                    UsersCoinsPerDay.Remove(model);
-                    _normalizedUsersCoinsPerDay.Remove((name, date, model));
-                    UsersCoinsPerDay.Add(userCoinsPerDay);
-                    _normalizedUsersCoinsPerDay.Add((userCoinsPerDay.CharacterName, DateTime.Parse(userCoinsPerDay.date), userCoinsPerDay));
+                    UsersCurrenciesPerDay.Remove(model);
+                    _normalizedUsersCurrenciesPerDay.Remove((name, date, model));
+                    UsersCurrenciesPerDay.Add(userCurrenciesPerDay);
+                    _normalizedUsersCurrenciesPerDay.Add((userCurrenciesPerDay.CharacterName, DateTime.Parse(userCurrenciesPerDay.date), userCurrenciesPerDay));
                     break;
                 }
             }
         }
 
-        public static bool searchUserCoinPerDay(string characterName, out UserCoinsPerDayModel userCoinsPerDayModel)
+        public static bool searchUserCurrencyPerDay(string characterName, out UserCurrenciesPerDayModel userCurrenciesPerDayModel)
         {
 
-            userCoinsPerDayModel = null;
+            userCurrenciesPerDayModel = null;
             if (characterName == "")
             {
                 return false;
@@ -79,39 +79,39 @@ namespace BloodyShop.Server.DB
 
             var todayString = $"{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}";
 
-            foreach (var (name, date, model) in _normalizedUsersCoinsPerDay)
+            foreach (var (name, date, model) in _normalizedUsersCurrenciesPerDay)
             {
                 if (name == characterName)
                 {
                     if(today == date)
                     {
-                        userCoinsPerDayModel = model;
+                        userCurrenciesPerDayModel = model;
                         break;
                     } else
                     {
-                        UsersCoinsPerDay.Remove(model);
-                        _normalizedUsersCoinsPerDay.Remove((name, date, model));
-                        userCoinsPerDayModel = new UserCoinsPerDayModel
+                        UsersCurrenciesPerDay.Remove(model);
+                        _normalizedUsersCurrenciesPerDay.Remove((name, date, model));
+                        userCurrenciesPerDayModel = new UserCurrenciesPerDayModel
                         {
                             CharacterName = model.CharacterName,
                             date = todayString
                         };
-                        UsersCoinsPerDay.Add(model);
-                        _normalizedUsersCoinsPerDay.Add((characterName, today, userCoinsPerDayModel));
+                        UsersCurrenciesPerDay.Add(model);
+                        _normalizedUsersCurrenciesPerDay.Add((characterName, today, userCurrenciesPerDayModel));
                         break;
                     }
                 }
             }
 
-            if(userCoinsPerDayModel == null)
+            if(userCurrenciesPerDayModel == null)
             {
-                userCoinsPerDayModel = new UserCoinsPerDayModel
+                userCurrenciesPerDayModel = new UserCurrenciesPerDayModel
                 {
                     CharacterName = characterName,
                     date = todayString
                 };
-                UsersCoinsPerDay.Add(userCoinsPerDayModel);
-                _normalizedUsersCoinsPerDay.Add((characterName, today, userCoinsPerDayModel));
+                UsersCurrenciesPerDay.Add(userCurrenciesPerDayModel);
+                _normalizedUsersCurrenciesPerDay.Add((characterName, today, userCurrenciesPerDayModel));
                 return true;
 
             } else

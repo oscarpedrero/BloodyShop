@@ -14,6 +14,7 @@ namespace BloodyShop.DB.Models
         public int PrefabGUID { get; set; }
         public Sprite PrefabIcon { get; set; }
         public ItemModel itemModel { get; set; }
+        public int currency { get; set; }
 
 
         /*public PrefabGUID getPrefabGUID()

@@ -13,7 +13,6 @@ namespace BloodyShop.Client.UI;
 internal class UIManager
 {
 
-
     internal static void Initialize()
     {
         const float startupDelay = 3f;

@@ -13,6 +13,7 @@ using UniverseLib;
 using System.Collections.Generic;
 using BloodyShop.DB.Models;
 using System.Linq;
+using Il2CppSystem;
 
 namespace BloodyShop.Client.UI.Panels.Admin
 {
@@ -45,11 +46,15 @@ namespace BloodyShop.Client.UI.Panels.Admin
         public GameObject ContentPagination;
 
         public List<PrefabModel> items = new();
+        public List<CurrencyModel> currencies = new ();
 
         public static List<(int index, int input)> _stackArrayCache = new();
+        private List<(int index, CurrencyModel currency)> _currenciesArrayCache = new();
 
         public static float CurrentPanelWidth => Instance.Rect.rect.width;
         public static float CurrentPanelHeight => Instance.Rect.rect.height;
+
+        public CurrencyModel currency { get; private set; }
 
         public int CurrentDisplayedIndex;
 
@@ -170,7 +175,9 @@ namespace BloodyShop.Client.UI.Panels.Admin
             
             foreach (var item in items.Skip(skip).Take(10))
             {
-                if (ShareDB.getCoin(out PrefabModel coin))
+                currency = ShareDB.getCurrency(item.currency);
+
+                if (currency != null)
                 {
                     // CONTAINER FOR PRODUCTS
                     var _contentProduct = UIFactory.CreateHorizontalGroup(contentScroll, "ContentItem-" + index, true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
@@ -190,9 +197,11 @@ namespace BloodyShop.Client.UI.Panels.Admin
                     UIFactory.SetLayoutElement(itemName.gameObject, minWidth: 310, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 310);
 
                     // PRICE ITEM
-                    Text itemPrice = UIFactory.CreateLabel(_contentProduct, "itemPriceTxt-" + index, $"{item.PrefabPrice} {coin.PrefabName}");
+                    Text itemPrice = UIFactory.CreateLabel(_contentProduct, "itemPriceTxt-" + index, $"{item.PrefabPrice}x {currency.name}");
                     UIFactory.SetLayoutElement(itemPrice.gameObject, minWidth: 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 100);
                     _stackArrayCache.Add((index, item.PrefabStack));
+
+                    _currenciesArrayCache.Add((index, currency));
 
                     // DELETE BTN
                     ButtonRef deleteBtn = UIFactory.CreateButton(_contentProduct, "deleteItemBtn-" + index, "Delete", new Color(203 / 255f, 67 / 255f, 53 / 255f));
@@ -221,7 +230,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
         {
 
             decimal totalPages = total / limit;
-            var last = Math.Ceiling(totalPages);
+            var last = System.Math.Ceiling(totalPages);
 
             //INSERT LAYOUT
             UIFactory.SetLayoutGroup<VerticalLayoutGroup>(ContentRoot, true, true, true, true, 4, padLeft: 5, padRight: 5);
@@ -285,9 +294,10 @@ namespace BloodyShop.Client.UI.Panels.Admin
         {
             var btnName = EventSystem.current.currentSelectedGameObject.name;
             var indexItemUI = btnName.Replace("deleteItemBtn-", "");
-            var prefabDelete = items[Int32.Parse(indexItemUI) - 1];
-            var stackDel = serachStackInput(Int32.Parse(indexItemUI));
-            indexItemUI = ItemsDB.searchIndexForProduct(prefabDelete.PrefabGUID, stackDel).ToString();
+            var prefabDelete = items[System.Int32.Parse(indexItemUI) - 1];
+            var stackDel = serachStackInput(System.Int32.Parse(indexItemUI));
+            var currency = serachCurrencyInput(System.Int32.Parse(indexItemUI));
+            indexItemUI = ItemsDB.searchIndexForProduct(prefabDelete.PrefabGUID, stackDel, currency).ToString();
 
             //Plugin.Logger.LogInfo($"DELETE INDEX: {indexItemUI}");
 
@@ -320,6 +330,22 @@ namespace BloodyShop.Client.UI.Panels.Admin
             }
 
             return 1;
+        }
+
+
+
+        private CurrencyModel serachCurrencyInput(int indexSearch)
+        {
+
+            foreach (var (index, input) in _currenciesArrayCache)
+            {
+                if (index == indexSearch)
+                {
+                    return input;
+                }
+            }
+
+            return null;
         }
 
         private void RefreshAction()

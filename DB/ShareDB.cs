@@ -2,53 +2,91 @@
 using VRising.GameData.Models;
 using ProjectM;
 using BloodyShop.DB.Models;
+using System.Collections.Generic;
+using System.Linq;
+using BloodyShop.Utils;
+using System;
 
 namespace BloodyShop.DB
 {
     public class ShareDB
     {
-        public static int CoinGUID = 0;
 
-        public static string CoinName = "";
+        public static List<CurrencyModel> currenciesList;
 
-        public static int getCoinGUID()
+        public static List<CurrencyModel> getCurrencyList()
         {
-            return CoinGUID;
+            return currenciesList;
         }
 
-        public static int getCoinName()
+        public static CurrencyModel getCurrency(int guid)
         {
-            return CoinGUID;
+            return currenciesList.FirstOrDefault(currency => currency.guid == guid);
         }
 
-        public static bool getCoin( out PrefabModel coin)
+        public static CurrencyModel getCurrencyByName(string name)
         {
-            coin = new PrefabModel();
+            return currenciesList.FirstOrDefault(currency => currency.name == name);
+        }
 
-            if (CoinGUID != 0)
+        public static bool setCurrencyList(List<CurrencyModel> currencies)
+        {
+
+            currenciesList = currencies;
+
+            return true;
+        }
+
+        public static bool addCurrencyList(string name, int guid)
+        {
+            var currency = new CurrencyModel();
+            var id = getCurrencyList().Last().id +1;
+            currency.name = name;
+            currency.guid = guid;
+            currency.id = id;
+
+            currenciesList.Add(currency);
+
+            return true;
+        }
+
+        public static List<string> GetCurrencyListMessage()
+        {
+            var listCurrency = new List<string>();
+
+            foreach (CurrencyModel item in currenciesList)
             {
-                coin.PrefabName = CoinName;
-                coin.itemModel = GameData.Items.GetPrefabById(new PrefabGUID(CoinGUID));
+                listCurrency.Add($"{FontColorChat.White("[")}{FontColorChat.Yellow(item.id.ToString())}{FontColorChat.White("]")} " +
+                        $"{FontColorChat.Yellow(item.name)} ");
+            }
+
+            return listCurrency;
+
+        }
+
+        public static bool SearchCurrencyByCommand(int index, out CurrencyModel currencyModel)
+        {
+           
+            currencyModel = currenciesList.FirstOrDefault(currency => currency.id == index);
+            if (currencyModel == null)
+                return false;
+
+            return true;
+        }
+
+        public static bool RemoveCurrencyyByCommand(int index)
+        {
+            try
+            {
+                var currencies = currenciesList.RemoveAll(currency => currency.id == index);
                 return true;
-            } else
+            }
+            catch (Exception error)
             {
+                Plugin.Logger.LogError($"Error: {error.Message}");
                 return false;
             }
-            
-        }
 
-        public static void setCoinGUID(int value)
-        {
-            
-            CoinGUID = value;
-            
-        }
-
-        public static void setCoinName(string name)
-        {
-            
-            CoinName = name;
-            
         }
     }
 }

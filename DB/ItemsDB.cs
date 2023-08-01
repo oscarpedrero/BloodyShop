@@ -59,6 +59,7 @@ namespace BloodyShop.DB
                 prefabModel.PrefabPrice = itemShopModel.price;
                 prefabModel.PrefabStock = itemShopModel.stock;
                 prefabModel.PrefabStack = itemShopModel.stack;
+                prefabModel.currency = itemShopModel.currency;
                 ProductList.Add(prefabModel);
                 _normalizedItemShopNameCache.Add((prefabModel.PrefabName.ToString().ToLower(), prefabModel.PrefabGUID, prefabModel.PrefabType.ToString().ToLower(), prefabModel));
             }
@@ -108,12 +109,12 @@ namespace BloodyShop.DB
             return result;
         }
 
-        public static int searchIndexForProduct(int GUID, int stack)
+        public static int searchIndexForProduct(int GUID, int stack, CurrencyModel currency)
         {
             var index = 1;
             foreach (var item in ProductList)
             {
-                if (item.PrefabGUID == GUID && item.PrefabStack == stack)
+                if (item.PrefabGUID == GUID && item.PrefabStack == stack && item.currency == currency.guid)
                 {
                     return index;
                 }
@@ -134,6 +135,7 @@ namespace BloodyShop.DB
                 itemShopModel.name = prefabModel.PrefabName;
                 itemShopModel.stock = prefabModel.PrefabStock;
                 itemShopModel.stack = prefabModel.PrefabStack;
+                itemShopModel.currency = prefabModel.currency;
                 itemShopModel.price = prefabModel.PrefabPrice;
                 productListReturn.Add(itemShopModel);
             }
@@ -141,7 +143,7 @@ namespace BloodyShop.DB
             return productListReturn;
         }
 
-        public static bool addProductList(int item, int price, int stock, string name, int stack = 1)
+        public static bool addProductList(int item, int price, int stock, string name, int currency, int stack = 1)
         {
 
             var itemModel = GameData.Items.GetPrefabById(new PrefabGUID(item));
@@ -155,6 +157,7 @@ namespace BloodyShop.DB
             prefabModel.PrefabPrice = price;
             prefabModel.PrefabStock = stock;
             prefabModel.PrefabStack = stack;
+            prefabModel.currency = currency;
             
             ProductList.Add(prefabModel);
             _normalizedItemShopNameCache.Add((prefabModel.PrefabName.ToString().ToLower(), prefabModel.PrefabGUID, prefabModel.PrefabType.ToString().ToLower(), prefabModel));
@@ -325,31 +328,34 @@ namespace BloodyShop.DB
 
             int index = 1;
 
-            var prefabName = "";
-
-            if (ShareDB.getCoin(out PrefabModel coin))
-            {
+            var prefabName = ""; 
+            
+            
                 foreach (PrefabModel item in ProductList)
                 {
-                    // STOCK ITEM
-                    var finalStock = "";
-                    if (item.PrefabStock <= 0)
+                    var currency = ShareDB.getCurrency(item.currency);
+
+                    if (currency != null)
                     {
-                        finalStock = "Infinite";
-                        prefabName = "1x " + item.PrefabName;
+                        // STOCK ITEM
+                        var finalStock = "";
+                        if (item.PrefabStock <= 0)
+                        {
+                            finalStock = "Infinite";
+                            prefabName = "1x " + item.PrefabName;
+                        }
+                        else
+                        {
+                            finalStock = item.PrefabStock.ToString();
+                            prefabName = item.PrefabStack.ToString()+"x "+item.PrefabName;
+                        }
+                        listItems.Add($"{FontColorChat.White("[")}{FontColorChat.Yellow(index.ToString())}{FontColorChat.White("]")} " +
+                            $"{FontColorChat.Yellow(prefabName)} " +
+                            $"{FontColorChat.Red("Price:")} {FontColorChat.Yellow(item.PrefabPrice.ToString())} {FontColorChat.White($"{currency.name}")} " +
+                            $"{FontColorChat.Red("Stock:")} {FontColorChat.Yellow(finalStock)} units");
+                        index++;
                     }
-                    else
-                    {
-                        finalStock = item.PrefabStock.ToString();
-                        prefabName = item.PrefabStack.ToString()+"x "+item.PrefabName;
-                    }
-                    listItems.Add($"{FontColorChat.White("[")}{FontColorChat.Yellow(index.ToString())}{FontColorChat.White("]")} " +
-                        $"{FontColorChat.Yellow(prefabName)} " +
-                        $"{FontColorChat.Red("Price:")} {FontColorChat.Yellow(item.PrefabPrice.ToString())} {FontColorChat.White($"{coin?.PrefabName.ToString()}")} " +
-                        $"{FontColorChat.Red("Stock:")} {FontColorChat.Yellow(finalStock)} units");
-                    index++;
                 }
-            }
 
             return listItems;
 

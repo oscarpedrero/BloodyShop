@@ -30,10 +30,15 @@ namespace BloodyShop.Server.Network
 
             var msg = new ConfigSerializedMessage();
             var productList = ItemsDB.getProductListForSaveJSON();
-            var jsonOutPut = JsonSerializer.Serialize(productList);
+            var jsonOutItemsPut = JsonSerializer.Serialize(productList);
 
-            msg.ItemsJson = jsonOutPut;
-            msg.CoinGUID = ShareDB.getCoinGUID().ToString();
+            msg.ItemsJson = jsonOutItemsPut;
+
+            var currencies = ShareDB.getCurrencyList();
+            var jsonOuCurrenciestPut = JsonSerializer.Serialize(currencies);
+            Plugin.Logger.LogInfo($"{jsonOuCurrenciestPut}");
+            msg.CurrenciesJson = jsonOuCurrenciestPut;
+
             msg.ShopName = ConfigDB.StoreName;
             var userModel = GameData.Users.GetUserByCharacterName(fromCharacter.CharacterName.ToString());
 
@@ -60,7 +65,7 @@ namespace BloodyShop.Server.Network
         public static void Send(User fromCharacter, ConfigSerializedMessage msg)
         {
             VNetwork.SendToClient(fromCharacter, msg);
-            //Plugin.Logger.LogInfo($"[SERVER] [SEND] ConfigSerializedMessage {fromCharacter.CharacterName} - {msg.ItemsJson} - {msg.CoinGUID} - {msg.ShopName} - {msg.ShopOpen}");
+            //Plugin.Logger.LogInfo($"[SERVER] [SEND] ConfigSerializedMessage {fromCharacter.CharacterName} - {msg.ItemsJson} - {msg.CurrencyGUID} - {msg.ShopName} - {msg.ShopOpen}");
         }
     }
 }

@@ -4,6 +4,9 @@
 <details>
 <summary>Changelog</summary>
 
+`0.9.7`
+- Added multi-currency
+
 `0.9.6`
 - Fixed error when you tried to buy or delete an item that there are several purchase options in the store, now you delete or buy the one you select from the UI
 
@@ -39,7 +42,7 @@ New command:
 .shop add "\<NameOfProduct\>" \<PrefabGUID\> \<Price\> \<Stock\>
 
 Example:
-.shop add "Silver Coin" -949672483 1 100
+.shop add "Silver Currency" -949672483 1 100
 
 This name is only visible through the chat commands, if the client uses the mod he will see it in the language that the game has configured
 

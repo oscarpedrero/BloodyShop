@@ -28,14 +28,31 @@ namespace BloodyShop.Server.DB
 
         }
 
-        public static bool loadUserCoinsPerDay()
+        public static bool loadCurrencies()
         {
             try
             {
-                string json = File.ReadAllText(ServerMod.UserCoinsPerDayFile);
-                var usersCoinsPerDaList = JsonSerializer.Deserialize<List<UserCoinsPerDayModel>>(json);
-                //Plugin.Logger.LogInfo($"Total usersCoinsPerDay List FROM JSON {usersCoinsPerDaList.Count}");
-                return ConfigDB.setUsersCoinsPerDay(usersCoinsPerDaList);
+                string json = File.ReadAllText(ServerMod.CurrencyListFile);
+
+                var currenciesList = JsonSerializer.Deserialize<List<CurrencyModel>>(json);
+                return ShareDB.setCurrencyList(currenciesList);
+            }
+            catch (Exception error)
+            {
+                Plugin.Logger.LogError($"Error: {error.Message}");
+                return false;
+            }
+
+        }
+
+        public static bool loadUserCurrenciesPerDay()
+        {
+            try
+            {
+                string json = File.ReadAllText(ServerMod.UserCurrenciesPerDayFile);
+                var usersCurrenciesPerDaList = JsonSerializer.Deserialize<List<UserCurrenciesPerDayModel>>(json);
+                //Plugin.Logger.LogInfo($"Total usersCurrenciesPerDay List FROM JSON {usersCurrenciesPerDaList.Count}");
+                return ConfigDB.setUsersCurrenciesPerDay(usersCurrenciesPerDaList);
             }
             catch (Exception error)
             {

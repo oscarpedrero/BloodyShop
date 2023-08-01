@@ -28,13 +28,31 @@ namespace BloodyShop.Server.DB
 
         }
 
-        public static bool saveUsersCoinsPerDay()
+        public static bool saveCurrenciesList()
         {
             try
             {
-                var usersCoinsPerDayList = ConfigDB.UsersCoinsPerDay;
-                var jsonOutPut = JsonSerializer.Serialize(usersCoinsPerDayList);
-                File.WriteAllText(ServerMod.UserCoinsPerDayFile, jsonOutPut);
+                var currencyList = ShareDB.getCurrencyList();
+                var jsonOutPut = JsonSerializer.Serialize(currencyList);
+                File.WriteAllText(ServerMod.CurrencyListFile, jsonOutPut);
+                
+                return true;
+            }
+            catch (Exception error)
+            {
+                Plugin.Logger.LogError($"Error: {error.Message}");
+                return false;
+            }
+
+        }
+
+        public static bool saveUsersCurrenciesPerDay()
+        {
+            try
+            {
+                var usersCurrenciesPerDayList = ConfigDB.UsersCurrenciesPerDay;
+                var jsonOutPut = JsonSerializer.Serialize(usersCurrenciesPerDayList);
+                File.WriteAllText(ServerMod.UserCurrenciesPerDayFile, jsonOutPut);
                 
                 return true;
             }
