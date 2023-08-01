@@ -4,6 +4,9 @@
 <details>
 <summary>Changelog</summary>
 
+`0.9.6`
+- Fixed error when you tried to buy or delete an item that there are several purchase options in the store, now you delete or buy the one you select from the UI
+
 `0.9.5`
 - Added Stacks for products
 

@@ -83,7 +83,7 @@ namespace BloodyShop.Server.Network
 
                 SaveDataToFiles.saveProductList();
 
-                ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, $"Added item {FontColorChat.White($"{name} ({stock})")} to the store with a price of {FontColorChat.White($"{price} {coin?.PrefabName.ToString()}")}");
+                ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, $"Added item {FontColorChat.White($"{stack}x {name} ({stock})")} to the store with a price of {FontColorChat.White($"{price} {coin?.PrefabName.ToString()}")}");
 
                 if (!ConfigDB.ShopEnabled)
                 {

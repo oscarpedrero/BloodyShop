@@ -47,7 +47,7 @@ namespace BloodyShop.Server.Network
                 SaveDataToFiles.saveProductList();
                 LoadDataFromFiles.loadProductList();
 
-                ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Yellow($"Item {FontColorChat.White($"{itemShopModel.PrefabName}")} removed successful."));
+                ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Yellow($"Item {FontColorChat.White($"{itemShopModel.PrefabName}x {itemShopModel.PrefabName}")} removed successful."));
 
                 var usersOnline = GameData.Users.Online;
                 foreach (var userOnline in usersOnline)
@@ -58,7 +58,7 @@ namespace BloodyShop.Server.Network
 
                 if (ConfigDB.AnnounceAddRemovePublic)
                 {
-                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"Item {FontColorChat.White($"{itemShopModel.PrefabName}")} removed successful."));
+                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"Item {FontColorChat.White($"{itemShopModel.PrefabName}x {itemShopModel.PrefabName}")} removed from the store."));
                 }
             }
             catch (Exception error)

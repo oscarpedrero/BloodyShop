@@ -108,12 +108,12 @@ namespace BloodyShop.DB
             return result;
         }
 
-        public static int searchIndexForProduct(int GUID)
+        public static int searchIndexForProduct(int GUID, int stack)
         {
             var index = 1;
             foreach (var item in ProductList)
             {
-                if (item.PrefabGUID == GUID)
+                if (item.PrefabGUID == GUID && item.PrefabStack == stack)
                 {
                     return index;
                 }

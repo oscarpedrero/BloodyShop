@@ -46,6 +46,8 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         public List<PrefabModel> items = new();
 
+        public static List<(int index, int input)> _stackArrayCache = new();
+
         public static float CurrentPanelWidth => Instance.Rect.rect.width;
         public static float CurrentPanelHeight => Instance.Rect.rect.height;
 
@@ -190,6 +192,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
                     // PRICE ITEM
                     Text itemPrice = UIFactory.CreateLabel(_contentProduct, "itemPriceTxt-" + index, $"{item.PrefabPrice} {coin.PrefabName}");
                     UIFactory.SetLayoutElement(itemPrice.gameObject, minWidth: 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 100);
+                    _stackArrayCache.Add((index, item.PrefabStack));
 
                     // DELETE BTN
                     ButtonRef deleteBtn = UIFactory.CreateButton(_contentProduct, "deleteItemBtn-" + index, "Delete", new Color(203 / 255f, 67 / 255f, 53 / 255f));
@@ -283,7 +286,8 @@ namespace BloodyShop.Client.UI.Panels.Admin
             var btnName = EventSystem.current.currentSelectedGameObject.name;
             var indexItemUI = btnName.Replace("deleteItemBtn-", "");
             var prefabDelete = items[Int32.Parse(indexItemUI) - 1];
-            indexItemUI = ItemsDB.searchIndexForProduct(prefabDelete.PrefabGUID).ToString();
+            var stackDel = serachStackInput(Int32.Parse(indexItemUI));
+            indexItemUI = ItemsDB.searchIndexForProduct(prefabDelete.PrefabGUID, stackDel).ToString();
 
             //Plugin.Logger.LogInfo($"DELETE INDEX: {indexItemUI}");
 
@@ -296,6 +300,26 @@ namespace BloodyShop.Client.UI.Panels.Admin
                 ClientDeleteMessageAction.Send(msg);
                 RefreshAction();
             }
+        }
+
+        private int serachStackInput(int indexSearch)
+        {
+
+            foreach (var (index, input) in _stackArrayCache)
+            {
+                if (index == indexSearch)
+                {
+
+                    if (input == 0)
+                    {
+                        return 1;
+                    }
+
+                    return input;
+                }
+            }
+
+            return 1;
         }
 
         private void RefreshAction()

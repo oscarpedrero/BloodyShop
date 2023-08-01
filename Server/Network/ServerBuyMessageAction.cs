@@ -27,14 +27,13 @@ namespace BloodyShop.Server.Network
 
             var buyID = Int32.Parse(msg.ItemIndex);
             var quantity = Int32.Parse(msg.Quantity);
-            var stack = Int32.Parse(msg.Stack);
             var name = msg.Name;
 
-            BuyItem(user, fromCharacter.Character, name, buyID, quantity, stack);
+            BuyItem(user, fromCharacter.Character, name, buyID, quantity);
 
         }
 
-        public static void BuyItem(User user, Entity playerCharacter, string itemName, int indexPosition, int quantity, int stack)
+        public static void BuyItem(User user, Entity playerCharacter, string itemName, int indexPosition, int quantity)
         {
 
             try
@@ -58,16 +57,17 @@ namespace BloodyShop.Server.Network
                     return;
                 }
 
-                if (stack <= 0)
-                {
-                    stack = 1;
-                }
-
                 if (!ItemsDB.SearchItemByCommand(indexPosition, out PrefabModel itemShopModel))
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("This item is not available in the store"));
                     return;
                 }
+
+                if (itemShopModel.PrefabStack <= 0)
+                {
+                    itemShopModel.PrefabStack = 1;
+                }
+
 
                 var finalPrice = itemShopModel.PrefabPrice * quantity;
 
@@ -89,11 +89,11 @@ namespace BloodyShop.Server.Network
                     return;
                 }
 
-                var finalQuantity = stack * quantity;
+                var finalQuantity = itemShopModel.PrefabStack * quantity;
 
                 if (!InventorySystem.AdditemToInventory(user.CharacterName.ToString(), new PrefabGUID(itemShopModel.PrefabGUID), finalQuantity))
                 {
-                    Plugin.Logger.LogError($"Error buying an item User: {user.CharacterName.ToString()} Item: {stack}x {itemName} Quantity: {quantity} TotalPrice: {finalPrice}");
+                    Plugin.Logger.LogError($"Error buying an item User: {user.CharacterName.ToString()} Item: {itemShopModel.PrefabStack}x {itemName} Quantity: {quantity} TotalPrice: {finalPrice}");
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"An error has occurred when delivering the items, please contact an administrator"));
                     return;
                 }

@@ -339,7 +339,7 @@ namespace BloodyShop.Client.UI.Panels.User
             var quantityBuy = serachQuantityInput(Int32.Parse(indexItemUI));
             var stackBuy = serachStackInput(Int32.Parse(indexItemUI));
             //Plugin.Logger.LogInfo($"quantityBuy: {quantityBuy}");
-            indexItemUI = ItemsDB.searchIndexForProduct(prefabBuy.PrefabGUID).ToString();
+            indexItemUI = ItemsDB.searchIndexForProduct(prefabBuy.PrefabGUID, stackBuy).ToString();
 
             //Plugin.Logger.LogInfo($"BUY INDEX AFTER: {indexItemUI}");
 
@@ -349,7 +349,6 @@ namespace BloodyShop.Client.UI.Panels.User
                 {
                     ItemIndex = indexItemUI,
                     Quantity = quantityBuy,
-                    Stack = stackBuy,
                     Name = prefabBuy.PrefabName,
                 };
                 ClientBuyMessageAction.Send(msg);
@@ -378,7 +377,7 @@ namespace BloodyShop.Client.UI.Panels.User
             return "0";
         }
 
-        private string serachStackInput(int indexSearch)
+        private int serachStackInput(int indexSearch)
         {
 
             foreach (var (index, input) in _stackArrayCache)
@@ -388,14 +387,14 @@ namespace BloodyShop.Client.UI.Panels.User
 
                     if(input == 0)
                     {
-                        return "1";
+                        return 1;
                     }
 
-                    return input.ToString();
+                    return input;
                 }
             }
 
-            return "1";
+            return 1;
         }
 
         
