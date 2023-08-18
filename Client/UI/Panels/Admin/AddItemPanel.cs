@@ -13,23 +13,15 @@ using UniverseLib.UI.Widgets;
 using System.Collections.Generic;
 using System.Linq;
 using BloodyShop.DB.Models;
+using MS.Internal.Xml.XPath;
 
 namespace BloodyShop.Client.UI.Panels.Admin
 {
-    public class AddItemPanel : UniverseLib.UI.Panels.PanelBase
+    public class AddItemPanel : UIModel
     {
+        public PanelConfig Parent { get; }
 
         public static AddItemPanel Instance { get; private set; }
-
-        public override string Name => "Admin Add Item Shop";
-
-        public override bool CanDragAndResize => true;
-
-        public override int MinWidth => 880;
-        public override int MinHeight => 535;
-        public override Vector2 DefaultAnchorMin => new Vector2(0.5f, 1f);
-        public override Vector2 DefaultAnchorMax => new Vector2(0.5f, 1f);
-        public override Vector2 DefaultPosition => new Vector2(0 - MinWidth / 2 - 680, 0 + MinWidth / 2);
 
         public GameObject NavbarHolder;
         public GameObject ContentHolder;
@@ -43,9 +35,6 @@ namespace BloodyShop.Client.UI.Panels.Admin
         public List<GameObject> productsListLayers = new List<GameObject>();
 
         public List<PrefabModel> itemsModel = new();
-
-        public static float CurrentPanelWidth => Instance.Rect.rect.width;
-        public static float CurrentPanelHeight => Instance.Rect.rect.height;
 
         public List<CurrencyModel> currencies { get; private set; }
 
@@ -65,34 +54,31 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         private static int limit = 10;
 
-        public AddItemPanel(UIBase owner) : base(owner)
+        private static GameObject uiRoot;
+
+        public static int MinWidth => 680;
+
+        public override GameObject UIRoot => uiRoot;
+
+        public AddItemPanel(PanelConfig parent)
         {
-            Instance = this;
+            Parent = parent;
         }
 
-        public override void Update()
+        public override void ConstructUI(GameObject content)
         {
-            //InspectorManager.Update();
-        }
-
-        public override void OnFinishResize()
-        {
-            base.OnFinishResize();
-        }
-
-        protected override void ConstructPanelContent()
-        {
-
             active = true;
 
+            uiRoot = UIFactory.CreateUIObject("ConfigPanel", content);
+
             // TITLE Bar
-            GameObject closeHolder = TitleBar.transform.Find("CloseHolder").gameObject;
+            //GameObject closeHolder = TitleBar.transform.Find("CloseHolder").gameObject;
 
             //INSERT LAYOUT
-            UIFactory.SetLayoutGroup<VerticalLayoutGroup>(ContentRoot, true, true, true, true, 4, padLeft: 5, padRight: 5);
+            //UIFactory.SetLayoutGroup<VerticalLayoutGroup>(ContentRoot, true, true, true, true, 4, padLeft: 5, padRight: 5);
 
             // CONTAINER FOR SEARCH INPUT
-            var _contentSearch = UIFactory.CreateHorizontalGroup(ContentRoot.gameObject, "HeaderItem", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
+            var _contentSearch = UIFactory.CreateHorizontalGroup(uiRoot, "HeaderItem", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
 
             UIFactory.SetLayoutElement(_contentSearch, flexibleHeight: 0, minHeight: 60, preferredHeight: 60, flexibleWidth: 0);
 
@@ -108,10 +94,10 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
 
             //INSERT LAYOUT
-            UIFactory.SetLayoutGroup<VerticalLayoutGroup>(ContentRoot, true, true, true, true, 4, padLeft: 5, padRight: 5);
+            UIFactory.SetLayoutGroup<VerticalLayoutGroup>(uiRoot, true, true, true, true, 4, padLeft: 5, padRight: 5);
 
             // CONTAINER FOR PRODUCTS
-            var _contentHeader = UIFactory.CreateHorizontalGroup(ContentRoot.gameObject, "HeaderItem", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
+            var _contentHeader = UIFactory.CreateHorizontalGroup(uiRoot, "HeaderItem", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
 
             // ITEM ICON
             Text headerName = UIFactory.CreateLabel(_contentHeader, "itemNameTxt", $"Name", TextAnchor.MiddleLeft);
@@ -145,7 +131,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
             contentScroll = new GameObject();
 
-            var _scroolView = UIFactory.CreateScrollView(ContentRoot.gameObject, "scrollView", out contentScroll, out AutoSliderScrollbar autoSliderScrollbar);
+            var _scroolView = UIFactory.CreateScrollView(uiRoot.gameObject, "scrollView", out contentScroll, out AutoSliderScrollbar autoSliderScrollbar);
 
             CreateListProductsLayout();
 
@@ -299,7 +285,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
             }
         }
 
-        private void RefreshAction()
+        public void RefreshAction()
         {
             UIManager.RefreshDataPanel();
         }

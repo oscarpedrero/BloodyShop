@@ -31,8 +31,9 @@ internal class UIManager
 
     public static UIBase UiBase { get; private set; }
     public static ShopPanel ShopPanel { get; private set; }
-    public static AddItemPanel AddItemPanel { get; private set; }
-    public static DeleteItemPanel DeleteItemPanel { get; private set; }
+    //public static AddItemPanel AddItemPanel { get; private set; }
+    public static PanelConfig panelCOnfig { get; private set; }
+    //public static DeleteItemPanel DeleteItemPanel { get; private set; }
     public static MenuPanel MenuPanel { get; private set; }
     public static AdminMenuPanel AdminMenuPanel { get; private set; }
 
@@ -49,31 +50,27 @@ internal class UIManager
         CreateMenuPanel();
         CreateShopPanel();
         CreateAddItemPanel();
-        CreateDeletePanel();
     }
 
     public static void showAllPanels()
     {
         ShowMenuPanel();
         ShowShopPanel();
-        ShowAddItemPanel();
-        ShowDeletePanel();
+        ShowPanelConfigPanel();
     }
 
     public static void HideAllPanels()
     {
         HideMenuPanel();
         HideShopPanel();
-        HideAddItemPanel();
-        HideDeletePanel();
+        HidePanelConfigPanel();
     }
 
     public static void DestroyAllPanels()
     {
         HideMenuPanel();
         HideShopPanel();
-        HideAddItemPanel();
-        HideDeletePanel();
+        HidePanelConfigPanel();
     }
 
     public static void CreateMenuPanel()
@@ -151,65 +148,32 @@ internal class UIManager
     {
         if (ClientDB.IsAdmin)
         {
-            AddItemPanel = new AddItemPanel(UiBase);
-            AddItemPanel.SetActive(false);
+            panelCOnfig = new PanelConfig(UiBase);
+            panelCOnfig.SetActive(false);
         }
     }
 
-    public static void ShowAddItemPanel()
+    public static void ShowPanelConfigPanel()
     {
         if (ClientDB.IsAdmin)
         {
-            AddItemPanel.SetActive(true);
+            panelCOnfig.SetActive(true);
         }
     }
 
-    public static void HideAddItemPanel()
+    public static void HidePanelConfigPanel()
     {
         if (ClientDB.IsAdmin)
         {
-            AddItemPanel.SetActive(false);
+            panelCOnfig.SetActive(false);
         }
     }
 
-    public static void DestroyAddItemPanel()
+    public static void DestroyPanelConfigPanel()
     {
         if (ClientDB.IsAdmin)
         {
-            AddItemPanel.Destroy();
-        }
-    }
-
-    public static void CreateDeletePanel()
-    {
-        if (ClientDB.IsAdmin)
-        {
-            DeleteItemPanel = new DeleteItemPanel(UiBase);
-            DeleteItemPanel.SetActive(false);
-        }
-    }
-
-    public static void ShowDeletePanel()
-    {
-        if (ClientDB.IsAdmin)
-        {
-            DeleteItemPanel.SetActive(true);
-        }
-    }
-
-    public static void HideDeletePanel()
-    {
-        if (ClientDB.IsAdmin)
-        {
-            DeleteItemPanel.SetActive(false);
-        }
-    }
-
-    public static void DetroyDeletePanel()
-    {
-        if (ClientDB.IsAdmin)
-        {
-            DeleteItemPanel.Destroy();
+            panelCOnfig.Destroy();
         }
     }
 
@@ -218,14 +182,16 @@ internal class UIManager
         ShopPanel.RefreshData();
         if (ClientDB.IsAdmin)
         {
-            DeleteItemPanel.RefreshData();
+            var panel = panelCOnfig.GetActivePanel();
+            panel.RefreshData();
         }
         ClientListMessageAction.Send();
     }
 
     public static void RefreshDataAddPanel()
     {
-        AddItemPanel?.RefreshData();
+        var panel = panelCOnfig.GetActivePanel();
+        panel.RefreshData();
     }
 
     static void UiUpdate()

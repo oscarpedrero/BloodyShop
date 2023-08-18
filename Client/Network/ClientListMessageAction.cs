@@ -25,8 +25,9 @@ namespace BloodyShop.Client.Network
 
             if (ClientDB.IsAdmin)
             {
-                UIManager.DeleteItemPanel.RefreshData();
-                UIManager.DeleteItemPanel.CreateListProductsLayout();
+                var panel = UIManager.panelCOnfig.GetActivePanel();
+                panel.RefreshData();
+                panel.CreateListProductsLayout();
             }
 
             UIManager.ShopPanel.RefreshData();

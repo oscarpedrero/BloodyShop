@@ -1,4 +1,5 @@
 ﻿using BloodyShop.Client.DB;
+using BloodyShop.Client.Utils;
 using BloodyShop.Utils;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,9 +32,9 @@ namespace BloodyShop.Client.UI.Panels.User
 
         public override string Name => "Bloody Shop Menu";
 
-        public override int MinWidth => 360;
+        public override int MinWidth => 70;
 
-        public override int MinHeight => 40;
+        public override int MinHeight => 50;
 
         public override Vector2 DefaultAnchorMin => new Vector2(0.5f, 1f);
 
@@ -53,10 +54,14 @@ namespace BloodyShop.Client.UI.Panels.User
         public Text stateTXT { get; private set; }
         public bool active { get; private set; }
 
+        private int iconWH = 45;
+
         protected override void ConstructPanelContent()
         {
 
             active = true;
+            TitleBar.GetComponent<Image>().color = new Color(1, 1, 1, 0f);
+            UIRoot.GetComponent<Image>().color = new Color(233, 237, 240, 0.2f);
             GameObject navbarPanel = UIFactory.CreateUIObject("MainNavbar", UIRoot);
             UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(navbarPanel, false, false, true, true, 5, 4, 4, 4, 4, TextAnchor.MiddleCenter);
             navbarPanel.AddComponent<Image>().color = new Color(0.1f, 0.1f, 0.1f);
@@ -65,18 +70,9 @@ namespace BloodyShop.Client.UI.Panels.User
 
             SetNavBarAnchor();
 
-            // SHOP NAME TXT
-            var shopNameTXT = UIFactory.CreateLabel(navbarPanel, "Title", $"<i>{FontColorChat.White(ClientDB.shopName)}</i>", TextAnchor.MiddleLeft, default, true, 14);
-            UIFactory.SetLayoutElement(shopNameTXT.gameObject, minWidth: 160, minHeight: 40, preferredWidth: 160, preferredHeight: 50, flexibleWidth: 0, flexibleHeight: 0);
-
-
-            //spacer
-            GameObject spacerOne = UIFactory.CreateUIObject("Spacer", navbarPanel);
-            UIFactory.SetLayoutElement(spacerOne, minWidth: 10);
-
             // Shop BTN
             shopBtn = UIFactory.CreateButton(navbarPanel, "ShopButton", "Shop");
-            UIFactory.SetLayoutElement(shopBtn.Component.gameObject, minWidth: 160, minHeight: 40, preferredWidth: 160, preferredHeight: 40, flexibleWidth: 0, flexibleHeight: 0);
+            UIFactory.SetLayoutElement(shopBtn.Component.gameObject, minWidth: iconWH, minHeight: iconWH, preferredWidth: iconWH, preferredHeight: iconWH, flexibleWidth: 0, flexibleHeight: 0);
 
             configShopButtonPanel();
 
@@ -123,18 +119,19 @@ namespace BloodyShop.Client.UI.Panels.User
 
             if (!ClientDB.shopOpen)
             {
-                shopBtn.Component.GetComponentInChildren<Text>().text = "Shop Closed";
-                RuntimeHelper.SetColorBlockAuto(shopBtn.Component,
-                  new Color(84 / 255f, 153 / 255f, 199 / 255f)
-                  );
+                var icon = SpritesUtil.LoadPNGTOSprite(Properties.Resources.shop_close);
+                var iconBtn = shopBtn.GameObject.GetComponent<Image>();
+                iconBtn.sprite = icon;
+                iconBtn.color = new Color(1, 1, 1, 1);
+
                 shopBtn.OnClick -= OpenShopPanel;
             }
             else
             {
-                shopBtn.Component.GetComponentInChildren<Text>().text = "Shop Opened";
-                RuntimeHelper.SetColorBlockAuto(shopBtn.Component,
-                   new Color(36 / 255f, 113 / 255f, 163 / 255f)
-                   );
+                var icon = SpritesUtil.LoadPNGTOSprite(Properties.Resources.shop_open);
+                var iconBtn = shopBtn.GameObject.GetComponent<Image>();
+                iconBtn.sprite = icon;
+                iconBtn.color = new Color(1, 1, 1, 1);
                 shopBtn.OnClick += OpenShopPanel;
             }
 
