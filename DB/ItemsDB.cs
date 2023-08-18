@@ -114,8 +114,6 @@ namespace BloodyShop.DB
             var index = 1;
             foreach (var item in ProductList)
             {
-                Plugin.Logger.LogInfo($"SEARCH INDEX: {GUID} - {stack} - {currency.guid}");
-                Plugin.Logger.LogInfo($"COMPARE INDEX: {item.PrefabGUID} - {item.PrefabStack} - {item.currency}");
                 if (item.PrefabGUID == GUID && item.PrefabStack == stack && item.currency == currency.guid)
                 {
                     return index;

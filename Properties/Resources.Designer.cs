@@ -63,16 +63,6 @@ namespace BloodyShop.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Byte[].
         /// </summary>
-        internal static byte[] add_item {
-            get {
-                object obj = ResourceManager.GetObject("add_item", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Busca un recurso adaptado de tipo System.Byte[].
-        /// </summary>
         internal static byte[] close {
             get {
                 object obj = ResourceManager.GetObject("close", resourceCulture);
@@ -83,9 +73,9 @@ namespace BloodyShop.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Byte[].
         /// </summary>
-        internal static byte[] delete_item {
+        internal static byte[] config {
             get {
-                object obj = ResourceManager.GetObject("delete_item", resourceCulture);
+                object obj = ResourceManager.GetObject("config", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -96,16 +86,6 @@ namespace BloodyShop.Properties {
         internal static byte[] open {
             get {
                 object obj = ResourceManager.GetObject("open", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Busca un recurso adaptado de tipo System.Byte[].
-        /// </summary>
-        internal static byte[] Rectangle_11 {
-            get {
-                object obj = ResourceManager.GetObject("Rectangle_11", resourceCulture);
                 return ((byte[])(obj));
             }
         }

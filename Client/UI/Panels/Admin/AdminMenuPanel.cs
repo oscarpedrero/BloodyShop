@@ -80,11 +80,11 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
             configShopButtonPanel();
 
-            // ADD ITEM BTN
+            // CONFIG BTN
             addItemBtn = UIFactory.CreateButton(navbarPanel, "AdminButton", "", new Color(1, 1, 1, 1));
             UIFactory.SetLayoutElement(addItemBtn.Component.gameObject, minWidth: iconWH, minHeight: iconWH, preferredWidth: iconWH, preferredHeight: iconWH, flexibleWidth: 0, flexibleHeight: 0);
             addItemBtn.OnClick += OpenAddItemPanel;
-            var icon = SpritesUtil.LoadPNGTOSprite(Properties.Resources.add_item);
+            var icon = SpritesUtil.LoadPNGTOSprite(Properties.Resources.config);
             var iconBtn = addItemBtn.GameObject.GetComponent<Image>();
             iconBtn.sprite = icon;
             iconBtn.color = new Color(1, 1, 1, 1);
