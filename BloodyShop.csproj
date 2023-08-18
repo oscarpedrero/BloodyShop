@@ -27,6 +27,7 @@
 		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be*" IncludeAssets="compile" />
 		<PackageReference Include="BepInEx.Core" Version="6.0.0-be*" IncludeAssets="compile" />
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+		<PackageReference Include="NAudio" Version="2.1.0" />
 		<PackageReference Include="VRising.Unhollowed.Client" Version="0.6.5.57575090" />
 		<PackageReference Include="VRising.VampireCommandFramework" Version="0.8.0" />
 		<PackageReference Include="VRising.Bloodstone" Version="0.1.*" />

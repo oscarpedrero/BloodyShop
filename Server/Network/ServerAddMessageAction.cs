@@ -30,6 +30,9 @@ namespace BloodyShop.Server.Network
             //Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] AddSerializedMessage {user.CharacterName}");
             
 
+            if(!user.IsAdmin)
+                ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("You do not have permissions for this action"));
+
             var prefabGUID = int.Parse(msg.PrefabGUID);
             var currencyGUID = int.Parse(msg.CurrencyGUID);
             var price = int.Parse(msg.Price);

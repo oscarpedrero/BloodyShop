@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BloodyShop.DB.Models;
 using MS.Internal.Xml.XPath;
+using BloodyShop.Client.Utils;
 
 namespace BloodyShop.Client.UI.Panels.Admin
 {
@@ -222,13 +223,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
         {
 
             return;
-            /**switch (index)
-            {
-                case 0: return;
-                case 1: Instance.StartInspect(MouseInspectMode.World); break;
-                case 2: Instance.StartInspect(MouseInspectMode.UI); break;
-            }
-            InspectorPanel.Instance.MouseInspectDropdown.value = 0;*/
+
         }
 
         private void SearchActionText(string str)
@@ -280,6 +275,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
                     Stack = stack,
                     CurrencyGUID = currency.guid.ToString(),
                 };
+                Sound.Play(Properties.Resources.coin);
                 ClientAddMessageAction.Send(msg);
                 RefreshAction();
             }

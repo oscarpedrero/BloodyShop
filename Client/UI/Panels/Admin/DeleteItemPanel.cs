@@ -15,6 +15,7 @@ using BloodyShop.DB.Models;
 using System.Linq;
 using Il2CppSystem;
 using Unity.Transforms;
+using BloodyShop.Client.Utils;
 
 namespace BloodyShop.Client.UI.Panels.Admin
 {
@@ -108,11 +109,11 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
             //NAME ITEM
             var imageHeader = UIFactory.CreateUIObject("IconItem", _contentHeader);
-            UIFactory.SetLayoutElement(imageHeader, minWidth: 310, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 310);
+            UIFactory.SetLayoutElement(imageHeader, minWidth: 350, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 310);
 
             // PRICE ITEM
             Text headerPrice = UIFactory.CreateLabel(_contentHeader, "itemPriceTxt", $"Price");
-            UIFactory.SetLayoutElement(headerPrice.gameObject, minWidth: 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 100);
+            UIFactory.SetLayoutElement(headerPrice.gameObject, minWidth: 150, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 150);
 
             // DELETE BTN
             var headerDelete = UIFactory.CreateUIObject("BuyItem", _contentHeader);
@@ -174,14 +175,14 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
                     // PRICE ITEM
                     Text itemPrice = UIFactory.CreateLabel(_contentProduct, "itemPriceTxt-" + index, $"{item.PrefabPrice}x {currency.name}");
-                    UIFactory.SetLayoutElement(itemPrice.gameObject, minWidth: 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 100);
+                    UIFactory.SetLayoutElement(itemPrice.gameObject, minWidth: 200, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 200);
                     _stackArrayCache.Add((index, item.PrefabStack));
 
                     _currenciesArrayCache.Add((index, currency));
 
                     // DELETE BTN
                     ButtonRef deleteBtn = UIFactory.CreateButton(_contentProduct, "deleteItemBtn-" + index, "Delete", new Color(203 / 255f, 67 / 255f, 53 / 255f));
-                    UIFactory.SetLayoutElement(deleteBtn.Component.gameObject, minWidth: 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 100);
+                    UIFactory.SetLayoutElement(deleteBtn.Component.gameObject, minWidth: 150, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 150);
                     deleteBtn.OnClick += DeleteAction;
 
                     UIFactory.SetLayoutElement(_contentProduct, flexibleHeight: 0, minHeight: 60, preferredHeight: 60, flexibleWidth: 0);
@@ -268,6 +269,8 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         private void DeleteAction()
         {
+            Sound.Play(Properties.Resources.floop2_x);
+
             var btnName = EventSystem.current.currentSelectedGameObject.name;
             var indexItemUI = btnName.Replace("deleteItemBtn-", "");
             var prefabDelete = items[int.Parse(indexItemUI) - 1];

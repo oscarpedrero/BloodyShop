@@ -105,20 +105,13 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         private void RefreshAction()
         {
-            if (SelectedTab == 0)
-                addItemPanel.RefreshAction();
             if (SelectedTab == 1)
                 deletePanel.RefreshAction();
         }
 
-        public dynamic GetActivePanel()
+        public DeleteItemPanel GetActivePanel()
         {
-            if (SelectedTab == 0)
-                return addItemPanel;
-            if (SelectedTab == 1)
-                return deletePanel;
-
-            return addItemPanel;
+            return deletePanel;
         }
 
         public void SetTab(int tabIndex)

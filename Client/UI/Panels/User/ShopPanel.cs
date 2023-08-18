@@ -15,6 +15,11 @@ using System.Collections.Generic;
 using System;
 using BloodyShop.DB.Models;
 using System.Linq;
+using System.IO;
+using System.Media;
+using NAudio.Wave;
+using static ProjectM.Terrain.MapMaker.MapMakerDefinition;
+using BloodyShop.Client.Utils;
 
 namespace BloodyShop.Client.UI.Panels.User
 {
@@ -338,9 +343,11 @@ namespace BloodyShop.Client.UI.Panels.User
         }
 
 
-
         private void BuyAction()
         {
+
+            Sound.Play(Properties.Resources.cash_register_x);
+
             var btnName = EventSystem.current.currentSelectedGameObject.name;
             var indexItemUI = btnName.Replace("buyItemBtn-", "");
             //Plugin.Logger.LogInfo($"BUY INDEX BEFORE: {indexItemUI}");

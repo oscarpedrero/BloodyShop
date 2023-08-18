@@ -23,6 +23,9 @@ namespace BloodyShop.Server.Network
 
             //Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] DeleteSerializedMessage {user.CharacterName} - {msg.Item}");
 
+            if (!user.IsAdmin)
+                ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("You do not have permissions for this action"));
+
             var itemID = Int32.Parse(msg.Item);
 
             removeItemFromShop(user, itemID);

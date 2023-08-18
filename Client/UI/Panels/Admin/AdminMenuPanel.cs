@@ -143,6 +143,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         private static void OpenShopPanel()
         {
+            //Sound.Play(Properties.Resources.click_x);
             UIManager.ShowShopPanel();
         }
 
@@ -153,6 +154,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         private static void OpenAddItemPanel()
         {
+            //Sound.Play(Properties.Resources.click_x);
             UIManager.ShowPanelConfigPanel();
         }
 
@@ -181,6 +183,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         private void OpenCloseAction()
         {
+
             if (ClientDB.shopOpen)
             {
                 ClientDB.shopOpen = false;
