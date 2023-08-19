@@ -35,8 +35,8 @@ namespace BloodyShop
         public static ConfigEntry<bool> ShopEnabled;
         public static ConfigEntry<bool> AnnounceAddRemovePublic;
         public static ConfigEntry<bool> AnnounceBuyPublic;
-        public static ConfigEntry<int> CoinGUID;
-        public static ConfigEntry<string> CoinName;
+        public static ConfigEntry<int> CurrencyGUID;
+        public static ConfigEntry<string> CurrencyName;
         public static ConfigEntry<string> StoreName;
 
 
@@ -49,23 +49,23 @@ namespace BloodyShop
         // NPC CONFIG DROP
         public static ConfigEntry<int> DropNpcPercentage;
         public static ConfigEntry<int> IncrementPercentageDropEveryTenLevelsNpc;
-        public static ConfigEntry<int> DropdNpcCoinsMin;
-        public static ConfigEntry<int> DropNpcCoinsMax;
-        public static ConfigEntry<int> MaxCoinsPerDayPerPlayerNpc;
+        public static ConfigEntry<int> DropdNpcCurrenciesMin;
+        public static ConfigEntry<int> DropNpcCurrenciesMax;
+        public static ConfigEntry<int> MaxCurrenciesPerDayPerPlayerNpc;
 
         // VBLOOD CONFIG DROP
         public static ConfigEntry<int> DropdVBloodPercentage;
         public static ConfigEntry<int> IncrementPercentageDropEveryTenLevelsVBlood;
-        public static ConfigEntry<int> DropVBloodCoinsMin;
-        public static ConfigEntry<int> DropVBloodCoinsMax;
-        public static ConfigEntry<int> MaxCoinsPerDayPerPlayerVBlood;
+        public static ConfigEntry<int> DropVBloodCurrenciesMin;
+        public static ConfigEntry<int> DropVBloodCurrenciesMax;
+        public static ConfigEntry<int> MaxCurrenciesPerDayPerPlayerVBlood;
 
         // PVP CONFIG DROP
         public static ConfigEntry<int> DropPvpPercentage;
         public static ConfigEntry<int> IncrementPercentageDropEveryTenLevelsPvp;
-        public static ConfigEntry<int> DropPvpCoinsMin;
-        public static ConfigEntry<int> DropPvpCoinsMax;
-        public static ConfigEntry<int> MaxCoinsPerDayPerPlayerPvp;
+        public static ConfigEntry<int> DropPvpCurrenciesMin;
+        public static ConfigEntry<int> DropPvpCurrenciesMax;
+        public static ConfigEntry<int> MaxCurrenciesPerDayPerPlayerPvp;
 
         private static World _serverWorld;
         private static World _clientWorld;
@@ -190,8 +190,8 @@ namespace BloodyShop
         {
             ShopEnabled = Config.Bind("ConfigShop", "enabled", true, "Enable Shop");
             StoreName = Config.Bind("ConfigShop", "name", "Bloody Shop", "Store's name");
-            CoinName = Config.Bind("ConfigShop", "coinName", "Silver Coin", "Coin name.");
-            CoinGUID = Config.Bind("ConfigShop", "coinGUID", -949672483, "Item that will be used as currency within the service, by default they are silver coins, if you want to change the item you must include the GUID of said object that you can get from https://discord.com/channels/978094827830915092/1117273637024714862/1117273642817044571");
+            CurrencyName = Config.Bind("ConfigShop", "currencyName", "Silver Currency", "Currency name.");
+            CurrencyGUID = Config.Bind("ConfigShop", "currencyGUID", -949672483, "Item that will be used as currency within the service, by default they are silver currencies, if you want to change the item you must include the GUID of said object that you can get from https://discord.com/channels/978094827830915092/1117273637024714862/1117273642817044571");
             AnnounceAddRemovePublic = Config.Bind("ConfigShop", "announceAddRemovePublic", true, "Public announcement when an item is added or removed from the store");
             AnnounceBuyPublic = Config.Bind("ConfigShop", "announceBuyPublic", true, "Public announcement when someone buys an item from the store");
 
@@ -201,23 +201,23 @@ namespace BloodyShop
             // NPC DROP CONFIG
             DropNpcPercentage = Config.Bind("DropSystem", "minPercentageDropNpc", 5, "Percent chance that an NPC will drop the type of currency from the shop");
             IncrementPercentageDropEveryTenLevelsNpc = Config.Bind("DropSystem", "IncrementPercentageDropEveryTenLevelsNpc", 5, "Percentage increase for every rank of 10 levels of the NPC");
-            DropdNpcCoinsMin = Config.Bind("DropSystem", "DropdNpcCoinsMin", 1, "Minimum currency an NPC can drop");
-            DropNpcCoinsMax = Config.Bind("DropSystem", "DropNpcCoinsMax", 5, "Maximum currency an NPC can drop");
-            MaxCoinsPerDayPerPlayerNpc = Config.Bind("DropSystem", "MaxCoinsPerDayPerPlayerNpc", 5, "Maximum number of currency that a user can get per day by NPC death");
+            DropdNpcCurrenciesMin = Config.Bind("DropSystem", "DropdNpcCurrenciesMin", 1, "Minimum currency an NPC can drop");
+            DropNpcCurrenciesMax = Config.Bind("DropSystem", "DropNpcCurrenciesMax", 5, "Maximum currency an NPC can drop");
+            MaxCurrenciesPerDayPerPlayerNpc = Config.Bind("DropSystem", "MaxCurrenciesPerDayPerPlayerNpc", 5, "Maximum number of currency that a user can get per day by NPC death");
 
             // VBLOOD DROP CONFIG
             DropdVBloodPercentage = Config.Bind("DropSystem", "minPercentageDropVBlood", 20, "Percent chance that an VBlood will drop the type of currency from the shop");
             IncrementPercentageDropEveryTenLevelsVBlood = Config.Bind("DropSystem", "IncrementPercentageDropEveryTenLevelsVBlood", 5, "Percentage increase for every rank of 10 levels of the VBlood");
-            DropVBloodCoinsMin = Config.Bind("DropSystem", "DropVBloodCoinsMin", 10, "Minimum currency an VBlood can drop");
-            DropVBloodCoinsMax = Config.Bind("DropSystem", "DropVBloodCoinsMax", 20, "Maximum currency an VBlood can drop");
-            MaxCoinsPerDayPerPlayerVBlood = Config.Bind("DropSystem", "MaxCoinsPerDayPerPlayerVBlood", 20, "Maximum number of currency that a user can get per day by VBlood death");
+            DropVBloodCurrenciesMin = Config.Bind("DropSystem", "DropVBloodCurrenciesMin", 10, "Minimum currency an VBlood can drop");
+            DropVBloodCurrenciesMax = Config.Bind("DropSystem", "DropVBloodCurrenciesMax", 20, "Maximum currency an VBlood can drop");
+            MaxCurrenciesPerDayPerPlayerVBlood = Config.Bind("DropSystem", "MaxCurrenciesPerDayPerPlayerVBlood", 20, "Maximum number of currency that a user can get per day by VBlood death");
 
             // PVP DROP CONFIG
             DropPvpPercentage = Config.Bind("DropSystem", "minPercentageDropPvp", 100, "Percent chance that victory in a PVP duel will drop the type of currency in the store");
             IncrementPercentageDropEveryTenLevelsPvp = Config.Bind("DropSystem", "IncrementPercentageDropEveryTenLevelsPvp", 5, "Percentage increase for every rank of 10 levels of the Player killed in pvp duel");
-            DropPvpCoinsMin = Config.Bind("DropSystem", "DropPvpCoinsMin", 15, "Minimum currency can drop victory in PVP");
-            DropPvpCoinsMax = Config.Bind("DropSystem", "DropPvpCoinsMax", 20, "Maximum currency can drop victory in PVP");
-            MaxCoinsPerDayPerPlayerPvp = Config.Bind("DropSystem", "MaxCoinsPerDayPerPlayerPvp", 20, "Maximum number of currency that a user can get per day by victory in PVP");
+            DropPvpCurrenciesMin = Config.Bind("DropSystem", "DropPvpCurrenciesMin", 15, "Minimum currency can drop victory in PVP");
+            DropPvpCurrenciesMax = Config.Bind("DropSystem", "DropPvpCurrenciesMax", 20, "Maximum currency can drop victory in PVP");
+            MaxCurrenciesPerDayPerPlayerPvp = Config.Bind("DropSystem", "MaxCurrenciesPerDayPerPlayerPvp", 20, "Maximum number of currency that a user can get per day by victory in PVP");
         }
 
         public void OnGameInitialized()

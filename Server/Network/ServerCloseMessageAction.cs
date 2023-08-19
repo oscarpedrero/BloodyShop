@@ -5,6 +5,8 @@ using BloodyShop.Server.DB;
 using VRising.GameData;
 using ProjectM;
 using BloodyShop.Utils;
+using static VCF.Core.Basics.RoleCommands;
+using BloodyShop.Server.Systems;
 
 namespace BloodyShop.Server.Network
 {
@@ -13,7 +15,7 @@ namespace BloodyShop.Server.Network
 
         public static void Received(FromCharacter fromCharacter, CloseSerializedMessage msg)
         {
-            var user = VWorld.Server.EntityManager.GetComponentData<User>(fromCharacter.User);
+            var user = VWorld.Server.EntityManager.GetComponentData<ProjectM.Network.User>(fromCharacter.User);
 
             //Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] CloseSerializedMessage {user.CharacterName}");
 
@@ -25,15 +27,19 @@ namespace BloodyShop.Server.Network
         {
             ConfigDB.ShopEnabled = false;
             ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($" {FontColorChat.White($" {ConfigDB.StoreName} ")} just closed"));
-            var usersOnline = GameData.Users.Online;
             var msg = new CloseSerializedMessage();
-            foreach (var user in usersOnline)
+            var userWithUI = UserUI.GetUsersWithUI();
+            foreach (var userUI in userWithUI)
             {
-                Send((ProjectM.Network.User)user.Internals.User, msg);
+                var userValue = userUI.Value;
+                if (userValue.IsConnected)
+                {
+                    Send(userValue, msg);
+                }
             }
         }
 
-        public static void Send(User fromCharacter, CloseSerializedMessage msg)
+        public static void Send(ProjectM.Network.User fromCharacter, CloseSerializedMessage msg)
         {
 
             VNetwork.SendToClient(fromCharacter, msg);

@@ -10,6 +10,7 @@ namespace BloodyShop.Network.Messages
     public class ListSerializedMessage : VNetworkMessage
     {
         public string ItemsJson;
+        public string CurrencyJson;
 
         // You need to implement an empty constructor for when your message is
         // received but not yet serialized.
@@ -19,12 +20,14 @@ namespace BloodyShop.Network.Messages
         public void Deserialize(NetBufferIn reader)
         {
             ItemsJson = reader.ReadString(Allocator.Temp);
+            CurrencyJson = reader.ReadString(Allocator.Temp);
         }
 
         // Write your contents to the writer.
         public void Serialize(ref NetBufferOut writer)
         {
             writer.Write(ItemsJson);
+            writer.Write(CurrencyJson);
         }
     }
 }

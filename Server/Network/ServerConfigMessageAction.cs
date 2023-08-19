@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using VRising.GameData;
 using Bloodstone.API;
+using BloodyShop.Server.Systems;
 
 namespace BloodyShop.Server.Network
 {
@@ -18,11 +19,8 @@ namespace BloodyShop.Server.Network
         {
             //Plugin.Logger.LogError($"[SERVER] [RECEIVED] ConfigSerializedMessage {fromCharacter.CharacterName}");
             msg = createMsg(fromCharacter);
-
+            UserUI.RegisterUserWithUI(fromCharacter);
             Send(fromCharacter, msg);
-
-            
-
         }
 
         public static ConfigSerializedMessage createMsg(User fromCharacter)
@@ -30,10 +28,14 @@ namespace BloodyShop.Server.Network
 
             var msg = new ConfigSerializedMessage();
             var productList = ItemsDB.getProductListForSaveJSON();
-            var jsonOutPut = JsonSerializer.Serialize(productList);
+            var jsonOutItemsPut = JsonSerializer.Serialize(productList);
 
-            msg.ItemsJson = jsonOutPut;
-            msg.CoinGUID = ShareDB.getCoinGUID().ToString();
+            msg.ItemsJson = jsonOutItemsPut;
+
+            var currencies = ShareDB.getCurrencyList();
+            var jsonOuCurrenciestPut = JsonSerializer.Serialize(currencies);
+            msg.CurrenciesJson = jsonOuCurrenciestPut;
+
             msg.ShopName = ConfigDB.StoreName;
             var userModel = GameData.Users.GetUserByCharacterName(fromCharacter.CharacterName.ToString());
 
@@ -60,7 +62,7 @@ namespace BloodyShop.Server.Network
         public static void Send(User fromCharacter, ConfigSerializedMessage msg)
         {
             VNetwork.SendToClient(fromCharacter, msg);
-            //Plugin.Logger.LogInfo($"[SERVER] [SEND] ConfigSerializedMessage {fromCharacter.CharacterName} - {msg.ItemsJson} - {msg.CoinGUID} - {msg.ShopName} - {msg.ShopOpen}");
+            //Plugin.Logger.LogInfo($"[SERVER] [SEND] ConfigSerializedMessage {fromCharacter.CharacterName} - {msg.ItemsJson} - {msg.CurrencyGUID} - {msg.ShopName} - {msg.ShopOpen}");
         }
     }
 }

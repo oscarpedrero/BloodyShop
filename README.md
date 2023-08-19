@@ -4,6 +4,20 @@
 <details>
 <summary>Changelog</summary>
 
+`0.9.8`
+- Added UI to set and remove currencies.
+- Added messaging system for currencies.
+- Optimize the performance of network messages from the server that caused lag to different players.
+- Added a user registration system that uses the UI to only notify those users of changes in real time.
+- Change of icons of the main menu.
+- Refactoring of the window to add or remove products from the store, now everything is displayed in a single window.
+- Fixed bug that did not allow deleting products from the UI.
+- Added sounds to the UI for certain actions.
+- The UniverseLib.IL2CPP.Interop.dll library is no longer compiled into the dll to avoid incompatibilities with other mods that use this library to create UIs.
+
+`0.9.7`
+- Added multi-currency
+
 `0.9.6`
 - Fixed error when you tried to buy or delete an item that there are several purchase options in the store, now you delete or buy the one you select from the UI
 
@@ -39,7 +53,7 @@ New command:
 .shop add "\<NameOfProduct\>" \<PrefabGUID\> \<Price\> \<Stock\>
 
 Example:
-.shop add "Silver Coin" -949672483 1 100
+.shop add "Silver Currency" -949672483 1 100
 
 This name is only visible through the chat commands, if the client uses the mod he will see it in the language that the game has configured
 

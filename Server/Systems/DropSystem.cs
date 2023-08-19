@@ -100,7 +100,11 @@ namespace BloodyShop.Server.Systems
             var playerCharacterKiller = em.GetComponentData<PlayerCharacter>(killer);
             var userModelKiller = GameData.Users.FromEntity(playerCharacterKiller.UserEntity);
 
-            var prefabCoinGUID = new PrefabGUID(ShareDB.getCoinGUID());
+            var currencies = ShareDB.getCurrencyList();
+            var random = new Random();
+            int indexCurrencies = random.Next(currencies.Count);
+
+            var prefabCurrencyGUID = new PrefabGUID(currencies[indexCurrencies].guid);
 
             //Plugin.Logger.LogInfo($"PVP DROP");
             
@@ -113,29 +117,29 @@ namespace BloodyShop.Server.Systems
             var percentFinal = calculateDropPercentage((int) diedLevel, ConfigDB.DropPvpPercentage, ConfigDB.IncrementPercentageDropEveryTenLevelsPvp);
             if (probabilityOeneratingReward(percentFinal))
             {
-                var totalCoins = rnd.Next(ConfigDB.DropPvpCoinsMin, ConfigDB.DropPvpCoinsMax);
-                if (ConfigDB.searchUserCoinPerDay(userModelKiller.CharacterName, out UserCoinsPerDayModel userCoinsPerDay))
+                var totalCurrencies = rnd.Next(ConfigDB.DropPvpCurrenciesMin, ConfigDB.DropPvpCurrenciesMax);
+                if (ConfigDB.searchUserCurrencyPerDay(userModelKiller.CharacterName, out UserCurrenciesPerDayModel userCurrenciesPerDay))
                 {
-                    var virtualAmount = userCoinsPerDay.AmountPvp + totalCoins;
-                    if (virtualAmount <= ConfigDB.MaxCoinsPerDayPerPlayerPvp)
+                    var virtualAmount = userCurrenciesPerDay.AmountPvp + totalCurrencies;
+                    if (virtualAmount <= ConfigDB.MaxCurrenciesPerDayPerPlayerPvp)
                     {
-                        userCoinsPerDay.AmountPvp = virtualAmount;
-                        userModelKiller.DropItemNearby(prefabCoinGUID, totalCoins);
+                        userCurrenciesPerDay.AmountPvp = virtualAmount;
+                        userModelKiller.DropItemNearby(prefabCurrencyGUID, totalCurrencies);
 
-                        ConfigDB.addUserCoinsPerDayToList(userCoinsPerDay);
-                        SaveDataToFiles.saveUsersCoinsPerDay();
-                        //Plugin.Logger.LogInfo($"Drop PVP {totalCoins} coins");
+                        ConfigDB.addUserCurrenciesPerDayToList(userCurrenciesPerDay);
+                        SaveDataToFiles.saveUsersCurrenciesPerDay();
+                        //Plugin.Logger.LogInfo($"Drop PVP {totalCurrencies} currencies");
                         return;
                     }
-                    else if (userCoinsPerDay.AmountNpc < ConfigDB.MaxCoinsPerDayPerPlayerPvp)
+                    else if (userCurrenciesPerDay.AmountNpc < ConfigDB.MaxCurrenciesPerDayPerPlayerPvp)
                     {
-                        totalCoins = ConfigDB.MaxCoinsPerDayPerPlayerPvp - userCoinsPerDay.AmountPvp;
-                        userCoinsPerDay.AmountPvp += totalCoins;
-                        userModelKiller.DropItemNearby(prefabCoinGUID, totalCoins);
+                        totalCurrencies = ConfigDB.MaxCurrenciesPerDayPerPlayerPvp - userCurrenciesPerDay.AmountPvp;
+                        userCurrenciesPerDay.AmountPvp += totalCurrencies;
+                        userModelKiller.DropItemNearby(prefabCurrencyGUID, totalCurrencies);
 
-                        ConfigDB.addUserCoinsPerDayToList(userCoinsPerDay);
-                        SaveDataToFiles.saveUsersCoinsPerDay();
-                        //Plugin.Logger.LogInfo($"Drop PVP {totalCoins} coins");
+                        ConfigDB.addUserCurrenciesPerDayToList(userCurrenciesPerDay);
+                        SaveDataToFiles.saveUsersCurrenciesPerDay();
+                        //Plugin.Logger.LogInfo($"Drop PVP {totalCurrencies} currencies");
                         return;
                     }
                 }
@@ -146,32 +150,37 @@ namespace BloodyShop.Server.Systems
 
         private static void rewardForNPC(UserModel userModelKiller, int diedLevel)
         {
-            var prefabCoinGUID = new PrefabGUID(ShareDB.getCoinGUID());
+            var currencies = ShareDB.getCurrencyList();
+            var random = new Random();
+            int indexCurrencies = random.Next(currencies.Count);
+
+            var prefabCurrencyGUID = new PrefabGUID(currencies[indexCurrencies].guid);
+
             var percentFinal = calculateDropPercentage(diedLevel, ConfigDB.DropNpcPercentage, ConfigDB.IncrementPercentageDropEveryTenLevelsNpc);
             if (probabilityOeneratingReward(percentFinal))
             {
-                var totalCoins = rnd.Next(ConfigDB.DropdNpcCoinsMin, ConfigDB.DropNpcCoinsMax);
-                if (ConfigDB.searchUserCoinPerDay(userModelKiller.CharacterName,out UserCoinsPerDayModel userCoinsPerDay))
+                var totalCurrencies = rnd.Next(ConfigDB.DropdNpcCurrenciesMin, ConfigDB.DropNpcCurrenciesMax);
+                if (ConfigDB.searchUserCurrencyPerDay(userModelKiller.CharacterName,out UserCurrenciesPerDayModel userCurrenciesPerDay))
                 {
-                    var virtualAmount = userCoinsPerDay.AmountNpc + totalCoins;
-                    if (virtualAmount <= ConfigDB.MaxCoinsPerDayPerPlayerNpc)
+                    var virtualAmount = userCurrenciesPerDay.AmountNpc + totalCurrencies;
+                    if (virtualAmount <= ConfigDB.MaxCurrenciesPerDayPerPlayerNpc)
                     {
-                        userCoinsPerDay.AmountNpc = virtualAmount;
-                        userModelKiller.DropItemNearby(prefabCoinGUID, totalCoins);
+                        userCurrenciesPerDay.AmountNpc = virtualAmount;
+                        userModelKiller.DropItemNearby(prefabCurrencyGUID, totalCurrencies);
 
-                        ConfigDB.addUserCoinsPerDayToList(userCoinsPerDay);
-                        SaveDataToFiles.saveUsersCoinsPerDay();
-                        //Plugin.Logger.LogInfo($"Drop NPC {totalCoins} coins");
+                        ConfigDB.addUserCurrenciesPerDayToList(userCurrenciesPerDay);
+                        SaveDataToFiles.saveUsersCurrenciesPerDay();
+                        //Plugin.Logger.LogInfo($"Drop NPC {totalCurrencies} currencies");
                         return;
-                    } else if (userCoinsPerDay.AmountNpc < ConfigDB.MaxCoinsPerDayPerPlayerNpc)
+                    } else if (userCurrenciesPerDay.AmountNpc < ConfigDB.MaxCurrenciesPerDayPerPlayerNpc)
                     {
-                        totalCoins = ConfigDB.MaxCoinsPerDayPerPlayerNpc - userCoinsPerDay.AmountNpc;
-                        userCoinsPerDay.AmountNpc += totalCoins;
-                        userModelKiller.DropItemNearby(prefabCoinGUID, totalCoins);
+                        totalCurrencies = ConfigDB.MaxCurrenciesPerDayPerPlayerNpc - userCurrenciesPerDay.AmountNpc;
+                        userCurrenciesPerDay.AmountNpc += totalCurrencies;
+                        userModelKiller.DropItemNearby(prefabCurrencyGUID, totalCurrencies);
 
-                        ConfigDB.addUserCoinsPerDayToList(userCoinsPerDay);
-                        SaveDataToFiles.saveUsersCoinsPerDay();
-                       // Plugin.Logger.LogInfo($"Drop NPC {totalCoins} coins");
+                        ConfigDB.addUserCurrenciesPerDayToList(userCurrenciesPerDay);
+                        SaveDataToFiles.saveUsersCurrenciesPerDay();
+                       // Plugin.Logger.LogInfo($"Drop NPC {totalCurrencies} currencies");
                         return;
                     }
                 }
@@ -182,33 +191,38 @@ namespace BloodyShop.Server.Systems
 
         private static void rewardForVBlood(UserModel userModelKiller, int diedLevel)
         {
-            var prefabCoinGUID = new PrefabGUID(ShareDB.getCoinGUID());
+            var currencies = ShareDB.getCurrencyList();
+            var random = new Random();
+            int indexCurrencies = random.Next(currencies.Count);
+
+            var prefabCurrencyGUID = new PrefabGUID(currencies[indexCurrencies].guid);
+
             var percentFinal = calculateDropPercentage(diedLevel, ConfigDB.DropdVBloodPercentage, ConfigDB.IncrementPercentageDropEveryTenLevelsVBlood);
             if (probabilityOeneratingReward(percentFinal))
             {
-                var totalCoins = rnd.Next(ConfigDB.DropVBloodCoinsMin, ConfigDB.DropVBloodCoinsMax);
-                if (ConfigDB.searchUserCoinPerDay(userModelKiller.CharacterName, out UserCoinsPerDayModel userCoinsPerDay))
+                var totalCurrencies = rnd.Next(ConfigDB.DropVBloodCurrenciesMin, ConfigDB.DropVBloodCurrenciesMax);
+                if (ConfigDB.searchUserCurrencyPerDay(userModelKiller.CharacterName, out UserCurrenciesPerDayModel userCurrenciesPerDay))
                 {
-                    var virtualAmount = userCoinsPerDay.AmountVBlood + totalCoins;
-                    if (virtualAmount <= ConfigDB.MaxCoinsPerDayPerPlayerVBlood)
+                    var virtualAmount = userCurrenciesPerDay.AmountVBlood + totalCurrencies;
+                    if (virtualAmount <= ConfigDB.MaxCurrenciesPerDayPerPlayerVBlood)
                     {
-                        userCoinsPerDay.AmountVBlood = virtualAmount;
-                        userModelKiller.DropItemNearby(prefabCoinGUID, totalCoins);
+                        userCurrenciesPerDay.AmountVBlood = virtualAmount;
+                        userModelKiller.DropItemNearby(prefabCurrencyGUID, totalCurrencies);
 
-                        ConfigDB.addUserCoinsPerDayToList(userCoinsPerDay);
-                        SaveDataToFiles.saveUsersCoinsPerDay();
-                        //Plugin.Logger.LogInfo($"Drop NPC {totalCoins} coins");
+                        ConfigDB.addUserCurrenciesPerDayToList(userCurrenciesPerDay);
+                        SaveDataToFiles.saveUsersCurrenciesPerDay();
+                        //Plugin.Logger.LogInfo($"Drop NPC {totalCurrencies} currencies");
                         return;
                     }
-                    else if (userCoinsPerDay.AmountVBlood < ConfigDB.MaxCoinsPerDayPerPlayerVBlood)
+                    else if (userCurrenciesPerDay.AmountVBlood < ConfigDB.MaxCurrenciesPerDayPerPlayerVBlood)
                     {
-                        totalCoins = ConfigDB.MaxCoinsPerDayPerPlayerVBlood - userCoinsPerDay.AmountVBlood;
-                        userCoinsPerDay.AmountVBlood += totalCoins;
-                        userModelKiller.DropItemNearby(prefabCoinGUID, totalCoins);
+                        totalCurrencies = ConfigDB.MaxCurrenciesPerDayPerPlayerVBlood - userCurrenciesPerDay.AmountVBlood;
+                        userCurrenciesPerDay.AmountVBlood += totalCurrencies;
+                        userModelKiller.DropItemNearby(prefabCurrencyGUID, totalCurrencies);
 
-                        ConfigDB.addUserCoinsPerDayToList(userCoinsPerDay);
-                        SaveDataToFiles.saveUsersCoinsPerDay();
-                        //Plugin.Logger.LogInfo($"Drop NPC {totalCoins} coins");
+                        ConfigDB.addUserCurrenciesPerDayToList(userCurrenciesPerDay);
+                        SaveDataToFiles.saveUsersCurrenciesPerDay();
+                        //Plugin.Logger.LogInfo($"Drop NPC {totalCurrencies} currencies");
                         return;
                     }
                 }

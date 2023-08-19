@@ -9,6 +9,8 @@ namespace BloodyShop.Network.Messages
 
         public string PrefabGUID;
 
+        public string CurrencyGUID;
+
         public string Price;
 
         public string Stock;
@@ -25,6 +27,7 @@ namespace BloodyShop.Network.Messages
         public void Deserialize(NetBufferIn reader)
         {
             PrefabGUID = reader.ReadString(Allocator.Temp);
+            CurrencyGUID = reader.ReadString(Allocator.Temp);
             Price = reader.ReadString(Allocator.Temp);
             Stock = reader.ReadString(Allocator.Temp);
             Stack = reader.ReadString(Allocator.Temp);
@@ -35,6 +38,7 @@ namespace BloodyShop.Network.Messages
         public void Serialize(ref NetBufferOut writer)
         {
             writer.Write(PrefabGUID);
+            writer.Write(CurrencyGUID);
             writer.Write(Price);
             writer.Write(Stock);
             writer.Write(Stack);

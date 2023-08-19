@@ -21,6 +21,7 @@ namespace BloodyShop.Server.Network
 {
     public class ServerAddMessageAction
     {
+        public static CurrencyModel currency { get; private set; }
 
         public static void Received(FromCharacter fromCharacter, AddSerializedMessage msg)
         {
@@ -29,7 +30,11 @@ namespace BloodyShop.Server.Network
             //Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] AddSerializedMessage {user.CharacterName}");
             
 
+            if(!user.IsAdmin)
+                ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("You do not have permissions for this action"));
+
             var prefabGUID = int.Parse(msg.PrefabGUID);
+            var currencyGUID = int.Parse(msg.CurrencyGUID);
             var price = int.Parse(msg.Price);
             var stock = int.Parse(msg.Stock);
             var stack = int.Parse(msg.Stack);
@@ -42,11 +47,11 @@ namespace BloodyShop.Server.Network
 
             //Plugin.Logger.LogInfo($"shop add {prefabGUID} {price} {stock}");
 
-            addItem(user, prefabGUID, price, stock, name, stack);
+            addItem(user, prefabGUID, currencyGUID, price, stock, name, stack);
 
         }
 
-        private static void addItem(User user, int item, int price, int stock, string name, int stack)
+        private static void addItem(User user, int item, int currencyGUID, int price, int stock, string name, int stack)
         {
             try
             {
@@ -69,13 +74,15 @@ namespace BloodyShop.Server.Network
                     stack = 1;
                 }
 
-                if (!ShareDB.getCoin(out PrefabModel coin))
+                currency = ShareDB.getCurrency(currencyGUID);
+
+                if (currency == null)
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("Error loading currency type"));
                     return;
                 }
 
-                if (!ItemsDB.addProductList(item, price, stock, name, stack))
+                if (!ItemsDB.addProductList(item, price, stock, name, currency.guid, stack))
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("Invalid item type"));
                     return;
@@ -83,7 +90,7 @@ namespace BloodyShop.Server.Network
 
                 SaveDataToFiles.saveProductList();
 
-                ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, $"Added item {FontColorChat.White($"{stack}x {name} ({stock})")} to the store with a price of {FontColorChat.White($"{price} {coin?.PrefabName.ToString()}")}");
+                ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, $"Added item {FontColorChat.White($"{stack}x {name} ({stock})")} to the store with a price of {FontColorChat.White($"{price} {currency?.name.ToString()}")}");
 
                 if (!ConfigDB.ShopEnabled)
                 {
@@ -92,15 +99,28 @@ namespace BloodyShop.Server.Network
 
                 if (ConfigDB.AnnounceAddRemovePublic)
                 {
-                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{stack}x {name} ({stock})")} have been added to the Store for {FontColorChat.White($"{price} {coin?.PrefabName.ToString()}")}"));
+                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{stack}x {name} ({stock})")} have been added to the Store for {FontColorChat.White($"{price} {currency?.name.ToString()}")}"));
                 }
 
-                var usersOnline = GameData.Users.Online;
+                /*var usersOnline = GameData.Users.Online;
                 foreach (var userOnline in usersOnline)
                 {
                     var msg = ServerListMessageAction.createMsg();
                     ServerListMessageAction.Send((ProjectM.Network.User)userOnline.Internals.User, msg);
+                }*/
+
+                var userWithUI = UserUI.GetUsersWithUI();
+                foreach (var userUI in userWithUI)
+                {
+                    var userValue = userUI.Value;
+                    if(userValue.IsConnected)
+                    {
+                        var msg = ServerListMessageAction.createMsg();
+                        ServerListMessageAction.Send(userValue, msg);
+                    }
+                    
                 }
+
                 return;
             }
             catch (Exception error)

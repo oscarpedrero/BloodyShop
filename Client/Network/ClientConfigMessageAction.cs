@@ -16,12 +16,14 @@ namespace BloodyShop.Client.Network
 
         public static void Received(ConfigSerializedMessage msg)
         {
-            //Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] ConfigSerializedMessage {msg.ItemsJson} - {msg.CoinGUID} - {msg.ShopName} - {msg.ShopOpen} - {msg.ShopOpen}");
+            //Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] ConfigSerializedMessage {msg.ItemsJson} - {msg.CurrencyGUID} - {msg.ShopName} - {msg.ShopOpen} - {msg.ShopOpen}");
 
             var productList = JsonSerializer.Deserialize<List<ItemShopModel>>(msg.ItemsJson);
             ItemsDB.setProductList(productList);
-            
-            ShareDB.setCoinGUID(Int32.Parse(msg.CoinGUID));
+
+            //Plugin.Logger.LogInfo($"{msg.CurrenciesJson}");
+            var currenciesList = JsonSerializer.Deserialize<List<CurrencyModel>>(msg.CurrenciesJson);
+            ShareDB.setCurrencyList(currenciesList);
 
             //Plugin.Logger.LogInfo("Shopname");
             ClientDB.shopName = msg.ShopName;

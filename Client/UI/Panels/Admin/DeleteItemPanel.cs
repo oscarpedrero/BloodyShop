@@ -13,23 +13,20 @@ using UniverseLib;
 using System.Collections.Generic;
 using BloodyShop.DB.Models;
 using System.Linq;
+using Il2CppSystem;
+using Unity.Transforms;
+using BloodyShop.Client.Utils;
 
 namespace BloodyShop.Client.UI.Panels.Admin
 {
-    public class DeleteItemPanel : UniverseLib.UI.Panels.PanelBase
+    public class DeleteItemPanel : UIModel
     {
 
         public static DeleteItemPanel Instance { get; private set; }
 
-        public override string Name => "Admin Delete Product";
+        
 
-        public override bool CanDragAndResize => true;
-
-        public override int MinWidth => 680;
-        public override int MinHeight => 535;
-        public override Vector2 DefaultAnchorMin => new Vector2(0.5f, 1f);
-        public override Vector2 DefaultAnchorMax => new Vector2(0.5f, 1f);
-        public override Vector2 DefaultPosition => new Vector2(0 - MinWidth / 2 + 680, 0 + MinWidth / 2);
+        public static int MinWidth => 680;
 
         public GameObject NavbarHolder;
         public Dropdown MouseInspectDropdown;
@@ -45,11 +42,12 @@ namespace BloodyShop.Client.UI.Panels.Admin
         public GameObject ContentPagination;
 
         public List<PrefabModel> items = new();
+        public List<CurrencyModel> currencies = new ();
 
         public static List<(int index, int input)> _stackArrayCache = new();
+        private List<(int index, CurrencyModel currency)> _currenciesArrayCache = new();
 
-        public static float CurrentPanelWidth => Instance.Rect.rect.width;
-        public static float CurrentPanelHeight => Instance.Rect.rect.height;
+        public CurrencyModel currency { get; private set; }
 
         public int CurrentDisplayedIndex;
 
@@ -61,42 +59,26 @@ namespace BloodyShop.Client.UI.Panels.Admin
         private static int skip = 0;
         public static string textSearch = "";
 
-        public DeleteItemPanel(UIBase owner) : base(owner)
+        public PanelConfig Parent { get; }
+
+        public DeleteItemPanel(PanelConfig parent)
         {
-            Instance = this;
+            Parent = parent;
         }
 
-        public override void Update()
-        {
-            
-        }
+        private static GameObject uiRoot;
 
-        public override void OnFinishResize()
-        {
-            base.OnFinishResize();
-        }
+        public override GameObject UIRoot => uiRoot;
 
-        protected override void ConstructPanelContent()
+        public override void ConstructUI(GameObject content)
         {
 
             active = true;
 
-            // TITLE Bar
-            GameObject closeHolder = TitleBar.transform.Find("CloseHolder").gameObject;
-
-            // REFRESH BTN
-            ButtonRef refreshBtn = UIFactory.CreateButton(closeHolder.gameObject, "RefreshBtn", "Refresh",
-                new Color(0.3f, 0.2f, 0.2f));
-            UIFactory.SetLayoutElement(refreshBtn.Component.gameObject, minHeight: 25, minWidth: 180);
-            refreshBtn.Component.transform.SetSiblingIndex(refreshBtn.Component.transform.GetSiblingIndex() - 1);
-            refreshBtn.OnClick += RefreshAction;
-            RuntimeHelper.SetColorBlock(refreshBtn.Component,
-                       new Color(31 / 255f, 97 / 255f, 141 / 255f),
-                        new Color(36 / 255f, 113 / 255f, 163 / 255f),
-                        new Color(41 / 255f, 128 / 255f, 185 / 255f));
+            uiRoot = UIFactory.CreateUIObject("SceneExplorer", content);
 
             // CONTAINER FOR SEARCH INPUT
-            var _contentSearch = UIFactory.CreateHorizontalGroup(ContentRoot.gameObject, "HeaderItem", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
+            var _contentSearch = UIFactory.CreateHorizontalGroup(uiRoot, "HeaderItem", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
 
             UIFactory.SetLayoutElement(_contentSearch, flexibleHeight: 0, minHeight: 60, preferredHeight: 60, flexibleWidth: 0);
 
@@ -111,10 +93,10 @@ namespace BloodyShop.Client.UI.Panels.Admin
             searchBtn.OnClick += SearchAction;
 
             //INSERT LAYOUT
-            UIFactory.SetLayoutGroup<VerticalLayoutGroup>(ContentRoot, true, true, true, true, 4, padLeft: 5, padRight: 5);
+            UIFactory.SetLayoutGroup<VerticalLayoutGroup>(uiRoot, true, true, true, true, 4, padLeft: 5, padRight: 5);
 
             // CONTAINER FOR PRODUCTS
-            var _contentHeader = UIFactory.CreateHorizontalGroup(ContentRoot.gameObject, "HeaderItem", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
+            var _contentHeader = UIFactory.CreateHorizontalGroup(uiRoot, "HeaderItem", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
 
             // Aval ITEM
             Text headerAval = UIFactory.CreateLabel(_contentHeader, "itemAvalTxt", $"Stock");
@@ -127,11 +109,11 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
             //NAME ITEM
             var imageHeader = UIFactory.CreateUIObject("IconItem", _contentHeader);
-            UIFactory.SetLayoutElement(imageHeader, minWidth: 310, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 310);
+            UIFactory.SetLayoutElement(imageHeader, minWidth: 350, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 310);
 
             // PRICE ITEM
             Text headerPrice = UIFactory.CreateLabel(_contentHeader, "itemPriceTxt", $"Price");
-            UIFactory.SetLayoutElement(headerPrice.gameObject, minWidth: 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 100);
+            UIFactory.SetLayoutElement(headerPrice.gameObject, minWidth: 150, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 150);
 
             // DELETE BTN
             var headerDelete = UIFactory.CreateUIObject("BuyItem", _contentHeader);
@@ -141,7 +123,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
             contentScroll = new GameObject();
 
-            var _scroolView = UIFactory.CreateScrollView(ContentRoot.gameObject, "scrollView", out contentScroll, out AutoSliderScrollbar autoSliderScrollbar);
+            var _scroolView = UIFactory.CreateScrollView(uiRoot, "scrollView", out contentScroll, out AutoSliderScrollbar autoSliderScrollbar);
 
             CreateListProductsLayout();
 
@@ -170,7 +152,9 @@ namespace BloodyShop.Client.UI.Panels.Admin
             
             foreach (var item in items.Skip(skip).Take(10))
             {
-                if (ShareDB.getCoin(out PrefabModel coin))
+                currency = ShareDB.getCurrency(item.currency);
+
+                if (currency != null)
                 {
                     // CONTAINER FOR PRODUCTS
                     var _contentProduct = UIFactory.CreateHorizontalGroup(contentScroll, "ContentItem-" + index, true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
@@ -187,16 +171,18 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
                     //NAME ITEM
                     Text itemName = UIFactory.CreateLabel(_contentProduct, "itemNameTxt-" + index, $" {item.PrefabStack}x {item.PrefabName}", TextAnchor.MiddleLeft);
-                    UIFactory.SetLayoutElement(itemName.gameObject, minWidth: 310, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 310);
+                    UIFactory.SetLayoutElement(itemName.gameObject, minWidth: 350, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 350);
 
                     // PRICE ITEM
-                    Text itemPrice = UIFactory.CreateLabel(_contentProduct, "itemPriceTxt-" + index, $"{item.PrefabPrice} {coin.PrefabName}");
-                    UIFactory.SetLayoutElement(itemPrice.gameObject, minWidth: 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 100);
+                    Text itemPrice = UIFactory.CreateLabel(_contentProduct, "itemPriceTxt-" + index, $"{item.PrefabPrice}x {currency.name}");
+                    UIFactory.SetLayoutElement(itemPrice.gameObject, minWidth: 200, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 200);
                     _stackArrayCache.Add((index, item.PrefabStack));
+
+                    _currenciesArrayCache.Add((index, currency));
 
                     // DELETE BTN
                     ButtonRef deleteBtn = UIFactory.CreateButton(_contentProduct, "deleteItemBtn-" + index, "Delete", new Color(203 / 255f, 67 / 255f, 53 / 255f));
-                    UIFactory.SetLayoutElement(deleteBtn.Component.gameObject, minWidth: 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 100);
+                    UIFactory.SetLayoutElement(deleteBtn.Component.gameObject, minWidth: 150, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 150);
                     deleteBtn.OnClick += DeleteAction;
 
                     UIFactory.SetLayoutElement(_contentProduct, flexibleHeight: 0, minHeight: 60, preferredHeight: 60, flexibleWidth: 0);
@@ -221,15 +207,15 @@ namespace BloodyShop.Client.UI.Panels.Admin
         {
 
             decimal totalPages = total / limit;
-            var last = Math.Ceiling(totalPages);
+            var last = System.Math.Ceiling(totalPages);
 
             //INSERT LAYOUT
-            UIFactory.SetLayoutGroup<VerticalLayoutGroup>(ContentRoot, true, true, true, true, 4, padLeft: 5, padRight: 5);
+            UIFactory.SetLayoutGroup<VerticalLayoutGroup>(uiRoot, true, true, true, true, 4, padLeft: 5, padRight: 5);
 
             ContentPagination = new GameObject();
 
             // CONTAINER FOR PAGINATION
-            ContentPagination = UIFactory.CreateHorizontalGroup(ContentRoot.gameObject, "PaginationGroup", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
+            ContentPagination = UIFactory.CreateHorizontalGroup(uiRoot, "PaginationGroup", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
 
             Text footerText = UIFactory.CreateLabel(ContentPagination, "footerText", $"Products: {total} Pages: {last + 1 }");
             UIFactory.SetLayoutElement(footerText.gameObject, minWidth: 50, minHeight: 30, flexibleHeight: 0, preferredHeight: 30, flexibleWidth: 0, preferredWidth: 50);
@@ -283,13 +269,16 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         private void DeleteAction()
         {
+            Sound.Play(Properties.Resources.floop2_x);
+
             var btnName = EventSystem.current.currentSelectedGameObject.name;
             var indexItemUI = btnName.Replace("deleteItemBtn-", "");
-            var prefabDelete = items[Int32.Parse(indexItemUI) - 1];
-            var stackDel = serachStackInput(Int32.Parse(indexItemUI));
-            indexItemUI = ItemsDB.searchIndexForProduct(prefabDelete.PrefabGUID, stackDel).ToString();
+            var prefabDelete = items[int.Parse(indexItemUI) - 1];
+            var stackDel = serachStackInput(int.Parse(indexItemUI));
+            var currency = serachCurrencyInput(int.Parse(indexItemUI));
+            indexItemUI = ItemsDB.searchIndexForProduct(prefabDelete.PrefabGUID, stackDel, currency).ToString();
 
-            //Plugin.Logger.LogInfo($"DELETE INDEX: {indexItemUI}");
+            
 
             if (indexItemUI != "-1")
             {
@@ -322,7 +311,23 @@ namespace BloodyShop.Client.UI.Panels.Admin
             return 1;
         }
 
-        private void RefreshAction()
+
+
+        private CurrencyModel serachCurrencyInput(int indexSearch)
+        {
+
+            foreach (var (index, input) in _currenciesArrayCache)
+            {
+                if (index == indexSearch)
+                {
+                    return input;
+                }
+            }
+
+            return null;
+        }
+
+        public void RefreshAction()
         {
             UIManager.RefreshDataPanel();
         }

@@ -7,7 +7,7 @@ namespace BloodyShop.Network.Messages
     public class ConfigSerializedMessage : VNetworkMessage
     {
         public string ItemsJson;
-        public string CoinGUID;
+        public string CurrenciesJson;
         public string ShopName;
         public string ShopOpen;
         public string isAdmin;
@@ -20,7 +20,7 @@ namespace BloodyShop.Network.Messages
         public void Deserialize(NetBufferIn reader)
         {
             ItemsJson = reader.ReadString(Allocator.Temp);
-            CoinGUID = reader.ReadString(Allocator.Temp);
+            CurrenciesJson = reader.ReadString(Allocator.Temp);
             ShopName = reader.ReadString(Allocator.Temp);
             ShopOpen = reader.ReadString(Allocator.Temp);
             isAdmin = reader.ReadString(Allocator.Temp);
@@ -30,7 +30,7 @@ namespace BloodyShop.Network.Messages
         public void Serialize(ref NetBufferOut writer)
         {
             writer.Write(ItemsJson);
-            writer.Write(CoinGUID);
+            writer.Write(CurrenciesJson);
             writer.Write(ShopName);
             writer.Write(ShopOpen);
             writer.Write(isAdmin);

@@ -23,6 +23,9 @@ namespace BloodyShop.Server.Network
 
             //Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] DeleteSerializedMessage {user.CharacterName} - {msg.Item}");
 
+            if (!user.IsAdmin)
+                ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("You do not have permissions for this action"));
+
             var itemID = Int32.Parse(msg.Item);
 
             removeItemFromShop(user, itemID);
@@ -49,11 +52,15 @@ namespace BloodyShop.Server.Network
 
                 ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Yellow($"Item {FontColorChat.White($"{itemShopModel.PrefabName}x {itemShopModel.PrefabName}")} removed successful."));
 
-                var usersOnline = GameData.Users.Online;
-                foreach (var userOnline in usersOnline)
+                var userWithUI = UserUI.GetUsersWithUI();
+                foreach (var userUI in userWithUI)
                 {
-                    var msg = ServerListMessageAction.createMsg();
-                    ServerListMessageAction.Send((ProjectM.Network.User)userOnline.Internals.User, msg);
+                    var userValue = userUI.Value;
+                    if (userValue.IsConnected)
+                    {
+                        var msg = ServerListMessageAction.createMsg();
+                        ServerListMessageAction.Send(userValue, msg);
+                    }
                 }
 
                 if (ConfigDB.AnnounceAddRemovePublic)

@@ -70,7 +70,8 @@ namespace BloodyShop
         {
             NetworkMessages.RegisterMessage();
             ServerMod.LoadConfigToDB();
-            ServerMod.LoadUserCoinsPerDayToDB();
+            ServerMod.LoadCurrenciesToDB();
+            ServerMod.LoadUserCurrenciesPerDayToDB();
         }
 
         public static void onClientGameDataOnInitialize()

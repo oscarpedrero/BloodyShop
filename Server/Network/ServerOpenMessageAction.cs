@@ -30,11 +30,15 @@ namespace BloodyShop.Server.Network
 
             ConfigDB.ShopEnabled = true;
             ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($" {FontColorChat.White($" {ConfigDB.StoreName} ")} just opened"));
-            var usersOnline = GameData.Users.Online;
             var msg = new OpenSerializedMessage();
-            foreach (var user in usersOnline)
+            var userWithUI = UserUI.GetUsersWithUI();
+            foreach (var userUI in userWithUI)
             {
-                Send((User)user.Internals.User, msg);
+                var userValue = userUI.Value;
+                if (userValue.IsConnected)
+                {
+                    Send(userValue, msg);
+                }
             }
 
         }

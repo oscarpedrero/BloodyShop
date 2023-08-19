@@ -91,9 +91,9 @@ Comments:
 - [ ] Check that the drop system works for the death of NPCs
 - [ ] Check that the drop system works for the death of VBlood
 - [ ] Check that the drop system works when you win a duel in PVP
-- [ ] Check that it is not possible to exceed the limit per day per player of the store coins to receive on the death of an NPC
-- [ ] Check that it is not possible to exceed the limit per day per player of the store coins to receive on the death of an VBlood
-- [ ]  Check that it is not possible to exceed the limit per day per player of the store coins to receive in the victory of a PVP duel
+- [ ] Check that it is not possible to exceed the limit per day per player of the store currencies to receive on the death of an NPC
+- [ ] Check that it is not possible to exceed the limit per day per player of the store currencies to receive on the death of an VBlood
+- [ ]  Check that it is not possible to exceed the limit per day per player of the store currencies to receive in the victory of a PVP duel
 - [ ] Check that the drop system increases every 10 levels the percentage of drop possibility of the NPC.
 - [ ] Check that the drop system increases every 10 levels the percentage of drop possibility of the VBlood.
 - [ ] Verify that the drop system increases the drop chance percentage of PVP duels every 10 levels.

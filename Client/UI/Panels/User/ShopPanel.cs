@@ -15,6 +15,11 @@ using System.Collections.Generic;
 using System;
 using BloodyShop.DB.Models;
 using System.Linq;
+using System.IO;
+using System.Media;
+using NAudio.Wave;
+using static ProjectM.Terrain.MapMaker.MapMakerDefinition;
+using BloodyShop.Client.Utils;
 
 namespace BloodyShop.Client.UI.Panels.User
 {
@@ -49,6 +54,7 @@ namespace BloodyShop.Client.UI.Panels.User
         public static float CurrentPanelHeight => Instance.Rect.rect.height;
 
         public static RectTransform ImageIconRect { get; private set; }
+        public CurrencyModel currency { get; private set; }
 
         public int CurrentDisplayedIndex;
 
@@ -63,6 +69,8 @@ namespace BloodyShop.Client.UI.Panels.User
         private static int total = 0;
         private static int skip = 0;
         public static string textSearch = "";
+
+        private List<(int index, CurrencyModel currency)> _currenciesArrayCache = new();
 
         public ShopPanel(UIBase owner) : base(owner)
         {
@@ -182,9 +190,13 @@ namespace BloodyShop.Client.UI.Panels.User
             }
             var index = skip+1;
             _quantityArrayCache = new();
+            _stackArrayCache = new();
+            _currenciesArrayCache = new();
             foreach (var item in items.Skip(skip).Take(limit))
             {
-                if (ShareDB.getCoin(out PrefabModel coin))
+                currency = ShareDB.getCurrency(item.currency);
+
+                if (currency != null)
                 {
                     // CONTAINER FOR PRODUCTS
                     var _contentProduct = UIFactory.CreateHorizontalGroup(contentScroll, "ContentItem-" + index, true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
@@ -212,8 +224,10 @@ namespace BloodyShop.Client.UI.Panels.User
                     UIFactory.SetLayoutElement(itemName.gameObject, minWidth: 230, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 230);
 
                     // PRICE ITEM
-                    Text itemPrice = UIFactory.CreateLabel(_contentProduct, "itemPriceTxt-" + index, $"{item.PrefabPrice} {coin.PrefabName}");
+                    Text itemPrice = UIFactory.CreateLabel(_contentProduct, "itemPriceTxt-" + index, $"{item.PrefabPrice}x {currency.name}");
                     UIFactory.SetLayoutElement(itemPrice.gameObject, minWidth: 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 100);
+
+                    _currenciesArrayCache.Add((index, currency));
 
                     // QUANTITY ITEM
                     var quantityNew = UIFactory.CreateInputField(_contentProduct, "quantityNew|" + index, "Quantity");
@@ -329,17 +343,20 @@ namespace BloodyShop.Client.UI.Panels.User
         }
 
 
-
         private void BuyAction()
         {
+
+            Sound.Play(Properties.Resources.cash_register_x);
+
             var btnName = EventSystem.current.currentSelectedGameObject.name;
             var indexItemUI = btnName.Replace("buyItemBtn-", "");
             //Plugin.Logger.LogInfo($"BUY INDEX BEFORE: {indexItemUI}");
             var prefabBuy = items[Int32.Parse(indexItemUI) - 1];
             var quantityBuy = serachQuantityInput(Int32.Parse(indexItemUI));
             var stackBuy = serachStackInput(Int32.Parse(indexItemUI));
+            var currency = serachCurrencyInput(Int32.Parse(indexItemUI));
             //Plugin.Logger.LogInfo($"quantityBuy: {quantityBuy}");
-            indexItemUI = ItemsDB.searchIndexForProduct(prefabBuy.PrefabGUID, stackBuy).ToString();
+            indexItemUI = ItemsDB.searchIndexForProduct(prefabBuy.PrefabGUID, stackBuy, currency).ToString();
 
             //Plugin.Logger.LogInfo($"BUY INDEX AFTER: {indexItemUI}");
 
@@ -395,6 +412,20 @@ namespace BloodyShop.Client.UI.Panels.User
             }
 
             return 1;
+        }
+
+        private CurrencyModel serachCurrencyInput(int indexSearch)
+        {
+
+            foreach (var (index, input) in _currenciesArrayCache)
+            {
+                if (index == indexSearch)
+                {
+                    return input;
+                }
+            }
+
+            return null;
         }
 
         

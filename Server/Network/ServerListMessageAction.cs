@@ -31,6 +31,11 @@ namespace BloodyShop.Server.Network
 
             msg.ItemsJson = jsonOutPut;
 
+            var currencyList = ShareDB.getCurrencyList();
+            jsonOutPut = JsonSerializer.Serialize(currencyList);
+
+            msg.CurrencyJson = jsonOutPut;
+
             return msg;
         }
 

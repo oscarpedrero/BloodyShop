@@ -20,6 +20,7 @@ namespace BloodyShop.Server.Network
 {
     public class ServerBuyMessageAction
     {
+        private static CurrencyModel currency;
 
         public static void Received(FromCharacter fromCharacter, BuySerializedMessage msg)
         {
@@ -45,12 +46,6 @@ namespace BloodyShop.Server.Network
                     return;
                 }
 
-                if (!ShareDB.getCoin(out PrefabModel coin))
-                {
-                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("Error loading currency type"));
-                    return;
-                }
-
                 if (quantity <= 0)
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"The minimum purchase quantity of a product is 1"));
@@ -60,6 +55,14 @@ namespace BloodyShop.Server.Network
                 if (!ItemsDB.SearchItemByCommand(indexPosition, out PrefabModel itemShopModel))
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("This item is not available in the store"));
+                    return;
+                }
+
+                currency = ShareDB.getCurrency(itemShopModel.currency);
+
+                if (currency == null)
+                {
+                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("Error loading currency type"));
                     return;
                 }
 
@@ -77,15 +80,17 @@ namespace BloodyShop.Server.Network
                     return;
                 }
 
-                if (!InventorySystem.verifyHaveSuficientPrefabsInInventory(user.CharacterName.ToString(), coin.itemModel.PrefabGUID, finalPrice))
+                var currencyItemModel = GameData.Items.GetPrefabById(new PrefabGUID(currency.guid));
+
+                if (!InventorySystem.verifyHaveSuficientPrefabsInInventory(user.CharacterName.ToString(), currencyItemModel.PrefabGUID, finalPrice))
                 {
-                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"You need {FontColorChat.White($"{finalPrice} {coin.PrefabName}")} in your inventory for this purchase"));
+                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"You need {FontColorChat.White($"{finalPrice} {currency.name}")} in your inventory for this purchase"));
                     return;
                 }
 
-                if (!InventorySystem.getPrefabFromInventory(user.CharacterName.ToString(), coin.itemModel.PrefabGUID, finalPrice))
+                if (!InventorySystem.getPrefabFromInventory(user.CharacterName.ToString(), currencyItemModel.PrefabGUID, finalPrice))
                 {
-                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"You need {FontColorChat.White($"{finalPrice} {coin.PrefabName}")} in your inventory for this purchase"));
+                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"You need {FontColorChat.White($"{finalPrice} {currency.name}")} in your inventory for this purchase"));
                     return;
                 }
 
@@ -98,7 +103,7 @@ namespace BloodyShop.Server.Network
                     return;
                 }
 
-                ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Yellow($"Transaction successful. You have purchased {FontColorChat.White($"{finalQuantity}x {itemName}")} for a total of  {FontColorChat.White($"{finalPrice} {coin.PrefabName}")}"));
+                ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Yellow($"Transaction successful. You have purchased {FontColorChat.White($"{finalQuantity}x {itemName}")} for a total of  {FontColorChat.White($"{finalPrice} {currency.name}")}"));
 
                 if (!ItemsDB.ModifyStockByCommand(indexPosition, quantity))
                 {
@@ -109,16 +114,20 @@ namespace BloodyShop.Server.Network
                 SaveDataToFiles.saveProductList();
                 LoadDataFromFiles.loadProductList();
 
-                var usersOnline = GameData.Users.Online;
-                foreach (var userOnline in usersOnline)
+                var userWithUI = UserUI.GetUsersWithUI();
+                foreach (var userUI in userWithUI)
                 {
-                    var msg = ServerListMessageAction.createMsg();
-                    ServerListMessageAction.Send((ProjectM.Network.User)userOnline.Internals.User, msg);
+                    var userValue = userUI.Value;
+                    if (userValue.IsConnected)
+                    {
+                        var msg = ServerListMessageAction.createMsg();
+                        ServerListMessageAction.Send(userValue, msg);
+                    }
                 }
 
                 if (ConfigDB.AnnounceBuyPublic)
                 {
-                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{user.CharacterName} has purchased {FontColorChat.White($"{finalQuantity}x {itemName}")} for a total of  {FontColorChat.White($"{finalPrice} {coin.PrefabName}")}"));
+                    ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{user.CharacterName} has purchased {FontColorChat.White($"{finalQuantity}x {itemName}")} for a total of  {FontColorChat.White($"{finalPrice} {currency.name}")}"));
                 }
             }
             catch (Exception error)

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BloodyShop.Server.DB.Model
 {
-    public class UserCoinsPerDayModel
+    public class UserCurrenciesPerDayModel
     {
         public string CharacterName { get; set; }
         public string date { get; set; }

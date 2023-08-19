@@ -13,40 +13,31 @@ using UniverseLib.UI.Widgets;
 using System.Collections.Generic;
 using System.Linq;
 using BloodyShop.DB.Models;
+using MS.Internal.Xml.XPath;
+using BloodyShop.Client.Utils;
 
 namespace BloodyShop.Client.UI.Panels.Admin
 {
-    public class AddItemPanel : UniverseLib.UI.Panels.PanelBase
+    public class AddItemPanel : UIModel
     {
+        public PanelConfig Parent { get; }
 
         public static AddItemPanel Instance { get; private set; }
 
-        public override string Name => "Admin Add Item Shop";
-
-        public override bool CanDragAndResize => true;
-
-        public override int MinWidth => 780;
-        public override int MinHeight => 535;
-        public override Vector2 DefaultAnchorMin => new Vector2(0.5f, 1f);
-        public override Vector2 DefaultAnchorMax => new Vector2(0.5f, 1f);
-        public override Vector2 DefaultPosition => new Vector2(0 - MinWidth / 2 - 680, 0 + MinWidth / 2);
-
         public GameObject NavbarHolder;
-        public Dropdown MouseInspectDropdown;
         public GameObject ContentHolder;
         public GameObject ContentProduct;
         public RectTransform ContentRect;
         public Text alertTXT;
         public GameObject contentScroll;
-        public Dropdown dropdowntype;
+        public Dropdown dropdownCurrency;
         public Dropdown dropdownitem;
         public ButtonRef OpenCloseStoreBtn;
         public List<GameObject> productsListLayers = new List<GameObject>();
 
         public List<PrefabModel> itemsModel = new();
 
-        public static float CurrentPanelWidth => Instance.Rect.rect.width;
-        public static float CurrentPanelHeight => Instance.Rect.rect.height;
+        public List<CurrencyModel> currencies { get; private set; }
 
         public int CurrentDisplayedIndex;
 
@@ -60,36 +51,35 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         List<InputFieldRef> priceArray = new();
 
+        List<Dropdown> currencyArray = new();
+
         private static int limit = 10;
 
-        public AddItemPanel(UIBase owner) : base(owner)
+        private static GameObject uiRoot;
+
+        public static int MinWidth => 680;
+
+        public override GameObject UIRoot => uiRoot;
+
+        public AddItemPanel(PanelConfig parent)
         {
-            Instance = this;
+            Parent = parent;
         }
 
-        public override void Update()
+        public override void ConstructUI(GameObject content)
         {
-            //InspectorManager.Update();
-        }
-
-        public override void OnFinishResize()
-        {
-            base.OnFinishResize();
-        }
-
-        protected override void ConstructPanelContent()
-        {
-
             active = true;
 
+            uiRoot = UIFactory.CreateUIObject("ConfigPanel", content);
+
             // TITLE Bar
-            GameObject closeHolder = TitleBar.transform.Find("CloseHolder").gameObject;
+            //GameObject closeHolder = TitleBar.transform.Find("CloseHolder").gameObject;
 
             //INSERT LAYOUT
-            UIFactory.SetLayoutGroup<VerticalLayoutGroup>(ContentRoot, true, true, true, true, 4, padLeft: 5, padRight: 5);
+            //UIFactory.SetLayoutGroup<VerticalLayoutGroup>(ContentRoot, true, true, true, true, 4, padLeft: 5, padRight: 5);
 
             // CONTAINER FOR SEARCH INPUT
-            var _contentSearch = UIFactory.CreateHorizontalGroup(ContentRoot.gameObject, "HeaderItem", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
+            var _contentSearch = UIFactory.CreateHorizontalGroup(uiRoot, "HeaderItem", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
 
             UIFactory.SetLayoutElement(_contentSearch, flexibleHeight: 0, minHeight: 60, preferredHeight: 60, flexibleWidth: 0);
 
@@ -105,10 +95,10 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
 
             //INSERT LAYOUT
-            UIFactory.SetLayoutGroup<VerticalLayoutGroup>(ContentRoot, true, true, true, true, 4, padLeft: 5, padRight: 5);
+            UIFactory.SetLayoutGroup<VerticalLayoutGroup>(uiRoot, true, true, true, true, 4, padLeft: 5, padRight: 5);
 
             // CONTAINER FOR PRODUCTS
-            var _contentHeader = UIFactory.CreateHorizontalGroup(ContentRoot.gameObject, "HeaderItem", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
+            var _contentHeader = UIFactory.CreateHorizontalGroup(uiRoot, "HeaderItem", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
 
             // ITEM ICON
             Text headerName = UIFactory.CreateLabel(_contentHeader, "itemNameTxt", $"Name", TextAnchor.MiddleLeft);
@@ -117,6 +107,10 @@ namespace BloodyShop.Client.UI.Panels.Admin
             //NAME ITEM
             var imageHeader = UIFactory.CreateUIObject("IconItem", _contentHeader);
             UIFactory.SetLayoutElement(imageHeader, minWidth: 310, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 310);
+
+            // CURRENCY ITEM
+            Text headerCurrency = UIFactory.CreateLabel(_contentHeader, "itemCurrencyTxt", $"Currency");
+            UIFactory.SetLayoutElement(headerCurrency.gameObject, minWidth: 50, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 50);
 
             // PRICE ITEM
             Text headerPrice = UIFactory.CreateLabel(_contentHeader, "itemPriceTxt", $"Price");
@@ -138,7 +132,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
             contentScroll = new GameObject();
 
-            var _scroolView = UIFactory.CreateScrollView(ContentRoot.gameObject, "scrollView", out contentScroll, out AutoSliderScrollbar autoSliderScrollbar);
+            var _scroolView = UIFactory.CreateScrollView(uiRoot.gameObject, "scrollView", out contentScroll, out AutoSliderScrollbar autoSliderScrollbar);
 
             CreateListProductsLayout();
 
@@ -154,10 +148,12 @@ namespace BloodyShop.Client.UI.Panels.Admin
             stockArray = new();
             stackArray = new();
             priceArray = new();
+            currencyArray = new();
             foreach (var item in itemsModel.Take(limit))
             {
-                if (ShareDB.getCoin(out PrefabModel coin))
-                {
+                    currencies = ShareDB.getCurrencyList();
+
+
                     // CONTAINER FOR PRODUCTS
                     var _contentProduct = UIFactory.CreateHorizontalGroup(contentScroll, "ContentItem-" + index, true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
 
@@ -170,6 +166,14 @@ namespace BloodyShop.Client.UI.Panels.Admin
                     //NAME ITEM
                     Text itemName = UIFactory.CreateLabel(_contentProduct, "itemNameTxt" + index, $" {item.PrefabName}", TextAnchor.MiddleLeft);
                     UIFactory.SetLayoutElement(itemName.gameObject, minWidth: 310, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 310);
+
+                    string[] dropDownCurrencyValue = currencies.Select(currency => currency.name).ToArray();
+
+                    // CURRENCY ITEM
+                    GameObject currencyNew = UIFactory.CreateDropdown(_contentProduct, "currencyNew|" + index, out dropdownCurrency, "Currency", 14, OnDropdownSelect, dropDownCurrencyValue);
+                    UIFactory.SetLayoutElement(currencyNew, minWidth: 80, minHeight: 30, flexibleHeight: 0, preferredHeight: 30, flexibleWidth: 0, preferredWidth: 100);
+
+                    currencyArray.Add(dropdownCurrency);
 
                     // PRICE ITEM
                     var priceNew = UIFactory.CreateInputField(_contentProduct, "priceNew|" + index, "Price");
@@ -211,8 +215,15 @@ namespace BloodyShop.Client.UI.Panels.Admin
                     productsListLayers.Add(_separator);
 
                     index++;
-                }
+                
             }
+        }
+
+        public static void OnDropdownSelect(int index)
+        {
+
+            return;
+
         }
 
         private void SearchActionText(string str)
@@ -241,6 +252,10 @@ namespace BloodyShop.Client.UI.Panels.Admin
             var inputStock = stockArray[index];
             var inputStack = stackArray[index];
 
+            var dropDownCurrency = currencyArray[index];
+
+            var currency = ShareDB.getCurrencyByName(dropDownCurrency.options[dropDownCurrency.value].text);
+
             var price = inputPrice.Text;
             var stock = inputStock.Text;
             var stack = inputStack.Text;
@@ -258,13 +273,15 @@ namespace BloodyShop.Client.UI.Panels.Admin
                     Price = price,
                     Stock = stock,
                     Stack = stack,
+                    CurrencyGUID = currency.guid.ToString(),
                 };
+                Sound.Play(Properties.Resources.coin);
                 ClientAddMessageAction.Send(msg);
                 RefreshAction();
             }
         }
 
-        private void RefreshAction()
+        public void RefreshAction()
         {
             UIManager.RefreshDataPanel();
         }

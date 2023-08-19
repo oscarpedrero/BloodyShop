@@ -9,7 +9,7 @@ namespace BloodyShop.Server.Core
 {
     public  class InventorySystem
     {
-        public static bool searchPrefabsInInventory(string characterName, PrefabGUID prefabCoinGUID, out int total)
+        public static bool searchPrefabsInInventory(string characterName, PrefabGUID prefabCurrencyGUID, out int total)
         {
             total = 0;
             try
@@ -21,7 +21,7 @@ namespace BloodyShop.Server.Core
                 NativeArray<InventoryBuffer> inventory = new NativeArray<InventoryBuffer>();
                 InventoryUtilities.TryGetInventory(Plugin.Server.EntityManager, characterEntity, out inventory);
 
-                total = InventoryUtilities.GetItemAmount(Plugin.Server.EntityManager, characterEntity, prefabCoinGUID);
+                total = InventoryUtilities.GetItemAmount(Plugin.Server.EntityManager, characterEntity, prefabCurrencyGUID);
                 if (total >= 0)
                 {
                     return true;
@@ -39,12 +39,12 @@ namespace BloodyShop.Server.Core
             }
 
         }
-        public static bool verifyHaveSuficientPrefabsInInventory(string characterName, PrefabGUID prefabCoinGUID, int quantity = 1)
+        public static bool verifyHaveSuficientPrefabsInInventory(string characterName, PrefabGUID prefabCurrencyGUID, int quantity = 1)
         {
             try
             {
 
-                if (searchPrefabsInInventory(characterName, prefabCoinGUID, out int total))
+                if (searchPrefabsInInventory(characterName, prefabCurrencyGUID, out int total))
                 {
                     if (total >= quantity)
                     {
