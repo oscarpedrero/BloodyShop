@@ -102,12 +102,25 @@ namespace BloodyShop.Server.Network
                     ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{stack}x {name} ({stock})")} have been added to the Store for {FontColorChat.White($"{price} {currency?.name.ToString()}")}"));
                 }
 
-                var usersOnline = GameData.Users.Online;
+                /*var usersOnline = GameData.Users.Online;
                 foreach (var userOnline in usersOnline)
                 {
                     var msg = ServerListMessageAction.createMsg();
                     ServerListMessageAction.Send((ProjectM.Network.User)userOnline.Internals.User, msg);
+                }*/
+
+                var userWithUI = UserUI.GetUsersWithUI();
+                foreach (var userUI in userWithUI)
+                {
+                    var userValue = userUI.Value;
+                    if(userValue.IsConnected)
+                    {
+                        var msg = ServerListMessageAction.createMsg();
+                        ServerListMessageAction.Send(userValue, msg);
+                    }
+                    
                 }
+
                 return;
             }
             catch (Exception error)

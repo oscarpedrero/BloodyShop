@@ -52,11 +52,15 @@ namespace BloodyShop.Server.Network
 
                 ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Yellow($"Item {FontColorChat.White($"{itemShopModel.PrefabName}x {itemShopModel.PrefabName}")} removed successful."));
 
-                var usersOnline = GameData.Users.Online;
-                foreach (var userOnline in usersOnline)
+                var userWithUI = UserUI.GetUsersWithUI();
+                foreach (var userUI in userWithUI)
                 {
-                    var msg = ServerListMessageAction.createMsg();
-                    ServerListMessageAction.Send((ProjectM.Network.User)userOnline.Internals.User, msg);
+                    var userValue = userUI.Value;
+                    if (userValue.IsConnected)
+                    {
+                        var msg = ServerListMessageAction.createMsg();
+                        ServerListMessageAction.Send(userValue, msg);
+                    }
                 }
 
                 if (ConfigDB.AnnounceAddRemovePublic)

@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using VRising.GameData;
 using Bloodstone.API;
+using BloodyShop.Server.Systems;
 
 namespace BloodyShop.Server.Network
 {
@@ -18,7 +19,7 @@ namespace BloodyShop.Server.Network
         {
             //Plugin.Logger.LogError($"[SERVER] [RECEIVED] ConfigSerializedMessage {fromCharacter.CharacterName}");
             msg = createMsg(fromCharacter);
-
+            UserUI.RegisterUserWithUI(fromCharacter);
             Send(fromCharacter, msg);
 
             
