@@ -35,8 +35,6 @@ namespace BloodyShop
         public static ConfigEntry<bool> ShopEnabled;
         public static ConfigEntry<bool> AnnounceAddRemovePublic;
         public static ConfigEntry<bool> AnnounceBuyPublic;
-        public static ConfigEntry<int> CurrencyGUID;
-        public static ConfigEntry<string> CurrencyName;
         public static ConfigEntry<string> StoreName;
 
 
