@@ -190,8 +190,6 @@ namespace BloodyShop
         {
             ShopEnabled = Config.Bind("ConfigShop", "enabled", true, "Enable Shop");
             StoreName = Config.Bind("ConfigShop", "name", "Bloody Shop", "Store's name");
-            CurrencyName = Config.Bind("ConfigShop", "currencyName", "Silver Currency", "Currency name.");
-            CurrencyGUID = Config.Bind("ConfigShop", "currencyGUID", -949672483, "Item that will be used as currency within the service, by default they are silver currencies, if you want to change the item you must include the GUID of said object that you can get from https://discord.com/channels/978094827830915092/1117273637024714862/1117273642817044571");
             AnnounceAddRemovePublic = Config.Bind("ConfigShop", "announceAddRemovePublic", true, "Public announcement when an item is added or removed from the store");
             AnnounceBuyPublic = Config.Bind("ConfigShop", "announceBuyPublic", true, "Public announcement when someone buys an item from the store");
 
