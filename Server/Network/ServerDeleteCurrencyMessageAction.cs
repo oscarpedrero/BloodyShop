@@ -36,29 +36,30 @@ namespace BloodyShop.Server.Network
                 if (!ShareDB.SearchCurrencyByCommand(index, out CurrencyModel currencyModel))
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red(FontColorChat.Yellow($"Currency removed error.")));
+                    sendMessageToAdmin();
+                    return;
+                }
+                if (ItemsDB.SearchProductsWithCurrencyByCommand(currencyModel, out int productsCount))
+                {
+                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"The currency {FontColorChat.White($"{currencyModel.name}")} cannot be deleted because it is associated with {FontColorChat.White($"{productsCount}")} products."));
+                    sendMessageToAdmin();
                     return;
                 }
                 if (!ShareDB.RemoveCurrencyyByCommand(index))
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"Currency {FontColorChat.White($"{currencyModel.name}")} removed error."));
+                    sendMessageToAdmin();
                     return;
                 }
 
                 SaveDataToFiles.saveCurrenciesList();
                 LoadDataFromFiles.loadCurrencies();
 
+                sendMessageToAdmin();
+
                 ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Yellow($"Currency {FontColorChat.White($"{currencyModel.name}")} removed successful."));
 
-                var userWithUI = UserUI.GetUsersWithUI();
-                foreach (var userUI in userWithUI)
-                {
-                    var userValue = userUI.Value;
-                    if (userValue.IsConnected && userValue.IsAdmin)
-                    {
-                        var msg = ServerListCurrencyMessageAction.createMsg();
-                        ServerListCurrencyMessageAction.Send(userValue, msg);
-                    }
-                }
+                
             }
             catch (Exception error)
             {
@@ -70,6 +71,20 @@ namespace BloodyShop.Server.Network
         public static void Send(User fromCharacter, DeleteSerializedMessage msg)
         {
            return;
+        }
+
+        private static void sendMessageToAdmin()
+        {
+            var userWithUI = UserUI.GetUsersWithUI();
+            foreach (var userUI in userWithUI)
+            {
+                var userValue = userUI.Value;
+                if (userValue.IsConnected && userValue.IsAdmin)
+                {
+                    var msg = ServerListMessageAction.createMsg();
+                    ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);
+                }
+            }
         }
 
     }

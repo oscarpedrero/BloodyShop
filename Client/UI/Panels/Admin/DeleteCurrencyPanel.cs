@@ -13,16 +13,16 @@ using UniverseLib;
 using System.Collections.Generic;
 using BloodyShop.DB.Models;
 using System.Linq;
-using Il2CppSystem;
-using Unity.Transforms;
 using BloodyShop.Client.Utils;
+using VRising.GameData;
+using ProjectM;
 
 namespace BloodyShop.Client.UI.Panels.Admin
 {
-    public class DeleteItemPanel : UIModel
+    public class DeleteCurrencyPanel : UIModel
     {
 
-        public static DeleteItemPanel Instance { get; private set; }
+        public static DeleteCurrencyPanel Instance { get; private set; }
 
         
 
@@ -34,20 +34,11 @@ namespace BloodyShop.Client.UI.Panels.Admin
         public GameObject ContentProduct;
         public RectTransform ContentRect;
         public GameObject contentScroll;
-        public Dropdown dropdowntype;
-        public Dropdown dropdownitem;
-        public ButtonRef OpenCloseStoreBtn;
-        public List<GameObject> productsListLayers = new List<GameObject>();
+        public List<GameObject> currencyListLayers = new List<GameObject>();
         public InputFieldRef searchInputTXT; 
         public GameObject ContentPagination;
 
-        public List<PrefabModel> items = new();
-        public List<CurrencyModel> currencies = new ();
-
-        public static List<(int index, int input)> _stackArrayCache = new();
-        private List<(int index, CurrencyModel currency)> _currenciesArrayCache = new();
-
-        public CurrencyModel currency { get; private set; }
+        public List<CurrencyModel> currencies = new();
 
         public int CurrentDisplayedIndex;
 
@@ -61,7 +52,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         public PanelConfig Parent { get; }
 
-        public DeleteItemPanel(PanelConfig parent)
+        public DeleteCurrencyPanel(PanelConfig parent)
         {
             Parent = parent;
         }
@@ -98,10 +89,6 @@ namespace BloodyShop.Client.UI.Panels.Admin
             // CONTAINER FOR PRODUCTS
             var _contentHeader = UIFactory.CreateHorizontalGroup(uiRoot, "HeaderItem", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
 
-            // Aval ITEM
-            Text headerAval = UIFactory.CreateLabel(_contentHeader, "itemAvalTxt", $"Stock");
-            UIFactory.SetLayoutElement(headerAval.gameObject, minWidth: 50, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 50);
-
             // ITEM ICON
             Text headerName = UIFactory.CreateLabel(_contentHeader, "itemNameTxt", $"Name", TextAnchor.MiddleLeft);
 
@@ -110,10 +97,6 @@ namespace BloodyShop.Client.UI.Panels.Admin
             //NAME ITEM
             var imageHeader = UIFactory.CreateUIObject("IconItem", _contentHeader);
             UIFactory.SetLayoutElement(imageHeader, minWidth: 350, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 310);
-
-            // PRICE ITEM
-            Text headerPrice = UIFactory.CreateLabel(_contentHeader, "itemPriceTxt", $"Price");
-            UIFactory.SetLayoutElement(headerPrice.gameObject, minWidth: 150, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 150);
 
             // DELETE BTN
             var headerDelete = UIFactory.CreateUIObject("BuyItem", _contentHeader);
@@ -125,19 +108,18 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
             var _scroolView = UIFactory.CreateScrollView(uiRoot, "scrollView", out contentScroll, out AutoSliderScrollbar autoSliderScrollbar);
 
-            CreateListProductsLayout();
+            CreateListCurrenciesLayout();
 
             SetActive(true);
 
         }
 
-        public void CreateListProductsLayout()
+        public void CreateListCurrenciesLayout()
         {
 
-            items = ItemsDB.searchItemByNameForShop(textSearch);
-            total = items.Count;
-
-            productsListLayers = new List<GameObject>();
+            currencies = ShareDB.searchCurrencyByNameForShop(textSearch);
+            total = currencies.Count;
+            currencyListLayers = new List<GameObject>();
             skip = page * limit;
             if (total > 0 && skip >= total)
             {
@@ -149,54 +131,36 @@ namespace BloodyShop.Client.UI.Panels.Admin
                 skip = page * limit;
             }
             var index = skip + 1;
-            
-            foreach (var item in items.Skip(skip).Take(10))
+            foreach (var item in currencies.Skip(skip).Take(10))
             {
-                currency = ShareDB.getCurrency(item.currency);
+                var itemModel = GameData.Items.GetPrefabById(new PrefabGUID(item.guid));
+                // CONTAINER FOR PRODUCTS
+                var _contentProduct = UIFactory.CreateHorizontalGroup(contentScroll, "ContentItem-" + index, true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
+                // ITEM ICON
+                var imageIcon = UIFactory.CreateUIObject("IconItem-" + index, _contentProduct);
+                var iconImage = imageIcon.AddComponent<Image>();
+                iconImage.sprite = itemModel.ManagedGameData.ManagedItemData?.Icon;
+                UIFactory.SetLayoutElement(imageIcon, minWidth: 60, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 60);
 
-                if (currency != null)
-                {
-                    // CONTAINER FOR PRODUCTS
-                    var _contentProduct = UIFactory.CreateHorizontalGroup(contentScroll, "ContentItem-" + index, true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
+                //NAME ITEM
+                Text itemName = UIFactory.CreateLabel(_contentProduct, "itemNameTxt-" + index, $" {item.name}", TextAnchor.MiddleLeft);
+                UIFactory.SetLayoutElement(itemName.gameObject, minWidth: 550, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 550);
 
-                    // Aval ITEM
-                    Text itemAval = UIFactory.CreateLabel(_contentProduct, "itemAvalTxt-" + index, $"{item.PrefabStock}", TextAnchor.MiddleCenter);
-                    UIFactory.SetLayoutElement(itemAval.gameObject, minWidth: 50, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 50);
+                // DELETE BTN
+                ButtonRef deleteBtn = UIFactory.CreateButton(_contentProduct, "deleteItemBtn-" + index, "Delete", new Color(203 / 255f, 67 / 255f, 53 / 255f));
+                UIFactory.SetLayoutElement(deleteBtn.Component.gameObject, minWidth: 150, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 150);
+                deleteBtn.OnClick += DeleteAction;
 
-                    // ITEM ICON
-                    var imageIcon = UIFactory.CreateUIObject("IconItem-" + index, _contentProduct);
-                    var iconImage = imageIcon.AddComponent<Image>();
-                    iconImage.sprite = item.PrefabIcon;
-                    UIFactory.SetLayoutElement(imageIcon, minWidth: 60, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 60);
-
-                    //NAME ITEM
-                    Text itemName = UIFactory.CreateLabel(_contentProduct, "itemNameTxt-" + index, $" {item.PrefabStack}x {item.PrefabName}", TextAnchor.MiddleLeft);
-                    UIFactory.SetLayoutElement(itemName.gameObject, minWidth: 350, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 350);
-
-                    // PRICE ITEM
-                    Text itemPrice = UIFactory.CreateLabel(_contentProduct, "itemPriceTxt-" + index, $"{item.PrefabPrice}x {currency.name}");
-                    UIFactory.SetLayoutElement(itemPrice.gameObject, minWidth: 200, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 200);
-                    _stackArrayCache.Add((index, item.PrefabStack));
-
-                    _currenciesArrayCache.Add((index, currency));
-
-                    // DELETE BTN
-                    ButtonRef deleteBtn = UIFactory.CreateButton(_contentProduct, "deleteItemBtn-" + index, "Delete", new Color(203 / 255f, 67 / 255f, 53 / 255f));
-                    UIFactory.SetLayoutElement(deleteBtn.Component.gameObject, minWidth: 150, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 150);
-                    deleteBtn.OnClick += DeleteAction;
-
-                    UIFactory.SetLayoutElement(_contentProduct, flexibleHeight: 0, minHeight: 60, preferredHeight: 60, flexibleWidth: 0);
+                UIFactory.SetLayoutElement(_contentProduct, flexibleHeight: 0, minHeight: 60, preferredHeight: 60, flexibleWidth: 0);
                     
-                    productsListLayers.Add(_contentProduct);
+                currencyListLayers.Add(_contentProduct);
 
-                    // FAKE LINE
-                    var _separator = UIFactory.CreateHorizontalGroup(contentScroll, "Separator-" + index, true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
-                    var fakeTXT = UIFactory.CreateLabel(_separator, "FakeTextt-" + index, "", TextAnchor.MiddleCenter);
-                    UIFactory.SetLayoutElement(fakeTXT.gameObject, minWidth: MinWidth, minHeight: 2, flexibleHeight: 0, preferredHeight: 2, flexibleWidth: 9999, preferredWidth: MinWidth);
-                    productsListLayers.Add(_separator);
-
-                    index++;
-                }
+                // FAKE LINE
+                var _separator = UIFactory.CreateHorizontalGroup(contentScroll, "Separator-" + index, true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
+                var fakeTXT = UIFactory.CreateLabel(_separator, "FakeTextt-" + index, "", TextAnchor.MiddleCenter);
+                UIFactory.SetLayoutElement(fakeTXT.gameObject, minWidth: MinWidth, minHeight: 2, flexibleHeight: 0, preferredHeight: 2, flexibleWidth: 9999, preferredWidth: MinWidth);
+                currencyListLayers.Add(_separator);
+                index++;
             }
 
             createPagination();
@@ -219,7 +183,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
             Text footerText = UIFactory.CreateLabel(ContentPagination, "footerText", $"Products: {total} Pages: {last + 1 }");
             UIFactory.SetLayoutElement(footerText.gameObject, minWidth: 50, minHeight: 30, flexibleHeight: 0, preferredHeight: 30, flexibleWidth: 0, preferredWidth: 50);
-            if (items.Count > limit)
+            if (currencies.Count > limit)
             {
                 var pageNumber = page + 1;
                 if ((page - 1) >= 0)
@@ -254,7 +218,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
             textSearch = str.ToLower();
             page = 0;
             RefreshData();
-            CreateListProductsLayout();
+            CreateListCurrenciesLayout();
 
         }
 
@@ -263,7 +227,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
             textSearch = searchInputTXT.Text.ToLower();
             page = 0;
             RefreshData();
-            CreateListProductsLayout();
+            CreateListCurrenciesLayout();
         }
 
 
@@ -273,58 +237,18 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
             var btnName = EventSystem.current.currentSelectedGameObject.name;
             var indexItemUI = btnName.Replace("deleteItemBtn-", "");
-            var prefabDelete = items[int.Parse(indexItemUI) - 1];
-            var stackDel = serachStackInput(int.Parse(indexItemUI));
-            var currency = serachCurrencyInput(int.Parse(indexItemUI));
-            indexItemUI = ItemsDB.searchIndexForProduct(prefabDelete.PrefabGUID, stackDel, currency).ToString();
-
-            
+            var prefabDelete = currencies[int.Parse(indexItemUI) - 1];
+            indexItemUI = ShareDB.searchIdForCurrency(prefabDelete.guid).ToString();
 
             if (indexItemUI != "-1")
             {
-                var msg = new DeleteSerializedMessage()
+                var msg = new DeleteCurrencySerializedMessage()
                 {
-                    Item = indexItemUI
+                    Currency = indexItemUI
                 };
-                ClientDeleteMessageAction.Send(msg);
+                ClientDeleteCurrencyMessageAction.Send(msg);
                 RefreshAction();
             }
-        }
-
-        private int serachStackInput(int indexSearch)
-        {
-
-            foreach (var (index, input) in _stackArrayCache)
-            {
-                if (index == indexSearch)
-                {
-
-                    if (input == 0)
-                    {
-                        return 1;
-                    }
-
-                    return input;
-                }
-            }
-
-            return 1;
-        }
-
-
-
-        private CurrencyModel serachCurrencyInput(int indexSearch)
-        {
-
-            foreach (var (index, input) in _currenciesArrayCache)
-            {
-                if (index == indexSearch)
-                {
-                    return input;
-                }
-            }
-
-            return null;
         }
 
         public void RefreshAction()
@@ -334,11 +258,11 @@ namespace BloodyShop.Client.UI.Panels.Admin
         public void RefreshData()
         {
             //UIManager.RefreshDataPanel();
-            foreach (var product in productsListLayers)
+            foreach (var product in currencyListLayers)
             {
                 UnityEngine.Object.Destroy(product, 0f);
             }
-            productsListLayers = new List<GameObject>();
+            currencyListLayers = new List<GameObject>();
             var _contentProduct = UIFactory.CreateHorizontalGroup(contentScroll, "ContentItem", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
 
             UnityEngine.Object.Destroy(ContentPagination, 0f);
@@ -358,7 +282,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
             }
 
             RefreshData();
-            CreateListProductsLayout();
+            CreateListCurrenciesLayout();
 
 
         }

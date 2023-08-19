@@ -17,10 +17,7 @@ namespace BloodyShop.Server.Systems
         {
             User? entity = null;
 
-            if (!_users.TryGetValue(user.CharacterName.ToString(), out user))
-            {
-                _users.Add(user.CharacterName.ToString(), user);
-            }
+            _users.TryAdd(user.CharacterName.ToString(), user);
         }
 
         public static Dictionary<string, User> GetUsersWithUI()

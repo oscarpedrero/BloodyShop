@@ -19,7 +19,9 @@ namespace BloodyShop.Client.Network
            // Plugin.Logger.LogInfo($"[CLIENT] [RECEIVED] ListSerializedMessage {msg.ItemsJson}");
 
             var productList = JsonSerializer.Deserialize<List<ItemShopModel>>(msg.ItemsJson);
+            var currencyList = JsonSerializer.Deserialize<List<CurrencyModel>>(msg.CurrencyJson);
 
+            ShareDB.setCurrencyList(currencyList);
             ItemsDB.setProductList(productList);
             
 
@@ -28,6 +30,9 @@ namespace BloodyShop.Client.Network
                 var panel = UIManager.panelCOnfig.GetActivePanel();
                 panel.RefreshData();
                 panel.CreateListProductsLayout();
+                var panelCurrency = UIManager.panelCOnfig.GetCurrencyPanel();
+                panelCurrency.RefreshData();
+                panelCurrency.CreateListCurrenciesLayout();
             }
 
             UIManager.ShopPanel.RefreshData();

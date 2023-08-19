@@ -49,7 +49,7 @@ internal class UIManager
     {
         CreateMenuPanel();
         CreateShopPanel();
-        CreateAddItemPanel();
+        CreatePanelCOnfigPanel();
     }
 
     public static void showAllPanels()
@@ -144,7 +144,7 @@ internal class UIManager
         ShopPanel.Destroy();
     }
 
-    public static void CreateAddItemPanel()
+    public static void CreatePanelCOnfigPanel()
     {
         if (ClientDB.IsAdmin)
         {
@@ -182,16 +182,21 @@ internal class UIManager
         ShopPanel.RefreshData();
         if (ClientDB.IsAdmin)
         {
-            var panel = panelCOnfig.GetActivePanel();
-            panel.RefreshData();
+            var panelDeleteItem = panelCOnfig.GetActivePanel();
+            panelDeleteItem.RefreshData();
+            var panelDeleteCurrency = panelCOnfig.GetCurrencyPanel();
+            panelDeleteCurrency.RefreshData();
         }
         ClientListMessageAction.Send();
+        
     }
 
     public static void RefreshDataAddPanel()
     {
-        var panel = panelCOnfig.GetActivePanel();
-        panel.RefreshData();
+        var panelDeleteItem = panelCOnfig.GetActivePanel();
+        panelDeleteItem.RefreshData();
+        var panelDeleteCurrency = panelCOnfig.GetCurrencyPanel();
+        panelDeleteCurrency.RefreshData();
     }
 
     static void UiUpdate()

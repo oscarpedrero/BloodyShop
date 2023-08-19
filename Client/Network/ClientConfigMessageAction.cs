@@ -21,7 +21,7 @@ namespace BloodyShop.Client.Network
             var productList = JsonSerializer.Deserialize<List<ItemShopModel>>(msg.ItemsJson);
             ItemsDB.setProductList(productList);
 
-            Plugin.Logger.LogInfo($"{msg.CurrenciesJson}");
+            //Plugin.Logger.LogInfo($"{msg.CurrenciesJson}");
             var currenciesList = JsonSerializer.Deserialize<List<CurrencyModel>>(msg.CurrenciesJson);
             ShareDB.setCurrencyList(currenciesList);
 

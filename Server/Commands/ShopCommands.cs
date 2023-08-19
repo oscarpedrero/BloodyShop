@@ -51,9 +51,8 @@ namespace BloodyShop.Server.Commands
                 var userValue = userUI.Value;
                 if (userValue.IsConnected && userValue.IsAdmin)
                 {
-                    // TODO SEND CUrrencys
-                    var msg = ServerListCurrencyMessageAction.createMsg();
-                    ServerListCurrencyMessageAction.Send((ProjectM.Network.User)userValue, msg);
+                    var msg = ServerListMessageAction.createMsg();
+                    ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);
                 }
             }
 
@@ -113,8 +112,8 @@ namespace BloodyShop.Server.Commands
                     if (userValue.IsConnected && userValue.IsAdmin)
                     {
                         // TODO SEND CUrrencys
-                        var msg = ServerListCurrencyMessageAction.createMsg();
-                        ServerListCurrencyMessageAction.Send((ProjectM.Network.User)userValue, msg);
+                        var msg = ServerListMessageAction.createMsg();
+                        ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);
                     }
                 }
 

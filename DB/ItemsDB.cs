@@ -322,6 +322,25 @@ namespace BloodyShop.DB
            
         }
 
+        public static bool SearchProductsWithCurrencyByCommand(CurrencyModel currencyModel, out int itemShopModel)
+        {
+
+            itemShopModel = 0;
+
+            foreach (var item in ProductList)
+            {
+                if (item.currency == currencyModel.guid)
+                {
+                    itemShopModel++;
+                }
+            }
+
+            if (itemShopModel == 0) return false;
+
+            return true;
+           
+        }
+
         public static List<string> GetProductListMessage()
         {
             var listItems = new List<string>();

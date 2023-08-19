@@ -45,6 +45,7 @@ namespace BloodyShop.Server.Network
                 if (currencyModel == null)
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("Invalid currency type"));
+                    sendMessageToAdmin();
                     return;
                 }
 
@@ -53,12 +54,14 @@ namespace BloodyShop.Server.Network
                 if (currency != null)
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"The currency {FontColorChat.White($"{name}")} already exists in the store."));
+                    sendMessageToAdmin();
                     return;
                 }
 
                 if (!ShareDB.addCurrencyList(name,currencyGUID))
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("Invalid currency type"));
+                    sendMessageToAdmin();
                     return;
                 }
 
@@ -71,26 +74,7 @@ namespace BloodyShop.Server.Network
                     return;
                 }
 
-                /*
-                var usersOnline = GameData.Users.Online;
-                foreach (var userOnline in usersOnline)
-                {
-                    var msg = ServerListMessageAction.createMsg();
-                    ServerListMessageAction.Send((ProjectM.Network.User)userOnline.Internals.User, msg);
-                }
-                */
-
-                var userWithUI = UserUI.GetUsersWithUI();
-                foreach (var userUI in userWithUI)
-                {
-                    var userValue = userUI.Value;
-                    if(userValue.IsConnected && userValue.IsAdmin)
-                    {
-                        // TODO SEND CUrrencys
-                        var msg = ServerListMessageAction.createMsg();
-                        ServerListMessageAction.Send(userValue, msg);
-                    }
-                }
+                sendMessageToAdmin();
 
                 return;
             }
@@ -104,6 +88,19 @@ namespace BloodyShop.Server.Network
         public static void Send(User fromCharacter, AddSerializedMessage msg)
         {
            return;
+        }
+        private static void sendMessageToAdmin()
+        {
+            var userWithUI = UserUI.GetUsersWithUI();
+            foreach (var userUI in userWithUI)
+            {
+                var userValue = userUI.Value;
+                if (userValue.IsConnected && userValue.IsAdmin)
+                {
+                    var msg = ServerListMessageAction.createMsg();
+                    ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);
+                }
+            }
         }
 
     }

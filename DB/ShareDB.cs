@@ -12,7 +12,7 @@ namespace BloodyShop.DB
     public class ShareDB
     {
 
-        public static List<CurrencyModel> currenciesList;
+        public static List<CurrencyModel> currenciesList = new();
 
         public static List<CurrencyModel> getCurrencyList()
         {
@@ -87,6 +87,34 @@ namespace BloodyShop.DB
                 return false;
             }
 
+        }
+
+        public static List<CurrencyModel> searchCurrencyByNameForShop(string text)
+        {
+
+            var result = new List<CurrencyModel>();
+            foreach (var currency in currenciesList)
+            {
+                if (currency.name.Contains(text))
+                {
+                    result.Add(currency);
+                }
+            }
+
+            return result;
+        }
+
+        public static int searchIdForCurrency(int GUID)
+        {
+            foreach (var currency in currenciesList)
+            {
+                if (currency.guid == GUID)
+                {
+                    return currency.id;
+                }
+            }
+
+            return -1;
         }
     }
 }

@@ -34,7 +34,6 @@ namespace BloodyShop.Server.Network
 
             var currencies = ShareDB.getCurrencyList();
             var jsonOuCurrenciestPut = JsonSerializer.Serialize(currencies);
-            Plugin.Logger.LogInfo($"{jsonOuCurrenciestPut}");
             msg.CurrenciesJson = jsonOuCurrenciestPut;
 
             msg.ShopName = ConfigDB.StoreName;

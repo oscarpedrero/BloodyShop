@@ -43,6 +43,8 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         public static AddItemPanel addItemPanel;
         public static DeleteItemPanel deletePanel;
+        private AddCurrencyPanel addCurrencyPanel;
+        private DeleteCurrencyPanel deleteCurrencyPanel;
 
         public PanelConfig(UIBase owner) : base(owner)
         {
@@ -90,12 +92,23 @@ namespace BloodyShop.Client.UI.Panels.Admin
             deletePanel = new DeleteItemPanel(this);
             deletePanel.ConstructUI(ContentRoot);
             tabPages.Add(deletePanel);
-
             
+            // Add Currency
+            addCurrencyPanel = new AddCurrencyPanel(this);
+            addCurrencyPanel.ConstructUI(ContentRoot);
+            tabPages.Add(addCurrencyPanel);
+
+            // Delete Currency
+            deleteCurrencyPanel = new DeleteCurrencyPanel(this);
+            deleteCurrencyPanel.ConstructUI(ContentRoot);
+            tabPages.Add(deleteCurrencyPanel);
+
 
             // set up tabs
             AddTabButton(tabGroup, "Add Item");
             AddTabButton(tabGroup, "Delete Item");
+            AddTabButton(tabGroup, "Add Currency");
+            AddTabButton(tabGroup, "Delete Currency");
 
             SetTab(0);
 
@@ -107,6 +120,8 @@ namespace BloodyShop.Client.UI.Panels.Admin
         {
             if (SelectedTab == 1)
                 deletePanel.RefreshAction();
+            if (SelectedTab == 3)
+                deleteCurrencyPanel.RefreshAction();
         }
 
         public DeleteItemPanel GetActivePanel()
@@ -114,9 +129,9 @@ namespace BloodyShop.Client.UI.Panels.Admin
             return deletePanel;
         }
 
-        public DeleteItemPanel GetCurrencyPanel()
+        public DeleteCurrencyPanel GetCurrencyPanel()
         {
-            return deletePanel;
+            return deleteCurrencyPanel;
         }
 
         public void SetTab(int tabIndex)

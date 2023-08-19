@@ -42,21 +42,6 @@ namespace BloodyShop.Server.Network
                 }
             );
 
-            VNetworkRegistry.RegisterBiDirectional<ListCurrencySerializedMessage>(
-                // invoked when the server sends a message to the client
-                msg =>
-                {
-                    ClientCurrencyListMessageAction.Received(msg);
-                },
-
-                // invoked when a client sends a message to the server
-                (fromCharacter, msg) =>
-                {
-                    var user = VWorld.Server.EntityManager.GetComponentData<User>(fromCharacter.User);
-                    ServerListCurrencyMessageAction.Received(user, msg);
-                }
-            );
-
             VNetworkRegistry.RegisterBiDirectional<BuySerializedMessage>(
                 // invoked when the server sends a message to the client
                 msg =>
@@ -166,7 +151,6 @@ namespace BloodyShop.Server.Network
             VNetworkRegistry.Unregister<CloseSerializedMessage>();
             VNetworkRegistry.Unregister<AddSerializedMessage>();
             VNetworkRegistry.Unregister<AddCurrencySerializedMessage>();
-            VNetworkRegistry.Unregister<ListCurrencySerializedMessage>();
             VNetworkRegistry.Unregister<DeleteCurrencySerializedMessage>();
         }
 
