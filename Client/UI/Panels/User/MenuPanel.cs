@@ -64,14 +64,13 @@ namespace BloodyShop.Client.UI.Panels.User
             UIRoot.GetComponent<Image>().color = new Color(233, 237, 240, 0.2f);
             GameObject navbarPanel = UIFactory.CreateUIObject("MainNavbar", UIRoot);
             UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(navbarPanel, false, false, true, true, 5, 4, 4, 4, 4, TextAnchor.MiddleCenter);
-            navbarPanel.AddComponent<Image>().color = new Color(0.1f, 0.1f, 0.1f);
             NavBarRect = navbarPanel.GetComponent<RectTransform>();
             NavBarRect.pivot = new Vector2(0.5f, 1f);
 
             SetNavBarAnchor();
 
             // Shop BTN
-            shopBtn = UIFactory.CreateButton(navbarPanel, "ShopButton", "Shop");
+            shopBtn = UIFactory.CreateButton(navbarPanel, "ShopButton", "", new Color(1, 1, 1, 1));
             UIFactory.SetLayoutElement(shopBtn.Component.gameObject, minWidth: iconWH, minHeight: iconWH, preferredWidth: iconWH, preferredHeight: iconWH, flexibleWidth: 0, flexibleHeight: 0);
 
             configShopButtonPanel();
