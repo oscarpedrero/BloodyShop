@@ -114,6 +114,11 @@ namespace BloodyShop.Client.UI.Panels.Admin
             return deletePanel;
         }
 
+        public DeleteItemPanel GetCurrencyPanel()
+        {
+            return deletePanel;
+        }
+
         public void SetTab(int tabIndex)
         {
             if (SelectedTab != -1)

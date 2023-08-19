@@ -42,6 +42,21 @@ namespace BloodyShop.Server.Network
                 }
             );
 
+            VNetworkRegistry.RegisterBiDirectional<ListCurrencySerializedMessage>(
+                // invoked when the server sends a message to the client
+                msg =>
+                {
+                    ClientCurrencyListMessageAction.Received(msg);
+                },
+
+                // invoked when a client sends a message to the server
+                (fromCharacter, msg) =>
+                {
+                    var user = VWorld.Server.EntityManager.GetComponentData<User>(fromCharacter.User);
+                    ServerListCurrencyMessageAction.Received(user, msg);
+                }
+            );
+
             VNetworkRegistry.RegisterBiDirectional<BuySerializedMessage>(
                 // invoked when the server sends a message to the client
                 msg =>
@@ -67,6 +82,20 @@ namespace BloodyShop.Server.Network
                 (fromCharacter, msg) =>
                 {
                     ServerDeleteMessageAction.Received(fromCharacter, msg);
+                }
+            );
+
+            VNetworkRegistry.RegisterBiDirectional<DeleteCurrencySerializedMessage>(
+                // invoked when the server sends a message to the client
+                msg =>
+                {
+                    
+                },
+
+                // invoked when a client sends a message to the server
+                (fromCharacter, msg) =>
+                {
+                    ServerDeleteCurrencyMessageAction.Received(fromCharacter, msg);
                 }
             );
 
@@ -111,6 +140,20 @@ namespace BloodyShop.Server.Network
                     ServerAddMessageAction.Received(fromCharacter, msg);
                 }
             );
+
+            VNetworkRegistry.RegisterBiDirectional<AddCurrencySerializedMessage>(
+                // invoked when the server sends a message to the client
+                msg =>
+                {
+                    
+                },
+
+                // invoked when a client sends a message to the server
+                (fromCharacter, msg) =>
+                {
+                    ServerAddCurrencyMessageAction.Received(fromCharacter, msg);
+                }
+            );
         }
 
         public static void UnregisterMessages()
@@ -122,6 +165,9 @@ namespace BloodyShop.Server.Network
             VNetworkRegistry.Unregister<OpenSerializedMessage>();
             VNetworkRegistry.Unregister<CloseSerializedMessage>();
             VNetworkRegistry.Unregister<AddSerializedMessage>();
+            VNetworkRegistry.Unregister<AddCurrencySerializedMessage>();
+            VNetworkRegistry.Unregister<ListCurrencySerializedMessage>();
+            VNetworkRegistry.Unregister<DeleteCurrencySerializedMessage>();
         }
 
     }

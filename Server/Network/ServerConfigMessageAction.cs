@@ -21,9 +21,6 @@ namespace BloodyShop.Server.Network
             msg = createMsg(fromCharacter);
             UserUI.RegisterUserWithUI(fromCharacter);
             Send(fromCharacter, msg);
-
-            
-
         }
 
         public static ConfigSerializedMessage createMsg(User fromCharacter)
