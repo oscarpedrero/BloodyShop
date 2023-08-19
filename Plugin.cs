@@ -184,6 +184,7 @@ namespace BloodyShop
         }
 
 
+
         private void InitConfigServer()
         {
             ShopEnabled = Config.Bind("ConfigShop", "enabled", true, "Enable Shop");
