@@ -76,3 +76,10 @@ This mod idea was a suggestion from [@Daavy](https://ideas.vrisingmods.com/posts
 [@Adain](https://github.com/adainrivers) for encouraging me to develop a UI to be able to use the mod from the client, for the support and for its [VRising.GameData](https://github.com/adainrivers/VRising.GameData) framework
 
 [@Paps](https://github.com/phillipsOG) for all the help and encouragement he has given us to get this idea off the ground.
+
+**A special thanks to the testers and supporters of the project:**
+
+- @Vex [Vexor Gaming](https://discord.gg/rxaTBzjuMc) as a tester and great supporter, who provided his server as a test platform!
+- @SynovA [Iron Fist RPG](https://discord.gg/iron-fist-rpg) as a tester and great supporter, who provided his server as a test platform!
+- @iska as a tester and great supporter!
+- @JosiUwU as a supporter for manuals.
