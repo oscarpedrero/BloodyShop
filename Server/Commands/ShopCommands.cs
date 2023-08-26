@@ -25,7 +25,7 @@ namespace BloodyShop.Server.Commands
         public static List<CurrencyModel> currencies { get; private set; }
 
         [Command("currency add", usage: "\"<Name>\" <PrefabGuid>", description: "Add a currency to the store. To know the PrefabGuid of an item you must look for the item in the following URL <#4acc45><u>https://gaming.tools/v-rising/items</u></color>", adminOnly: true)]
-        public static void AddCurrency(ChatCommandContext ctx, string name, int item)
+        public static void AddCurrency(ChatCommandContext ctx, string name, int item, bool drop)
         {
 
             var prefabGUID = new PrefabGUID(item);
@@ -36,7 +36,7 @@ namespace BloodyShop.Server.Commands
                 throw ctx.Error("Invalid item type");
             }
 
-            if (!ShareDB.addCurrencyList(name, item))
+            if (!ShareDB.addCurrencyList(name, item, drop))
             {
                 throw ctx.Error("Invalid item type");
             }
@@ -111,7 +111,7 @@ namespace BloodyShop.Server.Commands
                     var userValue = userUI.Value;
                     if (userValue.IsConnected && userValue.IsAdmin)
                     {
-                        // TODO SEND CUrrencys
+                        
                         var msg = ServerListMessageAction.createMsg();
                         ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);
                     }
@@ -183,7 +183,7 @@ namespace BloodyShop.Server.Commands
                     var userValue = userUI.Value;
                     if (userValue.IsConnected)
                     {
-                        // TODO SEND CUrrencys
+                        
                         var msg = ServerListMessageAction.createMsg();
                         ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);
                     }
@@ -272,7 +272,7 @@ namespace BloodyShop.Server.Commands
                     var userValue = userUI.Value;
                     if (userValue.IsConnected)
                     {
-                        // TODO SEND CUrrencys
+                        
                         var msg = ServerListMessageAction.createMsg();
                         ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);
                     }
@@ -315,7 +315,7 @@ namespace BloodyShop.Server.Commands
                     var userValue = userUI.Value;
                     if (userValue.IsConnected)
                     {
-                        // TODO SEND CUrrencys
+                        
                         var msg = ServerListMessageAction.createMsg();
                         ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);
                     }
@@ -373,7 +373,7 @@ namespace BloodyShop.Server.Commands
                 var userValue = userUI.Value;
                 if (userValue.IsConnected)
                 {
-                    // TODO SEND CUrrencys
+                    
                     ServerOpenMessageAction.Send((ProjectM.Network.User)userValue, msg);
                 }
             }
@@ -392,8 +392,27 @@ namespace BloodyShop.Server.Commands
                 var userValue = userUI.Value;
                 if (userValue.IsConnected)
                 {
-                    // TODO SEND CUrrencys
+                    
                     ServerCloseMessageAction.Send((ProjectM.Network.User)userValue, msg);
+                }
+            }
+        }
+
+        [Command("reload", usage:"", description: "Reload products and currencies files from server", adminOnly: true)]
+        public static void ReloadShop(ChatCommandContext ctx)
+        {
+            LoadDataFromFiles.loadProductList();
+            LoadDataFromFiles.loadCurrencies();
+            LoadDataFromFiles.loadUserCurrenciesPerDay();
+            ctx.Reply(FontColorChat.Yellow($" {FontColorChat.White($" {ConfigDB.StoreName} ")} Configuration has been reloaded successfully"));
+            var userWithUI = UserUI.GetUsersWithUI();
+            foreach (var userUI in userWithUI)
+            {
+                var userValue = userUI.Value;
+                if (userValue.IsConnected)
+                {
+                    var msg = ServerListMessageAction.createMsg();
+                    ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);
                 }
             }
         }

@@ -28,14 +28,17 @@ namespace BloodyShop.Server.Network
 
             var currencyGUID = int.Parse(msg.CurrencyGUID);
             var name = msg.Name;
+            var drop = bool.Parse(msg.Drop);
+            Plugin.Logger.LogWarning(msg.Drop);
+            Plugin.Logger.LogWarning(drop);
 
             //Plugin.Logger.LogInfo($"shop add {prefabGUID} {price} {stock}");
 
-            addCurrency(user,currencyGUID, name);
+            addCurrency(user,currencyGUID, name, drop);
 
         }
 
-        private static void addCurrency(User user, int currencyGUID, string name)
+        private static void addCurrency(User user, int currencyGUID, string name, bool drop)
         {
             try
             {
@@ -58,7 +61,7 @@ namespace BloodyShop.Server.Network
                     return;
                 }
 
-                if (!ShareDB.addCurrencyList(name,currencyGUID))
+                if (!ShareDB.addCurrencyList(name,currencyGUID, drop))
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("Invalid currency type"));
                     sendMessageToAdmin();

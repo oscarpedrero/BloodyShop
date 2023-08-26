@@ -9,6 +9,7 @@ using VRising.GameData;
 using VRising.GameData.Methods;
 using VRising.GameData.Models;
 using Bloodstone.API;
+using System.Linq;
 
 namespace BloodyShop.Server.Systems
 {
@@ -100,7 +101,7 @@ namespace BloodyShop.Server.Systems
             var playerCharacterKiller = em.GetComponentData<PlayerCharacter>(killer);
             var userModelKiller = GameData.Users.FromEntity(playerCharacterKiller.UserEntity);
 
-            var currencies = ShareDB.getCurrencyList();
+            var currencies = ShareDB.getCurrencyList().Where(currency => currency.drop == true).ToList(); ;
             var random = new Random();
             int indexCurrencies = random.Next(currencies.Count);
 
@@ -150,7 +151,7 @@ namespace BloodyShop.Server.Systems
 
         private static void rewardForNPC(UserModel userModelKiller, int diedLevel)
         {
-            var currencies = ShareDB.getCurrencyList();
+            var currencies = ShareDB.getCurrencyList().Where(currency => currency.drop == true).ToList(); ;
             var random = new Random();
             int indexCurrencies = random.Next(currencies.Count);
 
@@ -191,7 +192,7 @@ namespace BloodyShop.Server.Systems
 
         private static void rewardForVBlood(UserModel userModelKiller, int diedLevel)
         {
-            var currencies = ShareDB.getCurrencyList();
+            var currencies = ShareDB.getCurrencyList().Where(currency => currency.drop == true).ToList();
             var random = new Random();
             int indexCurrencies = random.Next(currencies.Count);
 

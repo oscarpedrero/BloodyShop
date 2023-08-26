@@ -4,6 +4,10 @@
 <details>
 <summary>Changelog</summary>
 
+`0.9.9`
+- Added command to reload configuration of products and currencies
+- Now you can configure if you want a currency to be active or not in the drop system
+
 `0.9.82`
 - Fixed bug that did not allow adding infinite items
 

@@ -13,6 +13,7 @@ namespace BloodyShop.DB.Models
         public int id { get; set; }
         public string name { get; set; }
         public int guid { get; set; }
+        public bool drop { get; set; } = true;
 
     }
 }

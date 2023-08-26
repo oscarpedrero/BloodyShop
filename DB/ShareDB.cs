@@ -37,13 +37,14 @@ namespace BloodyShop.DB
             return true;
         }
 
-        public static bool addCurrencyList(string name, int guid)
+        public static bool addCurrencyList(string name, int guid, bool drop)
         {
             var currency = new CurrencyModel();
             var id = getCurrencyList().Last().id +1;
             currency.name = name;
             currency.guid = guid;
             currency.id = id;
+            currency.drop = drop;
 
             currenciesList.Add(currency);
 

@@ -51,6 +51,8 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
         public override GameObject UIRoot => uiRoot;
 
+        List<Dropdown> currencyDropArray = new();
+
         public AddCurrencyPanel(PanelConfig parent)
         {
             Parent = parent;
@@ -91,16 +93,20 @@ namespace BloodyShop.Client.UI.Panels.Admin
             var _contentHeader = UIFactory.CreateHorizontalGroup(uiRoot, "HeaderItem", true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
 
             // ITEM ICON
-            Text headerName = UIFactory.CreateLabel(_contentHeader, "itemNameTxt", $"Name", TextAnchor.MiddleLeft);
-            UIFactory.SetLayoutElement(headerName.gameObject, minWidth: 60, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 60);
+            var imageHeader = UIFactory.CreateUIObject("IconItem", _contentHeader);
+            UIFactory.SetLayoutElement(imageHeader, minWidth: 60, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 60);
 
             //NAME ITEM
-            var imageHeader = UIFactory.CreateUIObject("IconItem", _contentHeader);
-            UIFactory.SetLayoutElement(imageHeader, minWidth: 310, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 310);
+            Text headerName = UIFactory.CreateLabel(_contentHeader, "itemNameTxt", $"Name", TextAnchor.MiddleLeft);
+            UIFactory.SetLayoutElement(headerName.gameObject, minWidth: 310, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 310);
+
+            //DROP ITEM
+            Text headerDrop = UIFactory.CreateLabel(_contentHeader, "itemDropTxt", $"Drop", TextAnchor.MiddleLeft);
+            UIFactory.SetLayoutElement(headerName.gameObject, minWidth: 60, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 60);
 
             // ADD Currency BTN
             var headerAdd = UIFactory.CreateUIObject("AddCurrency", _contentHeader);
-            UIFactory.SetLayoutElement(headerAdd, minWidth: 110, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 110);
+            UIFactory.SetLayoutElement(headerAdd, minWidth: 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 100);
 
             UIFactory.SetLayoutElement(_contentHeader, flexibleHeight: 0, minHeight: 60, preferredHeight: 60, flexibleWidth: 0);
 
@@ -119,37 +125,46 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
             var index = 0;
             currencyListLayers = new List<GameObject>();
+            currencyDropArray = new List<Dropdown>();
             foreach (var item in currencyModel.Take(limit))
             {
 
-                    // CONTAINER FOR PRODUCTS
-                    var _contentProduct = UIFactory.CreateHorizontalGroup(contentScroll, "ContentItem-" + index, true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
+                // CONTAINER FOR PRODUCTS
+                var _contentProduct = UIFactory.CreateHorizontalGroup(contentScroll, "ContentItem-" + index, true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
 
-                    // ITEM ICON
-                    var imageIcon = UIFactory.CreateUIObject("IconItem-" + index, _contentProduct);
-                    var iconImage = imageIcon.AddComponent<Image>();
-                    iconImage.sprite = item?.PrefabIcon;
-                    UIFactory.SetLayoutElement(imageIcon, minWidth: 60, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 60);
+                // ITEM ICON
+                var imageIcon = UIFactory.CreateUIObject("IconItem-" + index, _contentProduct);
+                var iconImage = imageIcon.AddComponent<Image>();
+                iconImage.sprite = item?.PrefabIcon;
+                UIFactory.SetLayoutElement(imageIcon, minWidth: 60, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 60);
 
-                    //NAME ITEM
-                    Text itemName = UIFactory.CreateLabel(_contentProduct, "itemNameTxt" + index, $" {item.PrefabName}", TextAnchor.MiddleLeft);
-                    UIFactory.SetLayoutElement(itemName.gameObject, minWidth: 550, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 550);
+                //NAME ITEM
+                Text itemName = UIFactory.CreateLabel(_contentProduct, "itemNameTxt" + index, $" {item.PrefabName}", TextAnchor.MiddleLeft);
+                UIFactory.SetLayoutElement(itemName.gameObject, minWidth: 310, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 310);
 
-                    // SAVE BTN
-                    ButtonRef saveBtn = UIFactory.CreateButton(_contentProduct, "saveBtn|" + index, "Add Currency", new Color(183 / 255f, 149 / 255f, 11 / 255f));
-                    UIFactory.SetLayoutElement(saveBtn.Component.gameObject, minWidth: 100, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 100);
-                    saveBtn.OnClick += SaveAction;
+                string[] dropDownValue = {"True","False"};
 
-                    UIFactory.SetLayoutElement(_contentProduct, flexibleHeight: 0, minHeight: 60, preferredHeight: 60, flexibleWidth: 0);
-                    currencyListLayers.Add(_contentProduct);
+                // DROP ITEM
+                GameObject currencyDropNew = UIFactory.CreateDropdown(_contentProduct, "currencyNew|" + index, out dropdownCurrency, "Currency", 14, OnDropdownSelect, dropDownValue);
+                UIFactory.SetLayoutElement(currencyDropNew, minWidth: 60, minHeight: 30, flexibleHeight: 0, preferredHeight: 30, flexibleWidth: 0, preferredWidth: 60);
 
-                    // FAKE LINE
-                    var _separator = UIFactory.CreateHorizontalGroup(contentScroll, "Separator-" + index, true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
-                    var fakeTXT = UIFactory.CreateLabel(_separator, "FakeTextt-" + index, "", TextAnchor.MiddleCenter);
-                    UIFactory.SetLayoutElement(fakeTXT.gameObject, minWidth: MinWidth, minHeight: 2, flexibleHeight: 0, preferredHeight: 2, flexibleWidth: 9999, preferredWidth: MinWidth);
-                    currencyListLayers.Add(_separator);
+                currencyDropArray.Add(dropdownCurrency);
 
-                    index++;
+                // SAVE BTN
+                ButtonRef saveBtn = UIFactory.CreateButton(_contentProduct, "saveBtn|" + index, "Add Currency", new Color(183 / 255f, 149 / 255f, 11 / 255f));
+                UIFactory.SetLayoutElement(saveBtn.Component.gameObject, minWidth: 200, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 200);
+                saveBtn.OnClick += SaveAction;
+
+                UIFactory.SetLayoutElement(_contentProduct, flexibleHeight: 0, minHeight: 60, preferredHeight: 60, flexibleWidth: 0);
+                currencyListLayers.Add(_contentProduct);
+
+                // FAKE LINE
+                var _separator = UIFactory.CreateHorizontalGroup(contentScroll, "Separator-" + index, true, true, true, true, 4, default, new Color(0.1f, 0.1f, 0.1f));
+                var fakeTXT = UIFactory.CreateLabel(_separator, "FakeTextt-" + index, "", TextAnchor.MiddleCenter);
+                UIFactory.SetLayoutElement(fakeTXT.gameObject, minWidth: MinWidth, minHeight: 2, flexibleHeight: 0, preferredHeight: 2, flexibleWidth: 9999, preferredWidth: MinWidth);
+                currencyListLayers.Add(_separator);
+
+                index++;
                 
             }
         }
@@ -182,11 +197,15 @@ namespace BloodyShop.Client.UI.Panels.Admin
             var index = Int32.Parse(btnName.Replace("saveBtn|", ""));
             var item = currencyModel[index].PrefabGUID;
             var name = currencyModel[index].PrefabName;
+            var dropDownCurrency = currencyDropArray[index];
+            var drop = dropDownCurrency.options[dropDownCurrency.value].text;
+            Plugin.Logger.LogWarning(drop);
 
             var msg = new AddCurrencySerializedMessage()
             {
                 CurrencyGUID = item.ToString(),
                 Name = name,
+                Drop = drop.ToString(),
             };
             Sound.Play(Properties.Resources.coin);
             ClientAddCurrencyMessageAction.Send(msg);

@@ -10,6 +10,7 @@ namespace BloodyShop.Network.Messages
         public string CurrencyGUID;
 
         public string Name;
+        public string Drop;
 
         // You need to implement an empty constructor for when your message is
         // received but not yet serialized.
@@ -20,6 +21,7 @@ namespace BloodyShop.Network.Messages
         {
             CurrencyGUID = reader.ReadString(Allocator.Temp);
             Name = reader.ReadString(Allocator.Temp);
+            Drop = reader.ReadString(Allocator.Temp);
         }
 
         // Write your contents to the writer.
@@ -27,6 +29,7 @@ namespace BloodyShop.Network.Messages
         {
             writer.Write(CurrencyGUID);
             writer.Write(Name);
+            writer.Write(Drop);
         }
 
     }
