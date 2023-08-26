@@ -65,6 +65,9 @@ namespace BloodyShop
         public static ConfigEntry<int> DropPvpCurrenciesMax;
         public static ConfigEntry<int> MaxCurrenciesPerDayPerPlayerPvp;
 
+        // Client Config
+        public static ConfigEntry<bool> Sounds;
+
         private static World _serverWorld;
         private static World _clientWorld;
 
@@ -126,6 +129,7 @@ namespace BloodyShop
             }
             else
             {
+                InitConfigClient();
                 BloodyShop.clientInitMod(_harmony);
                 //ClientEvents.OnGameDataInitialized += GameDataOnInitialize;
                 //ClientEvents.OnGameDataDestroyed += GameDataOnDestroy;
@@ -183,7 +187,10 @@ namespace BloodyShop
             //Logger.LogInfo("GameDataOnDestroy");
         }
 
-
+        private void InitConfigClient()
+        {
+            Sounds = Config.Bind("Client", "enabled", true, "Enable Sounds");
+        }
 
         private void InitConfigServer()
         {

@@ -4,6 +4,10 @@
 <details>
 <summary>Changelog</summary>
 
+`0.9.81`
+- Fixed a bug that existed when the currency_list.json file was first generated.
+- Added option within the client configuration file to disable sounds.
+
 `0.9.8`
 - Added UI to set and remove currencies.
 - Added messaging system for currencies.

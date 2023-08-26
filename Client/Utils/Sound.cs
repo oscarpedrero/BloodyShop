@@ -19,7 +19,7 @@ namespace BloodyShop.Client.Utils
 
         public static void Play(UnmanagedMemoryStream sound)
         {
-
+            if(!Plugin.Sounds.Value) { return; }
             ms = new MemoryStream(UseStreamDotReadMethod(sound));
 
             ws = new WaveFileReader(ms);

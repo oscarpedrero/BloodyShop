@@ -32,7 +32,7 @@ namespace BloodyShop.Server
             if (!Directory.Exists(ConfigPath)) Directory.CreateDirectory(ConfigPath);
 
             if (!File.Exists(ProductListFile)) File.WriteAllText(ProductListFile, "[]");
-            if (!File.Exists(CurrencyListFile)) File.WriteAllText(CurrencyListFile, "[[{\"id\":1,\"name\":\"Silver Coin\",\"guid\":-949672483}]");
+            if (!File.Exists(CurrencyListFile)) File.WriteAllText(CurrencyListFile, "[{\"id\":1,\"name\":\"Silver Coin\",\"guid\":-949672483}]");
 
             if (!Directory.Exists(DropSystemPath)) Directory.CreateDirectory(DropSystemPath);
 
