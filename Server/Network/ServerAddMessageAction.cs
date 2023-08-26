@@ -27,7 +27,7 @@ namespace BloodyShop.Server.Network
         {
             var user = VWorld.Server.EntityManager.GetComponentData<User>(fromCharacter.User);
 
-            //Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] AddSerializedMessage {user.CharacterName}");
+            // Plugin.Logger.LogInfo($"[SERVER] [RECEIVED] AddSerializedMessage {user.CharacterName} {msg.Stock} {int.Parse(msg.Stock)}");
             
 
             if(!user.IsAdmin)
@@ -66,7 +66,7 @@ namespace BloodyShop.Server.Network
 
                 if (stock <= 0)
                 {
-                    stock = 1;
+                    stock = -1;
                 }
 
                 if (stack <= 0)

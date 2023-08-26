@@ -154,6 +154,11 @@ namespace BloodyShop.Server.Commands
                     throw ctx.Error("Error loading currency type");
                 }
 
+                if(stock <=0)
+                {
+                    stock = -1;
+                }
+
                 if (!ItemsDB.addProductList(item, price, stock, name, stack))
                 {
                     throw ctx.Error("Invalid item type");

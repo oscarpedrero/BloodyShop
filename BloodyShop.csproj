@@ -4,7 +4,7 @@
 	  <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>BloodyShop</AssemblyName>
     <Description>Mod to create a store in VRising</Description>
-    <Version>0.9.81</Version>
+    <Version>0.9.82</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
 	<RestoreSources>

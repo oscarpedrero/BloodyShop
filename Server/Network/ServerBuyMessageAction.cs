@@ -77,6 +77,8 @@ namespace BloodyShop.Server.Network
                 if (!itemShopModel.CheckStockAvailability(quantity))
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red("There is not enough stock of this item"));
+                    var msg = ServerListMessageAction.createMsg();
+                    ServerListMessageAction.Send(user, msg);
                     return;
                 }
 
@@ -85,12 +87,16 @@ namespace BloodyShop.Server.Network
                 if (!InventorySystem.verifyHaveSuficientPrefabsInInventory(user.CharacterName.ToString(), currencyItemModel.PrefabGUID, finalPrice))
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"You need {FontColorChat.White($"{finalPrice} {currency.name}")} in your inventory for this purchase"));
+                    var msg = ServerListMessageAction.createMsg();
+                    ServerListMessageAction.Send(user, msg);
                     return;
                 }
 
                 if (!InventorySystem.getPrefabFromInventory(user.CharacterName.ToString(), currencyItemModel.PrefabGUID, finalPrice))
                 {
                     ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"You need {FontColorChat.White($"{finalPrice} {currency.name}")} in your inventory for this purchase"));
+                    var msg = ServerListMessageAction.createMsg();
+                    ServerListMessageAction.Send(user, msg);
                     return;
                 }
 

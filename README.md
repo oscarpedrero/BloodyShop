@@ -4,6 +4,9 @@
 <details>
 <summary>Changelog</summary>
 
+`0.9.82`
+- Fixed bug that did not allow adding infinite items
+
 `0.9.81`
 - Fixed a bug that existed when the currency_list.json file was first generated.
 - Added option within the client configuration file to disable sounds.
