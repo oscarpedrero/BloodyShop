@@ -4,6 +4,9 @@
 <details>
 <summary>Changelog</summary>
 
+`0.9.92`
+- Added to the add and buy command the possibility of adding buffs and not just items. Example: .shop add Cursed 1425734039 1 1 1 1 true
+
 `0.9.9`
 - Added command to reload configuration of products and currencies
 - Now you can configure if you want a currency to be active or not in the drop system
@@ -60,15 +63,19 @@
 
 Since the update to Gloomrot the server does not have the names of the Prefabs, so the name of the Prefab has been added to the add command as a necessary parameter.
 
-New command:
-.shop add "\<NameOfProduct\>" \<PrefabGUID\> \<Price\> \<Stock\>
+Add currency:
+.shop currency add "Silver Coin" -949672483 true
 
-Example:
-.shop add "Silver Currency" -949672483 1 100
+New add command:
+.shop add "\<NameOfProduct\>" \<PrefabGUID\> \<Currency\> \<Price\> \<Stock\> \<Stack\> \<Buff| true/false \> 
 
-This name is only visible through the chat commands, if the client uses the mod he will see it in the language that the game has configured
+Example Item:
+.shop add "Silver Currency" -949672483 1 1 1 100 1 false
 
-For this same reason, it is best to manage the store from the client, which implies that you must [install the BloodyShop mod on the client](https://github.com/oscarpedrero/BloodyShop/wiki/Manual#requirements) and the server if you are a server administrator.
+Example Buff:
+.shop add Cursed 1425734039 1 1 1 1 true
+
+For this same reason, it is best to manage the store from the client, which implies that you must [install the BloodyShop mod on the client](https://github.com/oscarpedrero/BloodyShop/wiki/Manual-%E2%80%90-Gloomrot-Update#requirements) and the server if you are a server administrator.
 
 [Complete list of prefabs](https://discord.com/channels/978094827830915092/1117273637024714862/1117273642817044571)
 
@@ -87,6 +94,8 @@ This mod idea was a suggestion from [@Daavy](https://ideas.vrisingmods.com/posts
 [@Adain](https://github.com/adainrivers) for encouraging me to develop a UI to be able to use the mod from the client, for the support and for its [VRising.GameData](https://github.com/adainrivers/VRising.GameData) framework
 
 [@Paps](https://github.com/phillipsOG) for all the help and encouragement he has given us to get this idea off the ground.
+
+[@NopeyBoi](https://github.com/NopeyBoi) Author of the buff system that I extracted from [ChatCommands](https://github.com/NopeyBoi/ChatCommands) mod
 
 **A special thanks to the testers and supporters of the project:**
 

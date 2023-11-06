@@ -130,6 +130,9 @@
   <data name="config" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Client\Buttons\config.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="elixir" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Client\Images\elixir.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="floop2_x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Client\Sounds\floop2_x.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>

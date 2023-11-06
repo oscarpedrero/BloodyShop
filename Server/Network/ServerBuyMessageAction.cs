@@ -39,6 +39,8 @@ namespace BloodyShop.Server.Network
 
             try
             {
+                
+                var userModel = GameData.Users.GetUserByCharacterName(user.CharacterName.ToString());
 
                 if (!ConfigDB.ShopEnabled)
                 {
@@ -92,13 +94,22 @@ namespace BloodyShop.Server.Network
                     return;
                 }
 
-                if (!InventorySystem.getPrefabFromInventory(user.CharacterName.ToString(), currencyItemModel.PrefabGUID, finalPrice))
+                if (itemShopModel.isBuff)
                 {
-                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"You need {FontColorChat.White($"{finalPrice} {currency.name}")} in your inventory for this purchase"));
-                    var msg = ServerListMessageAction.createMsg();
-                    ServerListMessageAction.Send(user, msg);
-                    return;
+                    BuffSystem.BuffPlayer(playerCharacter, userModel.Entity, new PrefabGUID(itemShopModel.PrefabGUID), 0, true);
                 }
+                else
+                {
+                    if (!InventorySystem.getPrefabFromInventory(user.CharacterName.ToString(), currencyItemModel.PrefabGUID, finalPrice))
+                    {
+                        ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"You need {FontColorChat.White($"{finalPrice} {currency.name}")} in your inventory for this purchase"));
+                        var msg = ServerListMessageAction.createMsg();
+                        ServerListMessageAction.Send(user, msg);
+                        return;
+                    }
+                }
+
+               
 
                 var finalQuantity = itemShopModel.PrefabStack * quantity;
 
@@ -142,8 +153,6 @@ namespace BloodyShop.Server.Network
                 ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"Error: {error.Message}"));
             }
         }
-
-
 
         public static void Send(User fromCharacter, BuySerializedMessage msg)
         {

@@ -7,6 +7,7 @@ using System.Linq;
 using Bloodstone.API;
 using ProjectM;
 using VRising.GameData;
+using BloodyShop.Client.Utils;
 
 namespace BloodyShop.DB
 {
@@ -35,6 +36,7 @@ namespace BloodyShop.DB
                     prefabModel.PrefabType = itemModel?.ItemType.ToString();
                     prefabModel.PrefabGUID = itemModel?.Internals.PrefabGUID?.GuidHash ?? 0;
                     prefabModel.PrefabIcon = itemModel?.ManagedGameData.ManagedItemData?.Icon;
+                    prefabModel.PrefabIcon = itemModel?.ManagedGameData.ManagedItemData?.Icon;
 
                     _normalizedItemNameCache.Add((prefabModel.PrefabName.ToString().ToLower(), prefabModel.PrefabType.ToString().ToLower(), prefabModel));
                 }
@@ -50,18 +52,39 @@ namespace BloodyShop.DB
             _normalizedItemShopNameCache = new();
             foreach (var itemShopModel in list)
             {
-                var itemModel = GameData.Items.GetPrefabById(new PrefabGUID(itemShopModel.id));
-                var prefabModel = new PrefabModel();
-                prefabModel.PrefabName = itemShopModel?.name;
-                prefabModel.PrefabType = itemModel?.ItemType.ToString();
-                prefabModel.PrefabGUID = itemModel?.Internals.PrefabGUID?.GuidHash ?? 0;
-                prefabModel.PrefabIcon = itemModel?.ManagedGameData.ManagedItemData?.Icon;
-                prefabModel.PrefabPrice = itemShopModel.price;
-                prefabModel.PrefabStock = itemShopModel.stock;
-                prefabModel.PrefabStack = itemShopModel.stack;
-                prefabModel.currency = itemShopModel.currency;
-                ProductList.Add(prefabModel);
-                _normalizedItemShopNameCache.Add((prefabModel.PrefabName.ToString().ToLower(), prefabModel.PrefabGUID, prefabModel.PrefabType.ToString().ToLower(), prefabModel));
+                if (itemShopModel.isBuff)
+                {
+                    var prefabModel = new PrefabModel();
+                    prefabModel.PrefabName = itemShopModel?.name;
+                    prefabModel.PrefabType = "buff";
+                    prefabModel.PrefabGUID = itemShopModel.id;
+                    var icon = SpritesUtil.LoadPNGTOSprite(Properties.Resources.elixir);
+                    prefabModel.PrefabIcon = icon;
+                    prefabModel.PrefabPrice = itemShopModel.price;
+                    prefabModel.PrefabStock = itemShopModel.stock;
+                    prefabModel.PrefabStack = itemShopModel.stack;
+                    prefabModel.currency = itemShopModel.currency;
+                    prefabModel.isBuff = itemShopModel.isBuff;
+                    ProductList.Add(prefabModel);
+                    _normalizedItemShopNameCache.Add((prefabModel.PrefabName.ToString().ToLower(), prefabModel.PrefabGUID, prefabModel.PrefabType.ToString().ToLower(), prefabModel));
+
+                } else
+                {
+                    var itemModel = GameData.Items.GetPrefabById(new PrefabGUID(itemShopModel.id));
+                    var prefabModel = new PrefabModel();
+                    prefabModel.PrefabName = itemShopModel?.name;
+                    prefabModel.PrefabType = itemModel?.ItemType.ToString();
+                    prefabModel.PrefabGUID = itemModel?.Internals.PrefabGUID?.GuidHash ?? 0;
+                    prefabModel.PrefabIcon = itemModel?.ManagedGameData.ManagedItemData?.Icon;
+                    prefabModel.PrefabPrice = itemShopModel.price;
+                    prefabModel.PrefabStock = itemShopModel.stock;
+                    prefabModel.PrefabStack = itemShopModel.stack;
+                    prefabModel.currency = itemShopModel.currency;
+                    prefabModel.isBuff = itemShopModel.isBuff;
+                    ProductList.Add(prefabModel);
+                    _normalizedItemShopNameCache.Add((prefabModel.PrefabName.ToString().ToLower(), prefabModel.PrefabGUID, prefabModel.PrefabType.ToString().ToLower(), prefabModel));
+                }
+                
             }
 
             //Plugin.Logger.LogInfo($"Total product List Converted {ProductList.Count}");
@@ -137,31 +160,55 @@ namespace BloodyShop.DB
                 itemShopModel.stack = prefabModel.PrefabStack;
                 itemShopModel.currency = prefabModel.currency;
                 itemShopModel.price = prefabModel.PrefabPrice;
+                itemShopModel.isBuff = prefabModel.isBuff;
                 productListReturn.Add(itemShopModel);
             }
 
             return productListReturn;
         }
 
-        public static bool addProductList(int item, int price, int stock, string name, int currency, int stack = 1)
+        public static bool addProductList(int item, int price, int stock, string name, int currency, int stack = 1, bool isBuff = false)
         {
 
-            var itemModel = GameData.Items.GetPrefabById(new PrefabGUID(item));
-            if (itemModel == null) return false;
+            if(isBuff)
+            {
+                PrefabModel prefabModel = new PrefabModel();
+                prefabModel.PrefabName = name;
+                prefabModel.PrefabType = "buff";
+                prefabModel.PrefabGUID = item;
+                var icon = SpritesUtil.LoadPNGTOSprite(Properties.Resources.elixir);
+                prefabModel.PrefabIcon = icon;
+                prefabModel.PrefabPrice = price;
+                prefabModel.PrefabStock = stock;
+                prefabModel.PrefabStack = stack;
+                prefabModel.currency = currency;
+                prefabModel.isBuff = true;
 
-            PrefabModel prefabModel = new PrefabModel();
-            prefabModel.PrefabName = name;
-            prefabModel.PrefabType = itemModel?.ItemType.ToString();
-            prefabModel.PrefabGUID = itemModel?.Internals.PrefabGUID?.GuidHash ?? 0;
-            prefabModel.PrefabIcon = itemModel?.ManagedGameData.ManagedItemData?.Icon;
-            prefabModel.PrefabPrice = price;
-            prefabModel.PrefabStock = stock;
-            prefabModel.PrefabStack = stack;
-            prefabModel.currency = currency;
+                ProductList.Add(prefabModel);
+                _normalizedItemShopNameCache.Add((prefabModel.PrefabName.ToString().ToLower(), prefabModel.PrefabGUID, prefabModel.PrefabType.ToString().ToLower(), prefabModel));
+                return true;
+
+            } else
+            {
+                var itemModel = GameData.Items.GetPrefabById(new PrefabGUID(item));
+                if (itemModel == null) return false;
+
+                PrefabModel prefabModel = new PrefabModel();
+                prefabModel.PrefabName = name;
+                prefabModel.PrefabType = itemModel?.ItemType.ToString();
+                prefabModel.PrefabGUID = itemModel?.Internals.PrefabGUID?.GuidHash ?? 0;
+                prefabModel.PrefabIcon = itemModel?.ManagedGameData.ManagedItemData?.Icon;
+                prefabModel.PrefabPrice = price;
+                prefabModel.PrefabStock = stock;
+                prefabModel.PrefabStack = stack;
+                prefabModel.currency = currency;
+                prefabModel.isBuff = isBuff;
+
+                ProductList.Add(prefabModel);
+                _normalizedItemShopNameCache.Add((prefabModel.PrefabName.ToString().ToLower(), prefabModel.PrefabGUID, prefabModel.PrefabType.ToString().ToLower(), prefabModel));
+                return true;
+            }
             
-            ProductList.Add(prefabModel);
-            _normalizedItemShopNameCache.Add((prefabModel.PrefabName.ToString().ToLower(), prefabModel.PrefabGUID, prefabModel.PrefabType.ToString().ToLower(), prefabModel));
-            return true;
 
         }
 
@@ -267,7 +314,7 @@ namespace BloodyShop.DB
             }
             catch (Exception error)
             {
-                Plugin.Logger.LogError($"Error: {error.Message}");
+                Plugin.Logger.LogError($"Error: {error.Message} {error.Source}");
                 return false;
             }
 

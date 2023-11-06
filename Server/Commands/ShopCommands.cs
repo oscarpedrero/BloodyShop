@@ -15,6 +15,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Il2CppSystem.Data;
 using BloodyShop.Server.Systems;
+using Unity.Entities;
+using UnityEngine.TextCore;
+using ProjectM.Network;
+using Unity.Collections;
+using ProjectM.Shared;
 
 namespace BloodyShop.Server.Commands
 {
@@ -129,21 +134,27 @@ namespace BloodyShop.Server.Commands
         [Command
         (
             "add", 
-            usage: "\"<Name>\" <PrefabGuid> <Currency> <Price> <Stock> <Stack>", 
+            usage: "\"<Name>\" <PrefabGuid> <Currency> <Price> <Stock> <Stack> <Buff|true/false>", 
             description: "Add a product to the store. To know the PrefabGuid of an item you must look for the item in the following URL <#4acc45><u>https://gaming.tools/v-rising/items</u></color>", 
             adminOnly: true)
         ]
-        public static void AddItem(ChatCommandContext ctx, string name, int item, int currencyId, int price, int stock, int stack=1)
+        public static void AddItem(ChatCommandContext ctx, string name, int item, int currencyId, int price, int stock, int stack=1, bool isBuff = false)
         {
             try
             {
-                var prefabGUID = new PrefabGUID(item);
-                var itemModel = GameData.Items.GetPrefabById(prefabGUID);
-
-                if (itemModel == null)
+                Plugin.Logger.LogInfo($"Estamos añadiendo un buff o no? {isBuff}");
+                if( !isBuff )
                 {
-                    throw ctx.Error("Invalid item type");
-                }
+                    var prefabGUID = new PrefabGUID(item);
+                    var itemModel = GameData.Items.GetPrefabById(prefabGUID);
+
+                    if (itemModel == null)
+                    {
+                        //if (!BuffUtility.TryGetBuff(VWorld.Server.EntityManager, playerCharacter, prefabGUID, out Entity buffEntity))
+                        throw ctx.Error("Invalid item type");
+
+                    }
+                } 
 
                 currencies = ShareDB.getCurrencyList();
 
@@ -159,7 +170,7 @@ namespace BloodyShop.Server.Commands
                     stock = -1;
                 }
 
-                if (!ItemsDB.addProductList(item, price, stock, name, stack))
+                if (!ItemsDB.addProductList(item, price, stock, name, currency.guid, stack, isBuff))
                 {
                     throw ctx.Error("Invalid item type");
                 }
@@ -249,10 +260,16 @@ namespace BloodyShop.Server.Commands
 
                 var finalQuantity = itemShopModel.PrefabStack * quantity;
 
-                if (!InventorySystem.AdditemToInventory(ctx.Event.User.CharacterName.ToString(), new PrefabGUID(itemShopModel.PrefabGUID), finalQuantity))
+                if (itemShopModel.isBuff)
                 {
-                    Plugin.Logger.LogError($"Error buying an item User: {ctx.Event.User.CharacterName.ToString()} Item: {itemShopModel.PrefabName} Quantity: {quantity} TotalPrice: {finalPrice}");
-                    throw ctx.Error($"An error has occurred when delivering the items, please contact an administrator");
+                    BuffSystem.BuffPlayer(playerCharacter, ctx.Event.SenderUserEntity, new PrefabGUID(itemShopModel.PrefabGUID), 0, true);
+                } else
+                {
+                    if (!InventorySystem.AdditemToInventory(ctx.Event.User.CharacterName.ToString(), new PrefabGUID(itemShopModel.PrefabGUID), finalQuantity))
+                    {
+                        Plugin.Logger.LogError($"Error buying an item User: {ctx.Event.User.CharacterName.ToString()} Item: {itemShopModel.PrefabName} Quantity: {quantity} TotalPrice: {finalPrice}");
+                        throw ctx.Error($"An error has occurred when delivering the items, please contact an administrator");
+                    }
                 }
 
                 ctx.Reply(FontColorChat.Yellow($"Transaction successful. You have purchased {FontColorChat.White($"{quantity}x {itemShopModel.PrefabName}")} for a total of  {FontColorChat.White($"{finalPrice} {currency.name}")}"));
@@ -416,5 +433,7 @@ namespace BloodyShop.Server.Commands
                 }
             }
         }
+
+        
     }
 }

@@ -14,7 +14,6 @@ using BepInEx;
 using Unity.Entities;
 using Bloodstone.API;
 using System;
-using Stunlock.Localization;
 
 namespace BloodyShop
 {

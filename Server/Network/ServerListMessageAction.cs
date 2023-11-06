@@ -31,6 +31,8 @@ namespace BloodyShop.Server.Network
 
             msg.ItemsJson = jsonOutPut;
 
+            Plugin.Logger.LogInfo(jsonOutPut);
+
             var currencyList = ShareDB.getCurrencyList();
             jsonOutPut = JsonSerializer.Serialize(currencyList);
 
