@@ -94,30 +94,31 @@ namespace BloodyShop.Server.Network
                     return;
                 }
 
+                
+                if (!InventorySystem.getPrefabFromInventory(user.CharacterName.ToString(), currencyItemModel.PrefabGUID, finalPrice))
+                {
+                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"You need {FontColorChat.White($"{finalPrice} {currency.name}")} in your inventory for this purchase"));
+                    var msg = ServerListMessageAction.createMsg();
+                    ServerListMessageAction.Send(user, msg);
+                    return;
+                }
+
+                var finalQuantity = itemShopModel.PrefabStack * quantity;
+
                 if (itemShopModel.isBuff)
                 {
                     BuffSystem.BuffPlayer(playerCharacter, userModel.Entity, new PrefabGUID(itemShopModel.PrefabGUID), 0, true);
                 }
                 else
-                {
-                    if (!InventorySystem.getPrefabFromInventory(user.CharacterName.ToString(), currencyItemModel.PrefabGUID, finalPrice))
+                {    
+                
+                    if (!InventorySystem.AdditemToInventory(user.CharacterName.ToString(), new PrefabGUID(itemShopModel.PrefabGUID), finalQuantity))
                     {
-                        ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"You need {FontColorChat.White($"{finalPrice} {currency.name}")} in your inventory for this purchase"));
-                        var msg = ServerListMessageAction.createMsg();
-                        ServerListMessageAction.Send(user, msg);
+                        Plugin.Logger.LogError($"Error buying an item User: {user.CharacterName.ToString()} Item: {itemShopModel.PrefabStack}x {itemName} Quantity: {quantity} TotalPrice: {finalPrice}");
+                        ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"An error has occurred when delivering the items, please contact an administrator"));
                         return;
                     }
-                }
 
-               
-
-                var finalQuantity = itemShopModel.PrefabStack * quantity;
-
-                if (!InventorySystem.AdditemToInventory(user.CharacterName.ToString(), new PrefabGUID(itemShopModel.PrefabGUID), finalQuantity))
-                {
-                    Plugin.Logger.LogError($"Error buying an item User: {user.CharacterName.ToString()} Item: {itemShopModel.PrefabStack}x {itemName} Quantity: {quantity} TotalPrice: {finalPrice}");
-                    ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Red($"An error has occurred when delivering the items, please contact an administrator"));
-                    return;
                 }
 
                 ServerChatUtils.SendSystemMessageToClient(VWorld.Server.EntityManager, user, FontColorChat.Yellow($"Transaction successful. You have purchased {FontColorChat.White($"{finalQuantity}x {itemName}")} for a total of  {FontColorChat.White($"{finalPrice} {currency.name}")}"));
