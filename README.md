@@ -75,6 +75,8 @@ Example Item:
 Example Buff:
 .shop add Cursed 1425734039 1 1 1 1 true
 
+[Buff List by Vex](https://github.com/oscarpedrero/BloodyShop/wiki/Manual-%E2%80%90-Gloomrot-Update#buff-list-recomendation-by-vex-vexor-gaming)
+
 For this same reason, it is best to manage the store from the client, which implies that you must [install the BloodyShop mod on the client](https://github.com/oscarpedrero/BloodyShop/wiki/Manual-%E2%80%90-Gloomrot-Update#requirements) and the server if you are a server administrator.
 
 [Complete list of prefabs](https://discord.com/channels/978094827830915092/1117273637024714862/1117273642817044571)
