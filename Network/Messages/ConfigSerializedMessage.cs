@@ -1,4 +1,4 @@
-﻿using Stunlock.Network;
+﻿/*using Stunlock.Network;
 using Unity.Collections;
 using Bloodstone.API;
 
@@ -37,3 +37,4 @@ namespace BloodyShop.Network.Messages
         }
     }
 }
+*/

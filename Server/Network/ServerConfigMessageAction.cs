@@ -1,4 +1,4 @@
-﻿using BloodyShop.DB;
+﻿/*using BloodyShop.DB;
 using BloodyShop.Network.Messages;
 using BloodyShop.Server.DB;
 using ProjectM.Network;
@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
-using VRising.GameData;
+using Bloody.Core.GameData.v1;
 using Bloodstone.API;
 using BloodyShop.Server.Systems;
 
@@ -66,3 +66,4 @@ namespace BloodyShop.Server.Network
         }
     }
 }
+*/

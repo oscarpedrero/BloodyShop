@@ -2,8 +2,10 @@
 using Unity.Entities;
 using Unity.Collections;
 using ProjectM;
-using VRising.GameData;
-using VRising.GameData.Methods;
+using Bloody.Core;
+using Bloody.Core.GameData.v1;
+using Bloody.Core.Methods;
+using Stunlock.Core;
 
 namespace BloodyShop.Server.Core
 {
@@ -86,14 +88,16 @@ namespace BloodyShop.Server.Core
 
                 int totalSlots = InventoryUtilities.GetInventorySize(Plugin.Server.EntityManager, userEntity);
 
-                var gameDataSystem = Plugin.Server.GetExistingSystem<GameDataSystem>();
+                var gameDataSystem = Plugin.Server.GetExistingSystemManaged<GameDataSystem>();
 
                 for (int i = 0; i < totalSlots; i++)
                 {
 
                     if (InventoryUtilities.TryGetItemAtSlot(Plugin.Server.EntityManager, userEntity, i, out var item))
                     {
-                        var itemData = gameDataSystem.ManagedDataRegistry.GetOrDefault<ManagedItemData>(item.ItemType);
+                        //var itemData = gameDataSystem.ManagedDataRegistry.GetOrDefault<ManagedItemData>(item.ItemType);
+
+                        var itemData = GameData.Items.GetPrefabById(item.ItemType);
 
                         if (itemData != null)
                         {

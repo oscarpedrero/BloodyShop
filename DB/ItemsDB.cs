@@ -1,4 +1,4 @@
-﻿using VRising.GameData.Models;
+﻿using Bloody.Core.Models.v1;
 using BloodyShop.DB.Models;
 using BloodyShop.Utils;
 using System;
@@ -6,8 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Bloodstone.API;
 using ProjectM;
-using VRising.GameData;
+using Bloody.Core.GameData.v1;
 using BloodyShop.Client.Utils;
+using Stunlock.Core;
 
 namespace BloodyShop.DB
 {
@@ -25,7 +26,8 @@ namespace BloodyShop.DB
         public static void generateCacheItems()
         {
 
-            var allPrefabs = VWorld.Client.GetExistingSystem<PrefabCollectionSystem>()._PrefabGuidToEntityMap;
+            //var allPrefabs = VWorld.Client.GetExistingSystemManaged<PrefabCollectionSystem>()._PrefabGuidToEntityMap;
+            var allPrefabs = Plugin.SystemsCore.PrefabCollectionSystem._PrefabGuidToEntityMap;
             foreach (var prefabEntity in allPrefabs)
             {
                 var itemModel = GameData.Items.FromEntity(prefabEntity.Value);
@@ -35,8 +37,8 @@ namespace BloodyShop.DB
                     prefabModel.PrefabName = itemModel?.Name;
                     prefabModel.PrefabType = itemModel?.ItemType.ToString();
                     prefabModel.PrefabGUID = itemModel?.Internals.PrefabGUID?.GuidHash ?? 0;
-                    prefabModel.PrefabIcon = itemModel?.ManagedGameData.ManagedItemData?.Icon;
-                    prefabModel.PrefabIcon = itemModel?.ManagedGameData.ManagedItemData?.Icon;
+                    prefabModel.PrefabIcon = itemModel?.ManagedCore.ManagedItemData?.Icon;
+                    prefabModel.PrefabIcon = itemModel?.ManagedCore.ManagedItemData?.Icon;
 
                     _normalizedItemNameCache.Add((prefabModel.PrefabName.ToString().ToLower(), prefabModel.PrefabType.ToString().ToLower(), prefabModel));
                 }
@@ -75,7 +77,7 @@ namespace BloodyShop.DB
                     prefabModel.PrefabName = itemShopModel?.name;
                     prefabModel.PrefabType = itemModel?.ItemType.ToString();
                     prefabModel.PrefabGUID = itemModel?.Internals.PrefabGUID?.GuidHash ?? 0;
-                    prefabModel.PrefabIcon = itemModel?.ManagedGameData.ManagedItemData?.Icon;
+                    prefabModel.PrefabIcon = itemModel?.ManagedCore.ManagedItemData?.Icon;
                     prefabModel.PrefabPrice = itemShopModel.price;
                     prefabModel.PrefabStock = itemShopModel.stock;
                     prefabModel.PrefabStack = itemShopModel.stack;
@@ -197,7 +199,7 @@ namespace BloodyShop.DB
                 prefabModel.PrefabName = name;
                 prefabModel.PrefabType = itemModel?.ItemType.ToString();
                 prefabModel.PrefabGUID = itemModel?.Internals.PrefabGUID?.GuidHash ?? 0;
-                prefabModel.PrefabIcon = itemModel?.ManagedGameData.ManagedItemData?.Icon;
+                prefabModel.PrefabIcon = itemModel?.ManagedCore.ManagedItemData?.Icon;
                 prefabModel.PrefabPrice = price;
                 prefabModel.PrefabStock = stock;
                 prefabModel.PrefabStack = stack;

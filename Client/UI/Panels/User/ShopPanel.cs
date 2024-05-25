@@ -1,6 +1,6 @@
-﻿using BloodyShop.Client.Network;
+﻿//using BloodyShop.Client.Network;
 using BloodyShop.DB;
-using BloodyShop.Network.Messages;
+//using BloodyShop.Network.Messages;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -357,13 +357,13 @@ namespace BloodyShop.Client.UI.Panels.User
 
             if (indexItemUI != "-1")
             {
-                var msg = new BuySerializedMessage()
+                /*var msg = new BuySerializedMessage()
                 {
                     ItemIndex = indexItemUI,
                     Quantity = quantityBuy,
                     Name = prefabBuy.PrefabName,
                 };
-                ClientBuyMessageAction.Send(msg);
+                ClientBuyMessageAction.Send(msg);*/
                 RefreshAction();
             }
 

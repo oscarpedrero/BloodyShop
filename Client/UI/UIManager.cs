@@ -3,7 +3,7 @@ using System.IO;
 using UniverseLib;
 using UnityEngine;
 using System;
-using BloodyShop.Client.Network;
+//using BloodyShop.Client.Network;
 using BloodyShop.Client.DB;
 using BloodyShop.Client.UI.Panels.Admin;
 using BloodyShop.Client.UI.Panels.User;
@@ -187,7 +187,7 @@ internal class UIManager
             var panelDeleteCurrency = panelCOnfig.GetCurrencyPanel();
             panelDeleteCurrency.RefreshData();
         }
-        ClientListMessageAction.Send();
+        //ClientListMessageAction.Send();
         
     }
 

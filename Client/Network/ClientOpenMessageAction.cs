@@ -1,4 +1,4 @@
-﻿using BloodyShop.Client.DB;
+﻿/*using BloodyShop.Client.DB;
 using BloodyShop.Client.UI;
 using BloodyShop.Network.Messages;
 using Bloodstone.API;
@@ -38,4 +38,4 @@ namespace BloodyShop.Client.Network
         }
 
     }
-}
+}*/

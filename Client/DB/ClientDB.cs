@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using VRising.GameData;
-using VRising.GameData.Models;
+using Bloody.Core.GameData.v1;
+using Bloody.Core.Models.v1;
 using Bloodstone.API;
 
 namespace BloodyShop.Client.DB

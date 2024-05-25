@@ -1,8 +1,28 @@
 
 # BloodyShop Mod to create a store in VRising (with optional client UI)
 
+# Requirements
+
+1. [BepInEx](https://github.com/BepInEx/BepInEx) (Client and Server)
+2. [VampireCommandFramework](https://github.com/decaprime/VampireCommandFramework) (Client and Server)
+3. [Bloodstone](https://github.com/decaprime/Bloodstone) (Client and Server)
+3. [Bloody.Core](https://github.com/oscarpedrero/BloodyCore) (Client and Server)
+4. UniverseLib.IL2CPP.Interop.dll include in zip (Only on the client)
+
+# Update to VRising 1.0
+
+# Important note
+
+- At the moment it only works in the server version, the client mode with the UI is disabled.
+- It needs version 1.2.2 or higher of [Bloody.Core](https://github.com/oscarpedrero/BloodyCore) to work, if you have other mods that use this library they will not be affected.
+
 <details>
 <summary>Changelog</summary>
+
+`1.0.0`
+- Removed dependency on V Rising.Game Data
+- Added Bloody.Core as a dependency
+- Updated to VRising version 1.0
 
 `0.9.92`
 - Added to the add and buy command the possibility of adding buffs and not just items. Example: .shop add Cursed 1425734039 1 1 1 1 true
@@ -59,6 +79,8 @@
 
 [Known bugs](https://github.com/oscarpedrero/BloodyShop/wiki/Known-bugs)
 
+
+
 ## Gloomrot Update
 
 Since the update to Gloomrot the server does not have the names of the Prefabs, so the name of the Prefab has been added to the add command as a necessary parameter.
@@ -75,11 +97,11 @@ Example Item:
 Example Buff:
 .shop add Cursed 1425734039 1 1 1 1 true
 
-[Buff List by Vex](https://github.com/oscarpedrero/BloodyShop/wiki/Manual-%E2%80%90-Gloomrot-Update#buff-list-recomendation-by-vex-vexor-gaming)
+[Buff List by Vex](https://github.com/oscarpedrero/BloodyShop/wiki/Manual#buff-list-recomendation-by-vex-vexor-gaming)
 
-For this same reason, it is best to manage the store from the client, which implies that you must [install the BloodyShop mod on the client](https://github.com/oscarpedrero/BloodyShop/wiki/Manual-%E2%80%90-Gloomrot-Update#requirements) and the server if you are a server administrator.
+For this same reason, it is best to manage the store from the client, which implies that you must [install the BloodyShop mod on the client](https://github.com/oscarpedrero/BloodyShop/wiki/Manual#requirements) and the server if you are a server administrator.
 
-[Complete list of prefabs](https://discord.com/channels/978094827830915092/1117273637024714862/1117273642817044571)
+[Complete list of prefabs](https://vrising-website.pages.dev/items)
 
 # Credits
 

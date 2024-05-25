@@ -1,10 +1,10 @@
-﻿using VRising.GameData;
+﻿using Bloody.Core.GameData.v1;
 using ProjectM;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using VRising.GameData.Models;
+using Bloody.Core.Models.v1;
 
 namespace BloodyShop.DB.Models
 {

@@ -1,4 +1,4 @@
-﻿using BloodyShop.Client.UI;
+﻿/*using BloodyShop.Client.UI;
 using HarmonyLib;
 using ProjectM;
 using ProjectM.UI;
@@ -68,3 +68,4 @@ public static class ClientEvents
     }
 
 }
+*/

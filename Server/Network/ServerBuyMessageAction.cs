@@ -1,4 +1,4 @@
-﻿using ProjectM.Network;
+﻿/*using ProjectM.Network;
 using BloodyShop.DB;
 using BloodyShop.Network.Messages;
 using System.Text.Json;
@@ -9,10 +9,10 @@ using VampireCommandFramework;
 using System;
 using BloodyShop.Utils;
 using ProjectM;
-using VRising.GameData;
+using Bloody.Core.GameData.v1;
 using BloodyShop.Server.DB;
 using BloodyShop.DB.Models;
-using VRising.GameData.Models;
+using Bloody.Core.Models.v1;
 using Unity.Entities;
 using BloodyShop.Server.Core;
 
@@ -162,3 +162,4 @@ namespace BloodyShop.Server.Network
 
     }
 }
+*/

@@ -1,5 +1,5 @@
-﻿using VRising.GameData;
-using VRising.GameData.Models;
+﻿using Bloody.Core.GameData.v1;
+using Bloody.Core.Models.v1;
 using ProjectM;
 using BloodyShop.DB.Models;
 using System.Collections.Generic;

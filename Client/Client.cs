@@ -1,14 +1,14 @@
 ﻿using BloodyShop.Client.DB;
-using BloodyShop.Client.Network;
+//using BloodyShop.Client.Network;
 using BloodyShop.Client.UI;
 using BloodyShop.DB;
 using ProjectM;
 using System;
 using System.Collections.Generic;
-using VRising.GameData;
-using VRising.GameData.Models;
+using Bloody.Core.GameData.v1;
+using Bloody.Core.Models.v1;
 using Bloodstone.API;
-using BloodyShop.Server.Network;
+//using BloodyShop.Server.Network;
 using BloodyShop.AutoAnnouncer.Timers;
 using BloodyShop.AutoAnnouncer;
 

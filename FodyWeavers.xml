@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
-	<ILMerge NamespacePrefix="BloodShop_" IncludeAssemblies="VRising.GameData|NAudio|UniverseLib.IL2CPP.Interop"></ILMerge>
+	<ILMerge></ILMerge>
+	<!--<ILMerge NamespacePrefix="BloodShop_" IncludeAssemblies="NAudio|UniverseLib.IL2CPP.Interop"></ILMerge>-->
 </Weavers>

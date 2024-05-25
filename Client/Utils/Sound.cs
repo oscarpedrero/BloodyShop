@@ -15,7 +15,7 @@ namespace BloodyShop.Client.Utils
     {
         private static MemoryStream ms;
         private static WaveStream ws;
-        private static WaveOutEvent output;
+        //private static WaveOutEvent output;
 
         public static void Play(UnmanagedMemoryStream sound)
         {

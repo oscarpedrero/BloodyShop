@@ -1,4 +1,4 @@
-﻿using Stunlock.Network;
+﻿/*using Stunlock.Network;
 using Bloodstone.API;
 
 namespace BloodyShop.Network.Messages
@@ -23,3 +23,4 @@ namespace BloodyShop.Network.Messages
         }
     }
 }
+*/

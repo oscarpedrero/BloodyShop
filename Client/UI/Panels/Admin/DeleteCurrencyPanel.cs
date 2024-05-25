@@ -1,21 +1,24 @@
 ﻿using BloodyShop.DB;
-using VRising.GameData.Models;
+using Bloody.Core.Models.v1;
+using Bloody.Core.Methods;
+using Bloody.Core;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using UnityEngine.EventSystems;
-using BloodyShop.Network.Messages;
-using BloodyShop.Client.Network;
+//using BloodyShop.Network.Messages;
+//using BloodyShop.Client.Network;
 using UniverseLib.UI.Widgets;
 using UniverseLib;
 using System.Collections.Generic;
 using BloodyShop.DB.Models;
 using System.Linq;
 using BloodyShop.Client.Utils;
-using VRising.GameData;
+using Bloody.Core.GameData.v1;
 using ProjectM;
+using Stunlock.Core;
 
 namespace BloodyShop.Client.UI.Panels.Admin
 {
@@ -139,7 +142,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
                 // ITEM ICON
                 var imageIcon = UIFactory.CreateUIObject("IconItem-" + index, _contentProduct);
                 var iconImage = imageIcon.AddComponent<Image>();
-                iconImage.sprite = itemModel.ManagedGameData.ManagedItemData?.Icon;
+                iconImage.sprite = itemModel.ManagedCore.ManagedItemData?.Icon;
                 UIFactory.SetLayoutElement(imageIcon, minWidth: 60, minHeight: 60, flexibleHeight: 0, preferredHeight: 60, flexibleWidth: 0, preferredWidth: 60);
 
                 //NAME ITEM
@@ -242,11 +245,11 @@ namespace BloodyShop.Client.UI.Panels.Admin
 
             if (indexItemUI != "-1")
             {
-                var msg = new DeleteCurrencySerializedMessage()
+                /*var msg = new DeleteCurrencySerializedMessage()
                 {
                     Currency = indexItemUI
                 };
-                ClientDeleteCurrencyMessageAction.Send(msg);
+                ClientDeleteCurrencyMessageAction.Send(msg);*/
                 RefreshAction();
             }
         }

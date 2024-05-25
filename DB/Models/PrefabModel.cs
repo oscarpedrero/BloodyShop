@@ -1,6 +1,6 @@
 ﻿using ProjectM;
 using UnityEngine;
-using VRising.GameData.Models;
+using Bloody.Core.Models.v1;
 
 namespace BloodyShop.DB.Models
 {

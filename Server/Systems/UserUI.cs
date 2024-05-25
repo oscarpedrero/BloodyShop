@@ -15,8 +15,6 @@ namespace BloodyShop.Server.Systems
 
         public static void RegisterUserWithUI(User user)
         {
-            User? entity = null;
-
             _users.TryAdd(user.CharacterName.ToString(), user);
         }
 

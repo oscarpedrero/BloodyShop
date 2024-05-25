@@ -1,15 +1,14 @@
 ﻿using BloodyShop.DB;
 using BloodyShop.DB.Models;
-using BloodyShop.Network.Messages;
+//using BloodyShop.Network.Messages;
 using BloodyShop.Server.Core;
 using BloodyShop.Server.DB;
-using BloodyShop.Server.Network;
+//using BloodyShop.Server.Network;
 using BloodyShop.Utils;
 using ProjectM;
 using System;
 using VampireCommandFramework;
-using VRising.GameData;
-using VRising.GameData.Models;
+using Bloody.Core.GameData.v1;
 using Bloodstone.API;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +19,9 @@ using UnityEngine.TextCore;
 using ProjectM.Network;
 using Unity.Collections;
 using ProjectM.Shared;
+using Stunlock.Core;
+using Bloody.Core.Models.v1;
+using Bloody.Core.API.v1;
 
 namespace BloodyShop.Server.Commands
 {
@@ -56,8 +58,8 @@ namespace BloodyShop.Server.Commands
                 var userValue = userUI.Value;
                 if (userValue.IsConnected && userValue.IsAdmin)
                 {
-                    var msg = ServerListMessageAction.createMsg();
-                    ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);
+                    /*var msg = ServerListMessageAction.createMsg();
+                    ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);*/
                 }
             }
 
@@ -117,8 +119,8 @@ namespace BloodyShop.Server.Commands
                     if (userValue.IsConnected && userValue.IsAdmin)
                     {
                         
-                        var msg = ServerListMessageAction.createMsg();
-                        ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);
+                        /*var msg = ServerListMessageAction.createMsg();
+                        ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);*/
                     }
                 }
 
@@ -195,8 +197,8 @@ namespace BloodyShop.Server.Commands
                     if (userValue.IsConnected)
                     {
                         
-                        var msg = ServerListMessageAction.createMsg();
-                        ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);
+                        /*var msg = ServerListMessageAction.createMsg();
+                        ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);*/
                     }
                 }
                
@@ -290,8 +292,8 @@ namespace BloodyShop.Server.Commands
                     if (userValue.IsConnected)
                     {
                         
-                        var msg = ServerListMessageAction.createMsg();
-                        ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);
+                        /*var msg = ServerListMessageAction.createMsg();
+                        ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);*/
                     }
                 }
 
@@ -333,8 +335,8 @@ namespace BloodyShop.Server.Commands
                     if (userValue.IsConnected)
                     {
                         
-                        var msg = ServerListMessageAction.createMsg();
-                        ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);
+                        /*var msg = ServerListMessageAction.createMsg();
+                        ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);*/
                     }
                 }
 
@@ -384,7 +386,7 @@ namespace BloodyShop.Server.Commands
             ConfigDB.ShopEnabled = true;
             ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($" {FontColorChat.White($" {ConfigDB.StoreName} ")} just opened"));
             var userWithUI = UserUI.GetUsersWithUI();
-            var msg = new OpenSerializedMessage();
+            /*var msg = new OpenSerializedMessage();
             foreach (var userUI in userWithUI)
             {
                 var userValue = userUI.Value;
@@ -393,7 +395,7 @@ namespace BloodyShop.Server.Commands
                     
                     ServerOpenMessageAction.Send((ProjectM.Network.User)userValue, msg);
                 }
-            }
+            }*/
             
         }
 
@@ -403,7 +405,7 @@ namespace BloodyShop.Server.Commands
             ConfigDB.ShopEnabled = false;
             ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($" {FontColorChat.White($" {ConfigDB.StoreName} ")} just closed"));
             var userWithUI = UserUI.GetUsersWithUI();
-            var msg = new CloseSerializedMessage();
+            /*var msg = new CloseSerializedMessage();
             foreach (var userUI in userWithUI)
             {
                 var userValue = userUI.Value;
@@ -412,7 +414,7 @@ namespace BloodyShop.Server.Commands
                     
                     ServerCloseMessageAction.Send((ProjectM.Network.User)userValue, msg);
                 }
-            }
+            }*/
         }
 
         [Command("reload", usage:"", description: "Reload products and currencies files from server", adminOnly: true)]
@@ -428,8 +430,8 @@ namespace BloodyShop.Server.Commands
                 var userValue = userUI.Value;
                 if (userValue.IsConnected)
                 {
-                    var msg = ServerListMessageAction.createMsg();
-                    ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);
+                    /*var msg = ServerListMessageAction.createMsg();
+                    ServerListMessageAction.Send((ProjectM.Network.User)userValue, msg);*/
                 }
             }
         }

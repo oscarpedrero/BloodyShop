@@ -2,7 +2,7 @@
 using BepInEx.Unity.IL2CPP;
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using VRising.GameData;
+using Bloody.Core.GameData.v1;
 using HarmonyLib;
 using Unity.Entities;
 using UnityEngine;
@@ -11,16 +11,18 @@ using System;
 using VampireCommandFramework;
 using BloodyShop.Client.Patch;
 using BloodyShop.Client;
-using BloodyShop.Server.Patch;
 using ProjectM.Network;
 using Stunlock.Localization;
+using Bloody.Core;
+using Bloody.Core.API.v1;
 
 namespace BloodyShop
 {
     [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
     [BepInDependency("gg.deca.VampireCommandFramework")]
     [BepInDependency("gg.deca.Bloodstone")]
-
+    [BepInDependency("trodi.Bloody.Core")]
+    [Reloadable]
     public class Plugin : BasePlugin, IRunOnInitialized
     {
 
@@ -29,13 +31,15 @@ namespace BloodyShop
         internal static string Guid = MyPluginInfo.PLUGIN_GUID;
         internal static string Version = MyPluginInfo.PLUGIN_VERSION;
 
-        public static ManualLogSource Logger;
+        public static Bloody.Core.Helper.v1.Logger Logger;
         private Harmony _harmony;
 
         public static ConfigEntry<bool> ShopEnabled;
         public static ConfigEntry<bool> AnnounceAddRemovePublic;
         public static ConfigEntry<bool> AnnounceBuyPublic;
         public static ConfigEntry<string> StoreName;
+
+        public static SystemsCore SystemsCore;
 
 
         /// 
@@ -113,13 +117,20 @@ namespace BloodyShop
 
         public override void Load()
         {
+
+            if (!VWorld.IsServer)
+            {
+                return;
+            }
+
+
             Instance = this;
 
-            Logger = Log;
+            Logger = new(Log);
             _harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
 
-            GameData.OnInitialize += GameDataOnInitialize;
-            GameData.OnDestroy += GameDataOnDestroy;
+            EventsHandlerSystem.OnInitialize += GameDataOnInitialize;
+            EventsHandlerSystem.OnDestroy += GameDataOnDestroy;
 
             if (VWorld.IsServer)
             {
@@ -158,13 +169,15 @@ namespace BloodyShop
 
             _harmony.UnpatchSelf();
             
-            GameData.OnDestroy -= GameDataOnDestroy;
-            GameData.OnInitialize -= GameDataOnInitialize;
+            EventsHandlerSystem.OnDestroy -= GameDataOnDestroy;
+            EventsHandlerSystem.OnInitialize -= GameDataOnInitialize;
             return true;
         }
 
         private static void GameDataOnInitialize(World world)
         {
+            SystemsCore = Core.SystemsCore;
+
             if (VWorld.IsServer)
             {
                 BloodyShop.onServerGameDataOnInitialize();

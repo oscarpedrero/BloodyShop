@@ -1,5 +1,5 @@
 ﻿using Bloodstone.API;
-using BloodyShop.Client.Network;
+//using BloodyShop.Client.Network;
 using ProjectM;
 
 namespace BloodyShop.AutoAnnouncer
@@ -8,7 +8,7 @@ namespace BloodyShop.AutoAnnouncer
     {
         public static void OnTimedAutoUI()
         {
-            ClientConfigMessageAction.Send();
+            //ClientConfigMessageAction.Send();
 
             //Plugin.Logger.LogWarning("Timer executed");
         }

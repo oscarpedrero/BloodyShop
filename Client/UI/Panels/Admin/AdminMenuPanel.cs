@@ -1,5 +1,5 @@
 ﻿using BloodyShop.Client.DB;
-using BloodyShop.Client.Network;
+//using BloodyShop.Client.Network;
 using BloodyShop.Client.Utils;
 using BloodyShop.Utils;
 using MS.Internal.Xml.XPath;
@@ -192,7 +192,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
                 iconBtn.sprite = icon;
                 iconBtn.color = new Color(1, 1, 1, 1);
 
-                ClientCloseMessageAction.Send();
+                //ClientCloseMessageAction.Send();
             }
             else
             {
@@ -202,7 +202,7 @@ namespace BloodyShop.Client.UI.Panels.Admin
                 iconBtn.sprite = icon;
                 iconBtn.color = new Color(1, 1, 1, 1);
 
-                ClientOpenMessageAction.Send();
+                //ClientOpenMessageAction.Send();
             }
 
         }

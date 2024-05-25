@@ -5,11 +5,12 @@ using ProjectM;
 using System;
 using Unity.Collections;
 using Unity.Entities;
-using VRising.GameData;
-using VRising.GameData.Methods;
-using VRising.GameData.Models;
+using Bloody.Core.GameData.v1;
+using Bloody.Core.Methods;
+using Bloody.Core.Models.v1;
 using Bloodstone.API;
 using System.Linq;
+using Stunlock.Core;
 
 namespace BloodyShop.Server.Systems
 {

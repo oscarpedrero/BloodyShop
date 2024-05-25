@@ -1,4 +1,4 @@
-﻿using BloodyShop.Client.DB;
+﻿/*using BloodyShop.Client.DB;
 using BloodyShop.Client.UI;
 using BloodyShop.DB;
 using BloodyShop.DB.Models;
@@ -6,7 +6,7 @@ using BloodyShop.Network.Messages;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
-using VRising.GameData;
+using Bloody.Core.GameData.v1;
 using Bloodstone.API;
 
 namespace BloodyShop.Client.Network
@@ -55,3 +55,4 @@ namespace BloodyShop.Client.Network
 
     }
 }
+*/

@@ -1,5 +1,5 @@
 ﻿using BloodyShop.DB;
-using VRising.GameData.Models;
+using Bloody.Core.Models.v1;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,8 +7,8 @@ using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using BloodyShop.Client.DB;
 using UnityEngine.EventSystems;
-using BloodyShop.Network.Messages;
-using BloodyShop.Client.Network;
+//using BloodyShop.Network.Messages;
+//using BloodyShop.Client.Network;
 using UniverseLib.UI.Widgets;
 using System.Collections.Generic;
 using System.Linq;

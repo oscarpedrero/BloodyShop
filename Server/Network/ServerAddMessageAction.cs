@@ -1,4 +1,4 @@
-﻿using ProjectM.Network;
+﻿/*using ProjectM.Network;
 using BloodyShop.DB;
 using BloodyShop.Network.Messages;
 using System.Text.Json;
@@ -7,8 +7,8 @@ using BloodyShop.Server.Systems;
 using BloodyShop.Server.Commands;
 using System;
 using ProjectM;
-using VRising.GameData;
-using VRising.GameData.Models;
+using Bloody.Core.GameData.v1;
+using Bloody.Core.Models.v1;
 using BloodyShop.Server.DB;
 using BloodyShop.Utils;
 using Unity.Entities;
@@ -102,13 +102,6 @@ namespace BloodyShop.Server.Network
                     ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, FontColorChat.Yellow($"{FontColorChat.White($"{stack}x {name} ({stock})")} have been added to the Store for {FontColorChat.White($"{price} {currency?.name.ToString()}")}"));
                 }
 
-                /*var usersOnline = GameData.Users.Online;
-                foreach (var userOnline in usersOnline)
-                {
-                    var msg = ServerListMessageAction.createMsg();
-                    ServerListMessageAction.Send((ProjectM.Network.User)userOnline.Internals.User, msg);
-                }*/
-
                 var userWithUI = UserUI.GetUsersWithUI();
                 foreach (var userUI in userWithUI)
                 {
@@ -137,3 +130,4 @@ namespace BloodyShop.Server.Network
 
     }
 }
+*/

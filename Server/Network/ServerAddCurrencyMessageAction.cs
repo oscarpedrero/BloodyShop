@@ -1,11 +1,11 @@
-﻿using ProjectM.Network;
+﻿/*using ProjectM.Network;
 using BloodyShop.DB;
 using BloodyShop.Network.Messages;
 using Bloodstone.API;
 using BloodyShop.Server.Systems;
 using System;
 using ProjectM;
-using VRising.GameData;
+using Bloody.Core.GameData.v1;
 using BloodyShop.Server.DB;
 using BloodyShop.Utils;
 using BloodyShop.DB.Models;
@@ -108,3 +108,4 @@ namespace BloodyShop.Server.Network
 
     }
 }
+*/

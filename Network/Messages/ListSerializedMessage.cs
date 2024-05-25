@@ -1,4 +1,4 @@
-﻿using Stunlock.Network;
+﻿/*using Stunlock.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -31,3 +31,4 @@ namespace BloodyShop.Network.Messages
         }
     }
 }
+*/
