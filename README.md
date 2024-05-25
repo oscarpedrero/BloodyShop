@@ -15,9 +15,13 @@
 
 - At the moment it only works in the server version, the client mode with the UI is disabled.
 - It needs version 1.2.2 or higher of [Bloody.Core](https://github.com/oscarpedrero/BloodyCore) to work, if you have other mods that use this library they will not be affected.
+- Removed the daily drop system, an external mod has been generated for this called [BloodyRewards](https://github.com/oscarpedrero/BloodyRewards)
 
 <details>
 <summary>Changelog</summary>
+
+`1.0.1`
+- Removed the daily drop system, an external mod has been generated for this called BloodyRewards
 
 `1.0.0`
 - Removed dependency on V Rising.Game Data
