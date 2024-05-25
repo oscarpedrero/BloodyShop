@@ -24,8 +24,6 @@ namespace BloodyShop
         public static void serverInitMod(Harmony _harmony)
         {
             //_harmony.PatchAll(typeof(ServerEvents));
-            EventsHandlerSystem.OnDeath += DropSystem.ServerEvents_OnDeath;
-            EventsHandlerSystem.OnVampireDowned += DropSystem.ServerEvents_OnVampireDowned;
             ServerMod.CreateFilesConfig();
             CommandRegistry.RegisterCommandType(typeof(ShopCommands));
         }
@@ -55,7 +53,7 @@ namespace BloodyShop
 
         public static void serverUnloadMod()
         {
-            EventsHandlerSystem.OnDeath -= DropSystem.ServerEvents_OnDeath;
+
         }
 
         public static void clientUnloadMod()
@@ -70,7 +68,6 @@ namespace BloodyShop
             //NetworkMessages.RegisterMessage();
             ServerMod.LoadConfigToDB();
             ServerMod.LoadCurrenciesToDB();
-            ServerMod.LoadUserCurrenciesPerDayToDB();
         }
 
         public static void onClientGameDataOnInitialize()

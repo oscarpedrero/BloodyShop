@@ -46,22 +46,5 @@ namespace BloodyShop.Server.DB
 
         }
 
-        public static bool saveUsersCurrenciesPerDay()
-        {
-            try
-            {
-                var usersCurrenciesPerDayList = ConfigDB.UsersCurrenciesPerDay;
-                var jsonOutPut = JsonSerializer.Serialize(usersCurrenciesPerDayList);
-                File.WriteAllText(ServerMod.UserCurrenciesPerDayFile, jsonOutPut);
-                
-                return true;
-            }
-            catch (Exception error)
-            {
-                Plugin.Logger.LogError($"Error: {error.Message}");
-                return false;
-            }
-
-        }
     }
 }

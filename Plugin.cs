@@ -42,33 +42,6 @@ namespace BloodyShop
         public static SystemsCore SystemsCore;
 
 
-        /// 
-        /// DROP SYSTEM
-        /// 
-
-        public static ConfigEntry<bool> DropEnabled;
-
-        // NPC CONFIG DROP
-        public static ConfigEntry<int> DropNpcPercentage;
-        public static ConfigEntry<int> IncrementPercentageDropEveryTenLevelsNpc;
-        public static ConfigEntry<int> DropdNpcCurrenciesMin;
-        public static ConfigEntry<int> DropNpcCurrenciesMax;
-        public static ConfigEntry<int> MaxCurrenciesPerDayPerPlayerNpc;
-
-        // VBLOOD CONFIG DROP
-        public static ConfigEntry<int> DropdVBloodPercentage;
-        public static ConfigEntry<int> IncrementPercentageDropEveryTenLevelsVBlood;
-        public static ConfigEntry<int> DropVBloodCurrenciesMin;
-        public static ConfigEntry<int> DropVBloodCurrenciesMax;
-        public static ConfigEntry<int> MaxCurrenciesPerDayPerPlayerVBlood;
-
-        // PVP CONFIG DROP
-        public static ConfigEntry<int> DropPvpPercentage;
-        public static ConfigEntry<int> IncrementPercentageDropEveryTenLevelsPvp;
-        public static ConfigEntry<int> DropPvpCurrenciesMin;
-        public static ConfigEntry<int> DropPvpCurrenciesMax;
-        public static ConfigEntry<int> MaxCurrenciesPerDayPerPlayerPvp;
-
         // Client Config
         public static ConfigEntry<bool> Sounds;
 
@@ -212,29 +185,6 @@ namespace BloodyShop
             AnnounceAddRemovePublic = Config.Bind("ConfigShop", "announceAddRemovePublic", true, "Public announcement when an item is added or removed from the store");
             AnnounceBuyPublic = Config.Bind("ConfigShop", "announceBuyPublic", true, "Public announcement when someone buys an item from the store");
 
-            // DROP SYSTEM CONFIG
-            DropEnabled = Config.Bind("DropSystem", "enabled", true, "Enable Drop System");
-
-            // NPC DROP CONFIG
-            DropNpcPercentage = Config.Bind("DropSystem", "minPercentageDropNpc", 5, "Percent chance that an NPC will drop the type of currency from the shop");
-            IncrementPercentageDropEveryTenLevelsNpc = Config.Bind("DropSystem", "IncrementPercentageDropEveryTenLevelsNpc", 5, "Percentage increase for every rank of 10 levels of the NPC");
-            DropdNpcCurrenciesMin = Config.Bind("DropSystem", "DropdNpcCurrenciesMin", 1, "Minimum currency an NPC can drop");
-            DropNpcCurrenciesMax = Config.Bind("DropSystem", "DropNpcCurrenciesMax", 5, "Maximum currency an NPC can drop");
-            MaxCurrenciesPerDayPerPlayerNpc = Config.Bind("DropSystem", "MaxCurrenciesPerDayPerPlayerNpc", 5, "Maximum number of currency that a user can get per day by NPC death");
-
-            // VBLOOD DROP CONFIG
-            DropdVBloodPercentage = Config.Bind("DropSystem", "minPercentageDropVBlood", 20, "Percent chance that an VBlood will drop the type of currency from the shop");
-            IncrementPercentageDropEveryTenLevelsVBlood = Config.Bind("DropSystem", "IncrementPercentageDropEveryTenLevelsVBlood", 5, "Percentage increase for every rank of 10 levels of the VBlood");
-            DropVBloodCurrenciesMin = Config.Bind("DropSystem", "DropVBloodCurrenciesMin", 10, "Minimum currency an VBlood can drop");
-            DropVBloodCurrenciesMax = Config.Bind("DropSystem", "DropVBloodCurrenciesMax", 20, "Maximum currency an VBlood can drop");
-            MaxCurrenciesPerDayPerPlayerVBlood = Config.Bind("DropSystem", "MaxCurrenciesPerDayPerPlayerVBlood", 20, "Maximum number of currency that a user can get per day by VBlood death");
-
-            // PVP DROP CONFIG
-            DropPvpPercentage = Config.Bind("DropSystem", "minPercentageDropPvp", 100, "Percent chance that victory in a PVP duel will drop the type of currency in the store");
-            IncrementPercentageDropEveryTenLevelsPvp = Config.Bind("DropSystem", "IncrementPercentageDropEveryTenLevelsPvp", 5, "Percentage increase for every rank of 10 levels of the Player killed in pvp duel");
-            DropPvpCurrenciesMin = Config.Bind("DropSystem", "DropPvpCurrenciesMin", 15, "Minimum currency can drop victory in PVP");
-            DropPvpCurrenciesMax = Config.Bind("DropSystem", "DropPvpCurrenciesMax", 20, "Maximum currency can drop victory in PVP");
-            MaxCurrenciesPerDayPerPlayerPvp = Config.Bind("DropSystem", "MaxCurrenciesPerDayPerPlayerPvp", 20, "Maximum number of currency that a user can get per day by victory in PVP");
         }
 
         public void OnGameInitialized()

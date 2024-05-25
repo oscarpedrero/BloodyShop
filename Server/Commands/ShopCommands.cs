@@ -422,7 +422,6 @@ namespace BloodyShop.Server.Commands
         {
             LoadDataFromFiles.loadProductList();
             LoadDataFromFiles.loadCurrencies();
-            LoadDataFromFiles.loadUserCurrenciesPerDay();
             ctx.Reply(FontColorChat.Yellow($" {FontColorChat.White($" {ConfigDB.StoreName} ")} Configuration has been reloaded successfully"));
             var userWithUI = UserUI.GetUsersWithUI();
             foreach (var userUI in userWithUI)

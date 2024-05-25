@@ -56,14 +56,6 @@ namespace BloodyShop.Server
             }
         }
 
-        public static void LoadUserCurrenciesPerDayToDB()
-        {
-            if (!LoadDataFromFiles.loadUserCurrenciesPerDay())
-            {
-                Plugin.Logger.LogError($"Error loading loadUserCurrenciesPerDay");
-            }
-        }
-
         public static void SetConfigMod()
         {
 
@@ -79,25 +71,7 @@ namespace BloodyShop.Server
                 ConfigDB.StoreName = _storeName;
             }
 
-            ConfigDB.DropEnabled = Plugin.DropEnabled.Value;
-
-            ConfigDB.DropNpcPercentage = Plugin.DropNpcPercentage.Value;
-            ConfigDB.IncrementPercentageDropEveryTenLevelsNpc = Plugin.IncrementPercentageDropEveryTenLevelsNpc.Value;
-            ConfigDB.DropdNpcCurrenciesMin = Plugin.DropdNpcCurrenciesMin.Value;
-            ConfigDB.DropNpcCurrenciesMax = Plugin.DropNpcCurrenciesMax.Value;
-            ConfigDB.MaxCurrenciesPerDayPerPlayerNpc = Plugin.MaxCurrenciesPerDayPerPlayerNpc.Value;
-
-            ConfigDB.DropdVBloodPercentage = Plugin.DropdVBloodPercentage.Value;
-            ConfigDB.IncrementPercentageDropEveryTenLevelsVBlood = Plugin.IncrementPercentageDropEveryTenLevelsVBlood.Value;
-            ConfigDB.DropVBloodCurrenciesMin = Plugin.DropVBloodCurrenciesMin.Value;
-            ConfigDB.DropVBloodCurrenciesMax = Plugin.DropVBloodCurrenciesMax.Value;
-            ConfigDB.MaxCurrenciesPerDayPerPlayerVBlood = Plugin.MaxCurrenciesPerDayPerPlayerVBlood.Value;
-
-            ConfigDB.DropPvpPercentage = Plugin.DropPvpPercentage.Value;
-            ConfigDB.IncrementPercentageDropEveryTenLevelsPvp = Plugin.IncrementPercentageDropEveryTenLevelsPvp.Value;
-            ConfigDB.DropPvpCurrenciesMin = Plugin.DropPvpCurrenciesMin.Value;
-            ConfigDB.DropPvpCurrenciesMax = Plugin.DropPvpCurrenciesMax.Value;
-            ConfigDB.MaxCurrenciesPerDayPerPlayerPvp = Plugin.MaxCurrenciesPerDayPerPlayerPvp.Value;
+            
         }
     }
 }
