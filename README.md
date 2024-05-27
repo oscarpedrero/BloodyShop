@@ -1,22 +1,21 @@
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K8ENRQY)
-
-# BloodyShop Mod to create a store in VRising (with optional client UI)
-
-# Requirements
-
-1. [BepInEx](https://github.com/BepInEx/BepInEx) (Client and Server)
-2. [VampireCommandFramework](https://github.com/decaprime/VampireCommandFramework) (Client and Server)
-3. [Bloodstone](https://github.com/decaprime/Bloodstone) (Client and Server)
-3. [Bloody.Core](https://github.com/oscarpedrero/BloodyCore) (Client and Server)
-4. UniverseLib.IL2CPP.Interop.dll include in zip (Only on the client)
-
-# Update to VRising 1.0
+# BloodyShop Mod to create a store in VRising (with optional client UI) Update to VRising 1.0
 
 # Important note
 
 - At the moment it only works in the server version, the client mode with the UI is disabled.
-- It needs version 1.2.2 or higher of [Bloody.Core](https://github.com/oscarpedrero/BloodyCore) to work, if you have other mods that use this library they will not be affected.
-- Removed the daily drop system, an external mod has been generated for this called [BloodyRewards](https://github.com/oscarpedrero/BloodyRewards)
+- Removed the daily drop system, an external mod has been generated for this called [BloodyRewards](https://thunderstore.io/c/v-rising/p/Trodi/BloodyRewards/)
+
+# Support this project
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K8ENRQY)
+
+# Requirements
+
+1. [BepInEx](https://thunderstore.io/c/v-rising/p/BepInEx/BepInExPack_V_Rising/) (Client and Server)
+2. [Bloodstone](https://thunderstore.io/c/v-rising/p/deca/Bloodstone/) (Client and Server)
+3. [VampireCommandFramework](https://thunderstore.io/c/v-rising/p/deca/VampireCommandFramework/) (Only on the Server)
+4. [Bloody.Core](https://thunderstore.io/c/v-rising/p/Trodi/BloodyCore/) (Client and Server)
+4. UniverseLib.IL2CPP.Interop.dll include in zip (Only on the client)
 
 <details>
 <summary>Changelog</summary>
@@ -80,11 +79,14 @@
 
 ![alt text](https://github.com/oscarpedrero/BloodyShop/blob/master/Images/userui.png?raw=true)
 
-[Manual](https://github.com/oscarpedrero/BloodyShop/wiki/Manual-%E2%80%90-Gloomrot-Update)
+[Manual](https://github.com/oscarpedrero/BloodyShop/wiki/Manual)
 
 [Known bugs](https://github.com/oscarpedrero/BloodyShop/wiki/Known-bugs)
 
+# Important note
 
+- At the moment it only works in the server version, the client mode with the UI is disabled.
+- Removed the daily drop system, an external mod has been generated for this called [BloodyRewards](https://thunderstore.io/c/v-rising/p/Trodi/BloodyRewards/)
 
 ## Gloomrot Update
 
