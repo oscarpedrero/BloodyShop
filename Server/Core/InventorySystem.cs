@@ -95,7 +95,6 @@ namespace BloodyShop.Server.Core
 
                     if (InventoryUtilities.TryGetItemAtSlot(Plugin.Server.EntityManager, userEntity, i, out var item))
                     {
-                        //var itemData = gameDataSystem.ManagedDataRegistry.GetOrDefault<ManagedItemData>(item.ItemType);
 
                         var itemData = GameData.Items.GetPrefabById(item.ItemType);
 

@@ -4,7 +4,7 @@
 	  <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>BloodyShop</AssemblyName>
     <Description>Mod to create a store in VRising</Description>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
 	<RestoreSources>
@@ -24,14 +24,13 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NAudio" Version="2.1.0" />
-		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.668" IncludeAssets="compile" />
-		<PackageReference Include="BepInEx.Core" Version="6.0.0-be.668" IncludeAssets="compile" />
+		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.691" IncludeAssets="compile" />
+		<PackageReference Include="BepInEx.Core" Version="6.0.0-be.691" IncludeAssets="compile" />
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
-		<PackageReference Include="VRising.Unhollowed.Client" Version="1.0.0.*" />
-		<PackageReference Include="VRising.VampireCommandFramework" Version="0.8.*" />
-		<PackageReference Include="VRising.Bloodstone" Version="0.1.*" />
-		<PackageReference Include="Bloody.Core" Version="1.2.*" />
+		<PackageReference Include="VRising.Unhollowed.Client" Version="1.0.*" />
+		<PackageReference Include="VRising.VampireCommandFramework" Version="0.9.*" />
+		<PackageReference Include="VRising.Bloodstone" Version="0.2.*" />
+		<PackageReference Include="Bloody.Core" Version="1.2.4" />
 	</ItemGroup>
 
 	<ItemGroup>

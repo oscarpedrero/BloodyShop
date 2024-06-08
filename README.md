@@ -1,9 +1,10 @@
 # BloodyShop Mod to create a store in VRising (with optional client UI) Update to VRising 1.0
 
-# Important note
+## IMPORTANT NOTE
 
 - At the moment it only works in the server version, the client mode with the UI is disabled.
 - Removed the daily drop system, an external mod has been generated for this called [BloodyRewards](https://thunderstore.io/c/v-rising/p/Trodi/BloodyRewards/)
+- You must have version 1.2.4 of Bloody.Core installed to be able to use version 1.0.2 or higher of this mod
 
 # Support this project
 
@@ -19,6 +20,9 @@
 
 <details>
 <summary>Changelog</summary>
+
+`1.0.2`
+- Performance improvements
 
 `1.0.1`
 - Removed the daily drop system, an external mod has been generated for this called BloodyRewards
