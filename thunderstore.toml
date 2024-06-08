@@ -5,7 +5,7 @@ schemaVersion = "0.0.1"
 namespace = "Trodi"
 name = "BloodyShop"
 versionNumber = "1.0.1"
-description = ""Mod to create a store in VRising."
+description = "Mod to create a store in VRising."
 websiteUrl = "https://github.com/oscarpedrero/BloodyShop"
 containsNsfwContent = false
 
@@ -28,4 +28,4 @@ target = ""
 communities = ["v-rising"]
 repository = "https://thunderstore.io"
 [publish.categories]
-v-rising = ["gloomrot-update", "mods", "server"]
+v-rising = ["1-0-update", "mods", "server", "client"]
